@@ -20,8 +20,10 @@ const DataManagement: React.FC = () => {
     const handleExport = () => {
         try {
             const jsonString = JSON.stringify(data, null, 2);
-            // Use application/octet-stream to force download on mobile instead of trying to open it
-            const blob = new Blob([jsonString], { type: 'application/octet-stream' });
+            // Use text/plain with charset to ensure mobile devices treat it as readable text.
+            // The 'download' attribute below forces it to save as a file with the .json extension,
+            // preventing the browser from just opening it in a tab.
+            const blob = new Blob([jsonString], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
