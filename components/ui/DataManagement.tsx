@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -19,7 +20,8 @@ const DataManagement: React.FC = () => {
     const handleExport = () => {
         try {
             const jsonString = JSON.stringify(data, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
+            // Use application/octet-stream to force download on mobile instead of trying to open it
+            const blob = new Blob([jsonString], { type: 'application/octet-stream' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -34,7 +36,7 @@ const DataManagement: React.FC = () => {
             
             a.download = `PM_POSHAN_Backup_${schoolName}_${dateString}.json`;
             document.body.appendChild(a);
-a.click();
+            a.click();
             
             setTimeout(() => {
                 document.body.removeChild(a);
