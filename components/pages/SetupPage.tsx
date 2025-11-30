@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
@@ -261,6 +262,13 @@ const SetupPage: React.FC = () => {
                             <Button type="submit" className="w-full" disabled={isProcessing}>
                                 {isProcessing ? 'Setting up...' : 'Complete Setup'}
                             </Button>
+
+                            <div className="mt-6 text-xs pt-4 border-t border-slate-200/50 dark:border-white/10 text-slate-500 dark:text-slate-400 text-center">
+                                <p>Need help with the Signup Key?</p>
+                                <p className="mt-1"><strong>Developer:</strong> Imran Gani Mugloo</p>
+                                <p><a href="tel:+919149690096" className="text-sky-600 dark:text-sky-400 hover:underline">+91 9149690096</a></p>
+                                <p><a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">emraanmugloo123@gmail.com</a></p>
+                            </div>
                         </form>
                     </Card>
                 </div>

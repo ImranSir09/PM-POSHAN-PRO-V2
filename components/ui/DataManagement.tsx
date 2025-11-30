@@ -177,7 +177,6 @@ const DataManagement: React.FC = () => {
                             <p><strong>Developer:</strong> Imran Gani Mugloo</p>
                             <p><strong>Contact:</strong> <a href="tel:+919149690096" className="text-sky-600 dark:text-sky-400 hover:underline">+91 9149690096</a></p>
                             <p><strong>Email:</strong> <a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">emraanmugloo123@gmail.com</a></p>
-                            <p><strong>Website:</strong> <a href="https://imransir09.github.io/Pm-Poshan-Track/" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline">Pm-Poshan-Track</a></p>
                         </div>
                     </div>
                 </Card>
