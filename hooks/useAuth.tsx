@@ -7,7 +7,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     login: (password: string) => Promise<boolean>;
     logout: () => void;
-    setupAccount: (authData: AuthData) => Promise<void>;
+    setupAccount: (authData: AuthData, udise?: string) => Promise<void>;
     resetPassword: (answer: string, newPass: string) => Promise<boolean>;
 }
 
@@ -27,7 +27,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const login = async (password: string): Promise<boolean> => {
         if (!data.auth?.password) return false;
 
-        // Direct comparison as per previous working version
         if (data.auth.password === password) {
             setIsAuthenticated(true);
             sessionStorage.setItem('pm-poshan-auth', 'true');
@@ -42,8 +41,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         sessionStorage.removeItem('pm-poshan-auth');
     };
 
-    const setupAccount = async (authData: AuthData) => {
-        setupAccountData(authData);
+    const setupAccount = async (authData: AuthData, udise?: string) => {
+        setupAccountData(authData, udise);
         setIsAuthenticated(true);
         sessionStorage.setItem('pm-poshan-auth', 'true');
     };

@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { SIGNUP_KEY } from '../../constants';
@@ -19,7 +19,12 @@ const SECURITY_QUESTIONS = [
 const SetupPage: React.FC = () => {
     const { setupAccount } = useAuth();
     const { showToast } = useToast();
-    const [signupKey, setSignupKey] = useState('');
+    
+    // Activation States
+    const [udise, setUdise] = useState('');
+    const [signupKeyInput, setSignupKeyInput] = useState('');
+    
+    // Account States
     const [username, setUsername] = useState('');
     const [contact, setContact] = useState('');
     const [password, setPassword] = useState('');
@@ -27,10 +32,13 @@ const SetupPage: React.FC = () => {
     const [securityQuestion, setSecurityQuestion] = useState(SECURITY_QUESTIONS[0]);
     const [securityAnswer, setSecurityAnswer] = useState('');
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    
+    // UI States
     const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
     const [errors, setErrors] = useState({
+        udise: '',
         signupKey: '',
         username: '',
         contact: '',
@@ -40,13 +48,22 @@ const SetupPage: React.FC = () => {
         terms: '',
     });
 
+    const isKeyValid = useMemo(() => {
+        return signupKeyInput.trim() === SIGNUP_KEY;
+    }, [signupKeyInput]);
+
     const validate = useCallback((fieldName?: keyof typeof errors) => {
         const newErrors = { ...errors };
         
         const validators: Record<keyof typeof errors, () => string> = {
+            udise: () => {
+                if (!udise) return 'UDISE code is required.';
+                if (udise.length !== 11) return 'UDISE code must be exactly 11 digits.';
+                return '';
+            },
             signupKey: () => {
-                if (!signupKey) return 'Signup Key is required.';
-                if (signupKey.trim() !== SIGNUP_KEY) return 'Invalid Signup Key. Please contact an administrator.';
+                if (!signupKeyInput) return 'Signup Key is required.';
+                if (!isKeyValid) return 'Invalid Signup Key.';
                 return '';
             },
             username: () => !username ? 'Username is required.' : '',
@@ -70,12 +87,10 @@ const SetupPage: React.FC = () => {
 
         if (fieldName) {
             newErrors[fieldName] = validators[fieldName]();
-            // Also re-validate confirmPassword when password changes
             if (fieldName === 'password' && confirmPassword) {
                 newErrors.confirmPassword = validators.confirmPassword();
             }
         } else {
-            // Validate all fields
             (Object.keys(validators) as Array<keyof typeof errors>).forEach(key => {
                 newErrors[key] = validators[key]();
             });
@@ -83,21 +98,21 @@ const SetupPage: React.FC = () => {
         
         setErrors(newErrors);
         return Object.values(newErrors).every(error => error === '');
-    }, [signupKey, username, contact, password, confirmPassword, securityAnswer, agreedToTerms, errors]);
-
+    }, [udise, signupKeyInput, isKeyValid, username, contact, password, confirmPassword, securityAnswer, agreedToTerms, errors]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (validate()) {
             setIsProcessing(true);
             try {
+                // Setup account and also save the UDISE to settings immediately
                 await setupAccount({
                     username,
                     contact,
                     password,
                     securityQuestion,
                     securityAnswer,
-                });
+                }, udise);
                 showToast('Setup complete! Welcome.', 'success');
             } catch (error) {
                 showToast('An error occurred during setup.', 'error');
@@ -119,77 +134,78 @@ const SetupPage: React.FC = () => {
                 <div className="w-full max-w-md z-10">
                     <div className="text-center mb-4">
                         <h1 className="text-xl font-bold text-slate-900 dark:text-white">PM Poshan Pro</h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-300">Application Setup</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-300">New School Registration</p>
                     </div>
-                    <Card title="First-Time Setup">
-                        <p className="text-xs text-slate-600 dark:text-slate-300 mb-4">
-                            Welcome! Please enter your signup key and create an account to secure this application.
-                        </p>
+                    <Card title="App Activation">
                         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-                            <div>
+                            {/* Activation Section */}
+                            <fieldset className="border border-sky-200 dark:border-sky-900/50 rounded-lg p-3 bg-sky-50/30 dark:bg-sky-900/10">
+                                <legend className="text-xs font-bold text-sky-700 dark:text-sky-400 px-2">School Activation</legend>
+                                <div className="space-y-3">
+                                    <div>
+                                        <Input
+                                            label="School UDISE Code (11 Digits)"
+                                            id="udise-setup"
+                                            type="tel"
+                                            maxLength={11}
+                                            value={udise}
+                                            onChange={e => setUdise(e.target.value.replace(/[^0-9]/g, ''))}
+                                            onBlur={() => validate('udise')}
+                                            required
+                                            placeholder="e.g. 01010101010"
+                                            className={errors.udise ? 'border-red-500' : ''}
+                                        />
+                                        {errors.udise && <p className="mt-1 text-[10px] text-red-500">{errors.udise}</p>}
+                                    </div>
+                                    <div>
+                                        <Input
+                                            label="Signup Key"
+                                            id="signup-key"
+                                            value={signupKeyInput}
+                                            onChange={e => setSignupKeyInput(e.target.value)}
+                                            onBlur={() => validate('signupKey')}
+                                            required
+                                            placeholder="Enter signup key"
+                                            className={errors.signupKey ? 'border-red-500' : isKeyValid ? 'border-green-500' : ''}
+                                        />
+                                        {errors.signupKey ? (
+                                            <p className="mt-1 text-[10px] text-red-500">{errors.signupKey}</p>
+                                        ) : (
+                                            <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400">Please provide the official signup key to proceed.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            {/* Profile Section */}
+                            <div className="space-y-4 pt-2">
                                 <Input
-                                    label="Signup Key"
-                                    id="signup-key"
-                                    value={signupKey}
-                                    onChange={e => setSignupKey(e.target.value)}
-                                    onBlur={() => validate('signupKey')}
-                                    required
-                                    placeholder="Enter the key provided by admin"
-                                    className={errors.signupKey ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
-                                />
-                                {errors.signupKey ? (
-                                    <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.signupKey}</p>
-                                ) : (
-                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This key is provided by the administrator to activate the app.</p>
-                                )}
-                            </div>
-                            <div>
-                                <Input
-                                    label="MDM Incharge / Username"
+                                    label="MDM Incharge Name"
                                     id="username"
                                     value={username}
                                     onChange={e => setUsername(e.target.value)}
                                     onBlur={() => validate('username')}
                                     required
-                                    className={errors.username ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
+                                    className={errors.username ? 'border-red-500' : ''}
                                 />
-                                 {errors.username ? (
-                                    <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.username}</p>
-                                ) : (
-                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This name will be displayed on the dashboard and used in reports.</p>
-                                )}
-                            </div>
-                             <div>
                                 <Input
                                     label="Contact Number"
                                     id="contact"
                                     type="tel"
                                     maxLength={10}
                                     value={contact}
-                                    onChange={e => setContact(e.target.value)}
-                                    onInput={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, ''); }}
+                                    onChange={e => setContact(e.target.value.replace(/[^0-9]/g, ''))}
                                     onBlur={() => validate('contact')}
-                                    className={errors.contact ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
+                                    className={errors.contact ? 'border-red-500' : ''}
                                 />
-                                {errors.contact && <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.contact}</p>}
-                            </div>
-                            <div>
                                 <PasswordInput
-                                    label="Password (min. 6 characters)"
+                                    label="Create Password (min. 6)"
                                     id="password"
                                     value={password}
                                     onChange={e => setPassword(e.target.value)}
                                     onBlur={() => validate('password')}
                                     required
-                                    className={errors.password ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
                                 />
-                                {errors.password ? (
-                                    <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.password}</p>
-                                ) : (
-                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Use a mix of letters, numbers, and symbols for better security.</p>
-                                )}
-                            </div>
-                            <div>
                                 <PasswordInput
                                     label="Confirm Password"
                                     id="confirm-password"
@@ -197,41 +213,30 @@ const SetupPage: React.FC = () => {
                                     onChange={e => setConfirmPassword(e.target.value)}
                                     onBlur={() => validate('confirmPassword')}
                                     required
-                                    className={errors.confirmPassword ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
                                 />
-                                {errors.confirmPassword && <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.confirmPassword}</p>}
                             </div>
                             
+                            {/* Recovery Section */}
                             <fieldset className="border border-slate-300/50 dark:border-slate-600 rounded-lg p-3">
-                                <legend className="text-sm font-medium text-sky-700 dark:text-sky-400 px-1">Password Recovery</legend>
+                                <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">Account Recovery</legend>
                                 <div className="space-y-3">
-                                    <div>
-                                        <label htmlFor="security-question" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Security Question</label>
-                                        <select
-                                            id="security-question"
-                                            value={securityQuestion}
-                                            onChange={e => setSecurityQuestion(e.target.value)}
-                                            className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block p-2.5"
-                                        >
-                                            {SECURITY_QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <Input
-                                            label="Your Answer (case-insensitive)"
-                                            id="security-answer"
-                                            value={securityAnswer}
-                                            onChange={e => setSecurityAnswer(e.target.value)}
-                                            onBlur={() => validate('securityAnswer')}
-                                            required
-                                            className={errors.securityAnswer ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
-                                        />
-                                        {errors.securityAnswer ? (
-                                            <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.securityAnswer}</p>
-                                        ) : (
-                                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This is crucial for recovering your account if you forget your password.</p>
-                                        )}
-                                    </div>
+                                    <div className="text-[10px] text-slate-500 mb-1 italic">Used to reset your password if forgotten.</div>
+                                    <select
+                                        id="security-question"
+                                        value={securityQuestion}
+                                        onChange={e => setSecurityQuestion(e.target.value)}
+                                        className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-900 dark:text-white text-xs rounded-lg p-2"
+                                    >
+                                        {SECURITY_QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}
+                                    </select>
+                                    <Input
+                                        label="Security Answer"
+                                        id="security-answer"
+                                        value={securityAnswer}
+                                        onChange={e => setSecurityAnswer(e.target.value)}
+                                        onBlur={() => validate('securityAnswer')}
+                                        required
+                                    />
                                 </div>
                             </fieldset>
 
@@ -243,31 +248,25 @@ const SetupPage: React.FC = () => {
                                         checked={agreedToTerms}
                                         onChange={e => setAgreedToTerms(e.target.checked)}
                                         onBlur={() => validate('terms')}
-                                        className="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                                        className="h-4 w-4 rounded border-slate-300 text-sky-600"
                                     />
                                     <label htmlFor="terms-agree" className="text-xs text-slate-600 dark:text-slate-300">
-                                        I have read and agree to the{' '}
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsTermsModalOpen(true)}
-                                            className="font-semibold text-sky-600 hover:underline focus:outline-none"
-                                        >
-                                            Terms and Conditions
-                                        </button>
+                                        I agree to the{' '}
+                                        <button type="button" onClick={() => setIsTermsModalOpen(true)} className="text-sky-600 underline">Terms and Conditions</button>
                                     </label>
                                 </div>
-                                 {errors.terms && <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.terms}</p>}
+                                 {errors.terms && <p className="mt-1 text-[10px] text-red-500">{errors.terms}</p>}
                             </div>
                             
                             <Button type="submit" className="w-full" disabled={isProcessing}>
-                                {isProcessing ? 'Setting up...' : 'Complete Setup'}
+                                {isProcessing ? 'Activating...' : 'Complete Setup'}
                             </Button>
 
-                            <div className="mt-6 text-xs pt-4 border-t border-slate-200/50 dark:border-white/10 text-slate-500 dark:text-slate-400 text-center">
-                                <p>Need help with the Signup Key?</p>
-                                <p className="mt-1"><strong>Developer:</strong> Imran Gani Mugloo</p>
-                                <p><a href="tel:+919149690096" className="text-sky-600 dark:text-sky-400 hover:underline">+91 9149690096</a></p>
-                                <p><a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">emraanmugloo123@gmail.com</a></p>
+                            <div className="mt-4 text-[10px] pt-4 border-t border-slate-200/50 dark:border-white/10 text-slate-500 dark:text-slate-400 text-center">
+                                <p className="font-bold mb-1">Developer Contact for Signup Key:</p>
+                                <p>Imran Gani Mugloo</p>
+                                <p><a href="tel:+919149690096" className="text-sky-600">+91 9149690096</a></p>
+                                <p><a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600">emraanmugloo123@gmail.com</a></p>
                             </div>
                         </form>
                     </Card>

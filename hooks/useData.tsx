@@ -6,7 +6,6 @@ import { showToast } from './useToast';
 
 const APP_DATA_KEY = 'pmPoshanData_v2';
 
-// Simple deep merge utility
 const isObject = (item: any): boolean => {
     return (item && typeof item === 'object' && !Array.isArray(item));
 };
@@ -44,9 +43,6 @@ const getInitialData = (): AppData => {
         const savedData = localStorage.getItem(APP_DATA_KEY);
         if (savedData) {
             const parsedData = JSON.parse(savedData) as Partial<AppData>;
-
-            // Create a new data object by merging loaded data over the default structure.
-            // This ensures all top-level keys exist and prevents crashes from undefined properties.
             let dataToProcess: AppData = {
                 ...defaultData,
                 ...parsedData,
@@ -54,20 +50,17 @@ const getInitialData = (): AppData => {
                 settings: deepMerge(DEFAULT_SETTINGS, parsedData.settings || {}),
             };
 
-            // Data integrity validation: Ensure critical properties have the correct type.
-            // This prevents crashes if localStorage data is corrupted (e.g., an array is stored as null).
             dataToProcess.entries = Array.isArray(dataToProcess.entries) ? dataToProcess.entries : defaultData.entries;
             dataToProcess.receipts = Array.isArray(dataToProcess.receipts) ? dataToProcess.receipts : defaultData.receipts;
             dataToProcess.monthlyBalances = isObject(dataToProcess.monthlyBalances) ? dataToProcess.monthlyBalances : defaultData.monthlyBalances;
+            
             if (dataToProcess.settings) {
                 dataToProcess.settings.classRolls = Array.isArray(dataToProcess.settings.classRolls) ? dataToProcess.settings.classRolls : DEFAULT_SETTINGS.classRolls;
                 dataToProcess.settings.cooks = Array.isArray(dataToProcess.settings.cooks) ? dataToProcess.settings.cooks : DEFAULT_SETTINGS.cooks;
             } else {
-                // If settings object is missing entirely, restore it.
                 dataToProcess.settings = DEFAULT_SETTINGS;
             }
 
-            // MIGRATION: Convert old inspection report object to new string format
             if (dataToProcess.settings?.inspectionReport?.inspectedBy && isObject(dataToProcess.settings.inspectionReport.inspectedBy)) {
                 const oldInspectedBy = dataToProcess.settings.inspectionReport.inspectedBy as any;
                 let newInspectedBy: InspectionAuthority = '';
@@ -78,7 +71,6 @@ const getInitialData = (): AppData => {
                 dataToProcess.settings.inspectionReport.inspectedBy = newInspectedBy;
             }
 
-            // MIGRATION: Convert old scalar receipts to new category-wise structure
             if (dataToProcess.receipts && dataToProcess.receipts.length > 0 && typeof (dataToProcess.receipts[0] as any).rice === 'number') {
                 dataToProcess.receipts = dataToProcess.receipts.map((receipt: any) => ({
                     ...receipt,
@@ -87,7 +79,6 @@ const getInitialData = (): AppData => {
                 }));
             }
 
-            // MIGRATION: Convert old scalar monthly balances to new category-wise structure
             if(dataToProcess.monthlyBalances) {
                 const migratedBalances: MonthlyBalance = {};
                 Object.keys(dataToProcess.monthlyBalances).forEach(key => {
@@ -104,11 +95,9 @@ const getInitialData = (): AppData => {
                 dataToProcess.monthlyBalances = migratedBalances;
             }
             
-            // Migration for welcome screen: if user exists but flag is missing, assume they don've need to see it.
             if (dataToProcess.auth?.password && typeof dataToProcess.welcomeScreenShown === 'undefined') {
                 dataToProcess.welcomeScreenShown = true;
             }
-             // Ensure welcomeScreenShown has a boolean value
             if (typeof dataToProcess.welcomeScreenShown !== 'boolean') {
                 dataToProcess.welcomeScreenShown = !!dataToProcess.auth?.password;
             }
@@ -147,14 +136,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     useEffect(() => {
         const handler = setTimeout(() => {
             try {
-                // Persist the entire app state to localStorage.
-                // This ensures that authentication state is preserved across reloads and after imports.
                 localStorage.setItem(APP_DATA_KEY, JSON.stringify(data));
             } catch (error) {
                 console.error("Failed to save data to localStorage", error);
                 showToast("Could not save data. Storage may be full.", "error");
             }
-        }, 500); // Debounce save operation by 500ms
+        }, 500);
 
         return () => {
             clearTimeout(handler);
@@ -164,7 +151,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const addEntry = useCallback((entry: DailyEntry, overwrite = false): boolean => {
         const existingIndex = data.entries.findIndex(e => e.id === entry.id);
         if (existingIndex !== -1 && !overwrite) {
-            return false; // Indicates that overwrite confirmation is needed
+            return false;
         }
         
         setData(prevData => {
@@ -208,7 +195,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
     
     const updateAuth = useCallback((authData: AuthData) => {
-        // Asynchronously update auth data; the useEffect will handle saving.
         setData(prevData => ({ ...prevData, auth: authData }));
     }, []);
 
@@ -221,7 +207,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     contact: authData.contact || '',
                 }
             };
-            // Remove contact from auth data before saving to avoid duplication
             const { contact, ...restAuthData } = authData;
             return { 
                 ...prevData, 
@@ -253,49 +238,62 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const importData = useCallback((importedData: AppData) => {
         try {
             let finalData = importedData;
-            // Preserve authentication if the imported file doesn't have it
             if (!importedData.auth?.password) {
                 finalData = { ...importedData, auth: data.auth };
             }
-            // Persist synchronously to guarantee it's saved before reload.
             localStorage.setItem(APP_DATA_KEY, JSON.stringify(finalData));
-            
-            // Also update the state for consistency before the reload.
-            // This prevents a brief flash of old content if the component re-renders.
             setData(finalData);
-
             showToast('Data imported successfully! The app will now reload.', 'success');
-            // Reload the application to apply the new state cleanly from storage.
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
         } catch (error) {
             console.error("Failed to import data:", error);
-            showToast("Failed to import data. The file may be corrupt or storage is full.", "error");
+            showToast("Failed to import data.", "error");
         }
-    }, [data.auth, setData]);
+    }, [data.auth]);
 
     const resetData = useCallback(() => {
-        // Clear storage synchronously.
-        localStorage.removeItem(APP_DATA_KEY);
-        sessionStorage.removeItem('pm-poshan-auth');
-        
-        // The parent component shows a toast. We delay reload to ensure it's visible.
-        setTimeout(() => {
-            window.location.reload();
-        }, 1500);
+        setData(prev => ({
+            ...prev,
+            settings: DEFAULT_SETTINGS,
+            entries: [],
+            receipts: [],
+            monthlyBalances: {},
+            lastBackupDate: undefined,
+            welcomeScreenShown: false,
+        }));
+        showToast('Application reset successfully.', 'success');
     }, []);
 
+    const value: DataContextType = {
+        data,
+        setData,
+        addEntry,
+        deleteEntry,
+        addReceipt,
+        deleteReceipt,
+        updateSettings,
+        saveMonthlyBalance,
+        importData,
+        resetData,
+        updateLastBackupDate,
+        updateAuth,
+        setupAccountData,
+        markWelcomeAsShown,
+    };
+
     return (
-        <DataContext.Provider value={{ data, setData, addEntry, deleteEntry, addReceipt, deleteReceipt, updateSettings, saveMonthlyBalance, importData, resetData, updateLastBackupDate, updateAuth, setupAccountData, markWelcomeAsShown }}>
+        <DataContext.Provider value={value}>
             {children}
         </DataContext.Provider>
     );
 };
 
+// Custom hook to consume the data context throughout the app
 export const useData = () => {
     const context = useContext(DataContext);
-    if (!context) {
+    if (context === undefined) {
         throw new Error('useData must be used within a DataProvider');
     }
     return context;

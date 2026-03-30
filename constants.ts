@@ -15,12 +15,13 @@ export const CLASS_STRUCTURE: { id: string, name: string }[] = [
     { id: 'pp2', name: 'PP2' },
 ];
 
+// The static signup key required for new account creation
 export const SIGNUP_KEY = 'PM-POSHAN-2024';
 
 export const DEFAULT_SETTINGS: Settings = {
     schoolDetails: {
-        name: "Government Primary School",
-        udise: "01234567890",
+        name: "Government School",
+        udise: "",
         type: "Co-Educational",
         category: "Primary with Upper Primary",
         kitchenType: "School Kitchen",

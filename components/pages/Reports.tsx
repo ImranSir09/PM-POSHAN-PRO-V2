@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+
+import React, { useState, useMemo, useEffect } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
@@ -9,7 +10,6 @@ import PDFPreviewModal from '../ui/PDFPreviewModal';
 import { generatePDFReport } from '../../services/pdfGenerator';
 import { calculateMonthlySummary } from '../../services/summaryCalculator';
 import { Accordion, AccordionItem } from '../ui/Accordion';
-import Input from '../ui/Input';
 import NumberInput from '../ui/NumberInput';
 
 const reportDescriptions: Record<string, string> = {
@@ -18,16 +18,6 @@ const reportDescriptions: Record<string, string> = {
     daily_consumption: "Produces a detailed, register-style log of daily meals, attendance, and expenditure for the selected month.",
     rice_requirement: "Generates a formal certificate for the monthly rice requirement based on enrollment and working days.",
     yearly_consumption_detailed: "A comprehensive yearly report with category-wise monthly breakdowns of consumption, stock, and funds."
-};
-
-// Helper function to convert Blob to a Data URL for embedding
-const convertBlobToDataURL = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(blob);
-    });
 };
 
 type MdcfDataType = Partial<Pick<Settings, 'healthStatus' | 'inspectionReport' | 'cooks' | 'mmeExpenditure'>>;
@@ -67,6 +57,14 @@ const Reports: React.FC = () => {
     const [isMdcfModalOpen, setIsMdcfModalOpen] = useState(false);
     const [mdcfData, setMdcfData] = useState<MdcfDataType | null>(null);
 
+    // Clear cached report if parameters change to avoid confusion
+    useEffect(() => {
+        if (pdfPreviewData) {
+            URL.revokeObjectURL(pdfPreviewData.blobUrl);
+            setPdfPreviewData(null);
+        }
+    }, [reportType, selectedMonth, selectedFinancialYear]);
+
     const initiateReportGeneration = () => {
         if (reportType === 'mdcf') {
             setMdcfData({
@@ -80,7 +78,7 @@ const Reports: React.FC = () => {
         }
 
         const summary = calculateMonthlySummary(data, selectedMonth);
-        const { totals, closingBalance, monthEntries } = summary;
+        const { totals, monthEntries } = summary;
         
         let newSummary: Record<string, string | number> = {};
         const monthDate = new Date(`${selectedMonth}-02T00:00:00`);
@@ -123,13 +121,19 @@ const Reports: React.FC = () => {
         setIsGenerating(true);
         setTimeout(async () => {
             try {
+                // Revoke old URL if exists
+                if (pdfPreviewData) {
+                    URL.revokeObjectURL(pdfPreviewData.blobUrl);
+                }
+
                 const parameter = ['yearly_consumption_detailed'].includes(reportType) ? selectedFinancialYear : selectedMonth;
                 const { pdfBlob, filename } = generatePDFReport(reportType, data, parameter, overrideData);
 
-                const dataUrl = await convertBlobToDataURL(pdfBlob);
+                // Use Object URL instead of Data URL for better performance with large PDFs
+                const blobUrl = URL.createObjectURL(pdfBlob);
                 
                 setPdfPreviewData({ 
-                    blobUrl: dataUrl, 
+                    blobUrl: blobUrl, 
                     pdfBlob: pdfBlob, 
                     filename: filename,
                     generationData: overrideData,
@@ -138,7 +142,7 @@ const Reports: React.FC = () => {
                 if (!isPreviewOpen) setIsPreviewOpen(true);
                 showToast('Report generated successfully!', 'success');
             } catch (error: any) {
-                console.error("PDF generation or conversion failed:", error);
+                console.error("PDF generation failed:", error);
                 showToast(error.message || 'Failed to generate PDF report.', 'error');
             } finally {
                 setIsGenerating(false);
@@ -148,7 +152,7 @@ const Reports: React.FC = () => {
 
     const handleClosePreview = () => {
         setIsPreviewOpen(false);
-        setPdfPreviewData(null);
+        // Persist pdfPreviewData so it can be re-opened via the "View Last Report" button
     };
     
     const handleRegenerate = () => {
@@ -325,6 +329,16 @@ const Reports: React.FC = () => {
                         <Button onClick={initiateReportGeneration} className="w-full" disabled={isGenerating}>
                             Generate & Preview PDF
                         </Button>
+
+                        {pdfPreviewData && (
+                            <Button 
+                                variant="secondary" 
+                                onClick={() => setIsPreviewOpen(true)} 
+                                className="w-full mt-2"
+                            >
+                                View Last Report ({pdfPreviewData.filename})
+                            </Button>
+                        )}
                     </div>
                 </Card>
             </div>

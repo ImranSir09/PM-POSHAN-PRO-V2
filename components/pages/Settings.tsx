@@ -1,14 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
 import { Settings, SchoolDetails, Rates, Category, CookCumHelper, ClassRoll, MonthlyBalanceData, MDMIncharge, NotificationSettings, InspectionReport, InspectionAuthority } from '../../types';
-import { useToast } from '../../hooks/useToast';
 import { CLASS_STRUCTURE } from '../../constants';
 import { indianStates, jkDistrictsWithZones } from '../../data/locations';
-import { validateSettings } from '../../services/validator';
 import NumberInput from '../ui/NumberInput';
 import DataManagement from '../ui/DataManagement';
 
@@ -46,7 +44,6 @@ const SectionTotalRow: React.FC<{ label: string, totals: ReturnType<typeof calcu
 const SettingsPage: React.FC = () => {
     const { data, updateSettings } = useData();
     const [settings, setSettings] = useState<Settings>(data.settings);
-    const { showToast } = useToast();
     const [isUdiseValid, setIsUdiseValid] = useState(settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0);
     const [isRatesEditable, setIsRatesEditable] = useState(false);
 
@@ -183,23 +180,12 @@ const SettingsPage: React.FC = () => {
         setSettings(prev => ({ ...prev, inspectionReport: { ...prev.inspectionReport, [field]: finalValue } }));
     };
     
-    const handleSave = () => {
-        const validationErrors = validateSettings(settings);
-        
+    useEffect(() => {
         const isUdiseCorrectLength = settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0;
         setIsUdiseValid(isUdiseCorrectLength);
-        if (!isUdiseCorrectLength) {
-            validationErrors.push('UDISE code must be 11 digits long.');
-        }
-
-        if (validationErrors.length > 0) {
-            validationErrors.forEach(error => showToast(error, 'error'));
-            return;
-        }
-
+        
         updateSettings(settings);
-        showToast('Settings saved successfully!', 'success');
-    };
+    }, [settings, updateSettings]);
 
     const { middleClasses, primaryClasses, prePrimaryClasses, grandTotal } = useMemo(() => {
         const classOrder = CLASS_STRUCTURE.reduce((acc, c, index) => {
@@ -242,7 +228,7 @@ const SettingsPage: React.FC = () => {
     }, [settings.rates]);
 
     return (
-        <div className="pb-32">
+        <div className="pb-8">
             <div className="space-y-4">
                 <Accordion defaultOpenId="general">
                     <AccordionItem id="general" title="General & School Details">
@@ -699,11 +685,6 @@ const SettingsPage: React.FC = () => {
                         <DataManagement />
                     </AccordionItem>
                 </Accordion>
-            </div>
-            <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-amber-200/50 dark:border-white/20">
-                <div className="max-w-2xl mx-auto">
-                    <Button onClick={handleSave} className="w-full">Save All Settings</Button>
-                </div>
             </div>
         </div>
     );
