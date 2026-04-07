@@ -1,0 +1,24 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm install -g @pwabuilder/cli
+
+      - run: pwabuilder build https://imransir09.github.io/PM-POSHAN-PRO-V2/ --platform android --packageId com.pmposhan.pro --name "PM POSHAN PRO"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PM-POSHAN-APK
+          path: dist/android
