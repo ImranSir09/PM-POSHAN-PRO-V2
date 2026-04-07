@@ -10,8 +10,8 @@ const urlsToCache = [
   // Pre-caching only the entry points is a good strategy.
   '/index.tsx', 
   '/manifest.json',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg',
+  '/icon-192.png',
+  '/icon-512.png',
   // Critical CDNs
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
