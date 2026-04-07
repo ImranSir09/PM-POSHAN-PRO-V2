@@ -1,0 +1,9 @@
+MANUAL PATCH
+
+1. open App.tsx
+2. add import
+import InstallFAB from './components/ui/InstallFAB';
+
+3. inside AuthenticatedApp return, before </NotificationProvider>
+add
+<InstallFAB />
