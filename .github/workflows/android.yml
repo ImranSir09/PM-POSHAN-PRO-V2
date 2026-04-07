@@ -18,6 +18,11 @@ steps:
   - name: Install Bubblewrap
     run: npm install -g @bubblewrap/cli
 
+  - name: Install Chrome
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y google-chrome-stable
+
   - name: Build APK
     run: |
       bubblewrap build \
