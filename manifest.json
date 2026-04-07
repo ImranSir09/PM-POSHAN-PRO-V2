@@ -3,7 +3,7 @@
   "name": "PM Poshan Pro",
   "short_name": "PoshanPro",
   "description": "A comprehensive, offline-first, mobile-friendly web application for managing and tracking PM-POSHAN (Mid-Day Meal) consumption in schools.",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f8fafc",
