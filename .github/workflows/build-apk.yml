@@ -1,24 +1,37 @@
-name: Build Android APK
+name: Build APK
 
 on:
-  workflow_dispatch:
+workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+steps:
+  - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
+  - uses: actions/setup-node@v4
+    with:
+      node-version: 18
 
-      - run: npm install -g @pwabuilder/cli
+  - uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: 17
 
-      - run: pwabuilder build https://imransir09.github.io/PM-POSHAN-PRO-V2/ --platform android --packageId com.pmposhan.pro --name "PM POSHAN PRO"
+  - name: Install Bubblewrap
+    run: npm install -g @bubblewrap/cli
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: PM-POSHAN-APK
-          path: dist/android
+  - name: Init TWA
+    run: bubblewrap init --manifest=https://imransir09.github.io/PM-POSHAN-PRO-V2/manifest.json --directory=twa --skipPwaValidation --nonInteractive
+
+  - name: Build APK
+    run: |
+      cd twa
+      bubblewrap build --skipPwaValidation
+
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: pm-poshan-apk
+      path: twa/app/build/outputs/apk/release/*.apk
