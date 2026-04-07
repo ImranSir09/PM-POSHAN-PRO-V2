@@ -1,12 +1,15 @@
 {
-  "id": "/PM-POSHAN-PRO-V2/",
+  "id": "pm-poshan-pro",
   "name": "PM Poshan Pro",
   "short_name": "PoshanPro",
   "description": "Offline PM POSHAN Mid Day Meal management system",
-  "start_url": "/PM-POSHAN-PRO-V2/",
+
+  "start_url": "/PM-POSHAN-PRO-V2/index.html",
   "scope": "/PM-POSHAN-PRO-V2/",
+
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": ["fullscreen", "standalone"],
+
   "orientation": "portrait",
   "background_color": "#f8fafc",
   "theme_color": "#0ea5e9",
