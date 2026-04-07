@@ -1,0 +1,34 @@
+name: Build APK via PWABuilder
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Android APK
+        run: |
+          curl -X POST https://pwabuilder-api.azurewebsites.net/api/buildandroid \
+          -H "Content-Type: application/json" \
+          -d '{
+            "url": "https://imransir09.github.io/PM-POSHAN-PRO-V2/",
+            "packageId": "com.imran.poshan",
+            "name": "PM Poshan Pro",
+            "launcherName": "PM Poshan",
+            "display": "standalone",
+            "orientation": "portrait"
+          }' -o build.zip
+
+      - name: Unzip
+        run: unzip build.zip -d output
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pm-poshan-apk
+          path: output/**/*.apk
