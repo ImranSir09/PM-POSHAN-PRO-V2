@@ -5,10 +5,10 @@ Offline ready PM POSHAN Mid Day Meal management system for schools. Designed for
 Screenshots
 
 Daily Entry
-![Daily Entry](screenshot1.png)
+![Daily Entry](public/screenshot1.png)
 
 Reports Export
-![Reports](screenshot2.png)
+![Reports](public/screenshot2.png)
 
 Features
 
