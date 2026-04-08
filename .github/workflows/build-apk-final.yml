@@ -23,8 +23,10 @@ jobs:
         run: npm install -g @bubblewrap/cli
 
       - name: Init TWA
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
         run: |
-          echo "n" | bubblewrap init \
+          bubblewrap init \
           --manifest=https://imransir09.github.io/PM-POSHAN-PRO-V2/manifest.json \
           --directory=twa \
           --packageId=com.pmposhan.pro \
@@ -36,7 +38,8 @@ jobs:
           --themeColor=#0ea5e9 \
           --backgroundColor=#f8fafc \
           --skipPwaValidation \
-          --nonInteractive
+          --nonInteractive \
+          --jdkPath=$JAVA_HOME
 
       - name: Build APK
         run: |
