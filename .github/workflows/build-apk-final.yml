@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      CI: true
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,10 +26,8 @@ jobs:
         run: npm install -g @bubblewrap/cli
 
       - name: Init TWA
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_17_X64 }}
         run: |
-          bubblewrap init \
+          yes | bubblewrap init \
           --manifest=https://imransir09.github.io/PM-POSHAN-PRO-V2/manifest.json \
           --directory=twa \
           --packageId=com.pmposhan.pro \
@@ -35,11 +36,8 @@ jobs:
           --launcherName="PM Poshan Pro" \
           --display=standalone \
           --orientation=portrait \
-          --themeColor=#0ea5e9 \
-          --backgroundColor=#f8fafc \
           --skipPwaValidation \
-          --nonInteractive \
-          --jdkPath=$JAVA_HOME
+          --nonInteractive
 
       - name: Build APK
         run: |
