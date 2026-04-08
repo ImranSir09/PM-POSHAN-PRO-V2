@@ -1,7 +1,8 @@
 // auto service worker for PM POSHAN PRO
+
 const CACHE_NAME = "pm-poshan-pro-v1";
 
-const ASSETS = [
+const urlsToCache = [
   "./",
   "./index.html",
   "./manifest.json",
@@ -10,41 +11,49 @@ const ASSETS = [
   "./screenshot1.png"
 ];
 
-self.addEventListener("install", e => {
+// install
+self.addEventListener("install", event => {
   self.skipWaiting();
-  e.waitUntil(
+  event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS);
+      return cache.addAll(urlsToCache);
     })
   );
 });
 
-self.addEventListener("activate", e => {
+// activate
+self.addEventListener("activate", event => {
   self.clients.claim();
-  e.waitUntil(
+  event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.map(k => {
-          if (k !== CACHE_NAME) return caches.delete(k);
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
         })
       )
     )
   );
 });
 
-self.addEventListener("fetch", e => {
-  if (e.request.method !== "GET") return;
+// fetch
+self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
 
-  e.respondWith(
-    caches.match(e.request).then(res => {
-      return (
-        res ||
-        fetch(e.request).then(fetchRes => {
-          const clone = fetchRes.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-          return fetchRes;
-        })
-      );
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      if (response) return response;
+
+      return fetch(event.request).then(networkResponse => {
+        const clone = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, clone);
+        });
+        return networkResponse;
+      }).catch(() => {
+        return caches.match("./index.html");
+      });
     })
   );
 });
