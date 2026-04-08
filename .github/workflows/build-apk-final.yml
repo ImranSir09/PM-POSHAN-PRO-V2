@@ -1,4 +1,4 @@
-name: Build APK Final
+name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -22,19 +22,24 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install dependencies
-        run: |
-          npm install -g @bubblewrap/cli
-          sudo apt-get update
-          sudo apt-get install -y jq
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
 
       - name: Init TWA
         run: |
           bubblewrap init \
-            --manifest=https://imransir09.github.io/PM-POSHAN-PRO-V2/manifest.json \
-            --directory=twa \
-            --skipPwaValidation \
-            --nonInteractive
+          --manifest=https://imransir09.github.io/PM-POSHAN-PRO-V2/manifest.json \
+          --directory=twa \
+          --packageId=com.pmposhan.pro \
+          --host=imransir09.github.io \
+          --name="PM Poshan Pro" \
+          --launcherName="PM Poshan Pro" \
+          --display=standalone \
+          --orientation=portrait \
+          --themeColor=#0ea5e9 \
+          --backgroundColor=#f8fafc \
+          --skipPwaValidation \
+          --nonInteractive
 
       - name: Build APK
         run: |
