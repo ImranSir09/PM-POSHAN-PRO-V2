@@ -8,26 +8,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Build Android APK
+      - name: Request build
         run: |
-          curl -X POST https://pwabuilder-api.azurewebsites.net/api/buildandroid \
+          curl -L -X POST "https://pwabuilder.com/api/build" \
           -H "Content-Type: application/json" \
           -d '{
-            "url": "https://imransir09.github.io/PM-POSHAN-PRO-V2/",
-            "packageId": "com.imran.poshan",
-            "name": "PM Poshan Pro",
-            "launcherName": "PM Poshan",
-            "display": "standalone",
-            "orientation": "portrait"
-          }' -o build.zip
+            "url":"https://imransir09.github.io/PM-POSHAN-PRO-V2/",
+            "platform":"android",
+            "packageId":"com.imran.poshan",
+            "name":"PM Poshan Pro",
+            "launcherName":"PM Poshan Pro"
+          }' \
+          -o build.zip
 
-      - name: Unzip
+      - name: unzip
         run: unzip build.zip -d output
 
-      - name: Upload APK
+      - name: upload
         uses: actions/upload-artifact@v4
         with:
           name: pm-poshan-apk
