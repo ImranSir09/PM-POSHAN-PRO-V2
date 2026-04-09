@@ -1,9 +1,8 @@
-const CACHE_NAME = "pm-poshan-pro-v5";
+const CACHE_NAME = "pm-poshan-pro-v6";
 
 const urlsToCache = [
 "./",
 "./index.html",
-"./manifest.json",
 "./icon-192.png",
 "./icon-512.png",
 "./screenshot1.png"
