@@ -48,9 +48,14 @@ const SetupPage: React.FC = () => {
         terms: '',
     });
 
-    const isKeyValid = useMemo(() => {
-        return signupKeyInput.trim() === SIGNUP_KEY;
-    }, [signupKeyInput]);
+    const VALID_KEYS = [
+"SENZI001",
+"SENZI002"
+];
+
+const isKeyValid = useMemo(() => {
+return VALID_KEYS.includes(signupKeyInput.trim());
+}, [signupKeyInput]);
 
     const validate = useCallback((fieldName?: keyof typeof errors) => {
         const newErrors = { ...errors };
