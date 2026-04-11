@@ -1,19 +1,19 @@
 {
   "users": [
     {
-      "key": "PM-POSHAN-2024",
+      "key": "SENZI001",
       "name": "Middle School Senzi",
       "active": true,
       "expiry": "2046-12-31"
     },
     {
-      "key": "MSGBGB01",
+      "key": "SENZI002",
       "name": "Middle School Gujjar Basti",
       "active": true,
       "expiry": "2029-12-31"
     },
     {
-      "key": "TRIAL003",
+      "key": "SENZI003",
       "name": "Trial User",
       "active": false,
       "expiry": "2025-12-31"
