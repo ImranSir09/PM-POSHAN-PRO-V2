@@ -48,14 +48,41 @@ const SetupPage: React.FC = () => {
         terms: '',
     });
 
-    const VALID_KEYS = [
-"SENZI001",
-"SENZI002",
-"SENZI003"
-];
+    const [isKeyValid, setIsKeyValid] = useState(false);
 
-const isKeyValid = useMemo(() => {
-return VALID_KEYS.includes(signupKeyInput.trim());
+useEffect(() => {
+if (!signupKeyInput) return;
+
+fetch("https://sheetdb.io/api/v1/4lvgbdscalcp3")
+.then(res => res.json())
+.then(data => {
+
+const user = data.find(
+(u:any) =>
+u.key === signupKeyInput.trim() &&
+u.active === "true"
+);
+
+if (!user) {
+setIsKeyValid(false);
+return;
+}
+
+if (user.expiry) {
+const today = new Date();
+const expiry = new Date(user.expiry);
+
+if (today > expiry) {
+setIsKeyValid(false);
+return;
+}
+}
+
+setIsKeyValid(true);
+
+})
+.catch(() => setIsKeyValid(false));
+
 }, [signupKeyInput]);
 
     const validate = useCallback((fieldName?: keyof typeof errors) => {
