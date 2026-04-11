@@ -50,7 +50,8 @@ const SetupPage: React.FC = () => {
 
     const VALID_KEYS = [
 "SENZI001",
-"SENZI002"
+"SENZI002",
+"SENZI003"
 ];
 
 const isKeyValid = useMemo(() => {
