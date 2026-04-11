@@ -1,4 +1,4 @@
-const CACHE_NAME = "pm-poshan-pro-v9";
+const CACHE_NAME = "pm-poshan-pro-v10";
 
 const urlsToCache = [
 "./",
