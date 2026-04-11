@@ -59,7 +59,7 @@ fetch("https://sheetdb.io/api/v1/4lvgbdscalcp3?token=xqqd6vt05jo3b0cdpgfgiukj4yy
 
 const user = data.find(
 (u:any) =>
-u.key === signupKeyInput.trim() &&
+u.key.toUpperCase() === signupKeyInput.trim().toUpperCase() &&
 u.active === "TRUE"
 );
 
