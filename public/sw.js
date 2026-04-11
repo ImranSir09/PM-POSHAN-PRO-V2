@@ -1,4 +1,4 @@
-const CACHE_NAME = "pm-poshan-pro-v8";
+const CACHE_NAME = "pm-poshan-pro-v9";
 
 const urlsToCache = [
 "./",
@@ -31,7 +31,18 @@ return caches.delete(key);
 });
 
 self.addEventListener("fetch", event => {
+
 if (event.request.method !== "GET") return;
+
+if (event.request.url.includes("manifest.json")) return;
+
+if (event.request.mode === "navigate") {
+event.respondWith(
+fetch(event.request)
+.catch(() => caches.match("./index.html"))
+);
+return;
+}
 
 event.respondWith(
 caches.match(event.request).then(response => {
@@ -43,8 +54,9 @@ caches.open(CACHE_NAME).then(cache => {
 cache.put(event.request, clone);
 });
 return networkResponse;
-}).catch(() => caches.match("./index.html"))
+})
 );
 })
 );
+
 });
