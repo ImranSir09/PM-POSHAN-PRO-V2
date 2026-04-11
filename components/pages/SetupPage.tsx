@@ -53,7 +53,7 @@ const SetupPage: React.FC = () => {
 useEffect(() => {
 if (!signupKeyInput) return;
 
-fetch("https://sheetdb.io/api/v1/4lvgbdscalcp3")
+fetch("https://sheetdb.io/api/v1/4lvgbdscalcp3?token=xqqd6vt05jo3b0cdpgfgiukj4yye99po0wlqpo38")
 .then(res => res.json())
 .then(data => {
 
