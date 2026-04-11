@@ -60,7 +60,7 @@ fetch("https://sheetdb.io/api/v1/4lvgbdscalcp3?token=xqqd6vt05jo3b0cdpgfgiukj4yy
 const user = data.find(
 (u:any) =>
 u.key === signupKeyInput.trim() &&
-u.active === "true"
+u.active === "TRUE"
 );
 
 if (!user) {
@@ -68,7 +68,6 @@ setIsKeyValid(false);
 return;
 }
 
-if (user.expiry) {
 const today = new Date();
 const expiry = new Date(user.expiry);
 
@@ -76,9 +75,18 @@ if (today > expiry) {
 setIsKeyValid(false);
 return;
 }
+
+const saved = localStorage.getItem("device_key");
+
+if (saved && saved !== user.key) {
+setIsKeyValid(false);
+return;
 }
 
+localStorage.setItem("device_key", user.key);
+
 setIsKeyValid(true);
+localStorage.setItem("pm_user", JSON.stringify(user));
 
 })
 .catch(() => setIsKeyValid(false));
