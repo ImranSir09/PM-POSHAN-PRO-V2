@@ -1,12 +1,13 @@
 const CACHE_NAME = "pm-poshan-pro-v16";
 
 const urlsToCache = [
-"./",
-"./index.html",
-"./public/icon-192.png",
-"./public/icon-512.png",
-"./public/maskable-192.png",
-"./public/maskable-512.png"
+"/PM-POSHAN-PRO-V2/",
+"/PM-POSHAN-PRO-V2/index.html",
+"/PM-POSHAN-PRO-V2/public/icon-192.png",
+"/PM-POSHAN-PRO-V2/public/icon-512.png",
+"/PM-POSHAN-PRO-V2/public/maskable-192.png",
+"/PM-POSHAN-PRO-V2/public/maskable-512.png",
+"/PM-POSHAN-PRO-V2/public/manifest.json"
 ];
 
 self.addEventListener("install", event => {
@@ -40,7 +41,7 @@ if (event.request.url.includes("manifest.json")) return;
 if (event.request.mode === "navigate") {
 event.respondWith(
 fetch(event.request)
-.catch(() => caches.match("./index.html"))
+.catch(() => caches.match("/PM-POSHAN-PRO-V2/index.html"))
 );
 return;
 }
