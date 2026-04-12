@@ -4,9 +4,9 @@
   <head>
     <meta charset="UTF-8" />
 
-<link rel="icon" href="./public/icon-192.png">
-<link rel="apple-touch-icon" href="./public/icon-512.png">
-<link rel="manifest" href="./public/manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-512.png">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0ea5e9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -173,7 +173,7 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./public/sw.js').then(registration => {
+          navigator.serviceWorker.register('./sw.js').then(registration => {
             console.log('SW registered: ', registration);
           }).catch(registrationError => {
             console.log('SW registration failed: ', registrationError);
