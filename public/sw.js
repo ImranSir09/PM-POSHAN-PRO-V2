@@ -38,7 +38,7 @@ if (event.request.url.includes("manifest.json")) return;
 if (event.request.mode === "navigate") {
 event.respondWith(
 fetch(event.request)
-.caches.match("/PM-POSHAN-PRO-V2/"))
+.catch(() => caches.match("/PM-POSHAN-PRO-V2/"))
 );
 return;
 }
