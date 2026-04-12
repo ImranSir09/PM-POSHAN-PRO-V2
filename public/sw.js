@@ -3,10 +3,10 @@ const CACHE_NAME = "pm-poshan-pro-v12";
 const urlsToCache = [
 "/PM-POSHAN-PRO-V2/",
 "/PM-POSHAN-PRO-V2/index.html",
-"PM-POSHAN-PRO-V2/public/icon-192.png",
-"PM-POSHAN-PRO-V2/public/icon-512.png",
-"PM-POSHAN-PRO-V2/public/maskable-192.png",
-"PM-POSHAN-PRO-V2/public/maskable-512.png
+"/PM-POSHAN-PRO-V2/public/icon-192.png",
+"/PM-POSHAN-PRO-V2/public/icon-512.png",
+"/PM-POSHAN-PRO-V2/public/maskable-192.png",
+"/PM-POSHAN-PRO-V2/public/maskable-512.png"
 ];
 
 self.addEventListener("install", event => {
