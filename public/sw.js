@@ -1,9 +1,8 @@
-const CACHE_NAME = "pm-poshan-pro-v10";
+const CACHE_NAME = "pm-poshan-pro-v11";
 
 const urlsToCache = [
-"./",
-"./index.html",
 "/PM-POSHAN-PRO-V2/",
+"/PM-POSHAN-PRO-V2/index.html",
 "./icon-192.png",
 "./icon-512.png"
 ];
@@ -39,7 +38,7 @@ if (event.request.url.includes("manifest.json")) return;
 if (event.request.mode === "navigate") {
 event.respondWith(
 fetch(event.request)
-.catch(() => caches.match("./index.html"))
+.caches.match("/PM-POSHAN-PRO-V2/"))
 );
 return;
 }
