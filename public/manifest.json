@@ -1,11 +1,11 @@
 {
-"id": "/PM-POSHAN-PRO-V2/",
+"id": "./",
 "name": "PM Poshan Pro",
 "short_name": "PoshanPro",
 "description": "Offline PM POSHAN Mid Day Meal management system",
 
-"start_url": "/PM-POSHAN-PRO-V2/",
-"scope": "/PM-POSHAN-PRO-V2/",
+"start_url": "./",
+"scope": "./",
 
 "display": "standalone",
 "orientation": "portrait",
@@ -18,25 +18,25 @@
 
 "icons": [
 {
-"src": "/PM-POSHAN-PRO-V2/public/icon-192.png",
+"src": "./icon-192.png",
 "sizes": "192x192",
 "type": "image/png",
 "purpose": "any"
 },
 {
-"src": "/PM-POSHAN-PRO-V2/public/icon-512.png",
+"src": "./icon-512.png",
 "sizes": "512x512",
 "type": "image/png",
 "purpose": "any"
 },
 {
-"src": "/PM-POSHAN-PRO-V2/public/maskable-192.png",
+"src": "./maskable-192.png",
 "sizes": "192x192",
 "type": "image/png",
 "purpose": "maskable"
 },
 {
-"src": "/PM-POSHAN-PRO-V2/public/maskable-512.png",
+"src": "./maskable-512.png",
 "sizes": "512x512",
 "type": "image/png",
 "purpose": "maskable"
