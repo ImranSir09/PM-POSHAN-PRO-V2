@@ -1,4 +1,4 @@
-const CACHE_NAME = "pm-poshan-pro-v25";
+const CACHE_NAME = "pm-poshan-pro-v26";
 
 const urlsToCache = [
 "../",
@@ -7,11 +7,7 @@ const urlsToCache = [
 "../icon-192.png",
 "../icon-512.png",
 "../maskable-192.png",
-"../maskable-512.png",
-
-"https://cdn.tailwindcss.com",
-"https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
-"https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"
+"../maskable-512.png"
 ];
 
 self.addEventListener("install", event => {
@@ -36,21 +32,21 @@ if (event.request.method !== "GET") return;
 
 if (event.request.mode === "navigate") {
 event.respondWith(
-fetch(event.request).catch(() => caches.match("./index.html"))
+fetch(event.request).catch(() => caches.match("../index.html"))
 );
 return;
 }
 
 event.respondWith(
-caches.match(event.request).then(response => {
-return response || fetch(event.request).then(networkResponse => {
-const clone = networkResponse.clone();
+fetch(event.request)
+.then(response => {
+const clone = response.clone();
 caches.open(CACHE_NAME).then(cache => {
 cache.put(event.request, clone);
 });
-return networkResponse;
-});
+return response;
 })
+.catch(() => caches.match(event.request))
 );
 
 });
