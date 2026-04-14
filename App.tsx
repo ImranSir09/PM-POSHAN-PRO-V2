@@ -19,7 +19,7 @@ import Modal from './components/ui/Modal';
 import Button from './components/ui/Button';
 import { Page } from './types';
 
-const App: React.FC = () => {
+const App = () => {
     return (
         <ThemeProvider>
             <DataProvider>
@@ -31,7 +31,7 @@ const App: React.FC = () => {
     );
 };
 
-const AppContent: React.FC = () => {
+const AppContent = () => {
     const { data } = useData();
     const { isAuthenticated } = useAuth();
     
@@ -73,7 +73,7 @@ const AppContent: React.FC = () => {
     return <AuthenticatedApp />;
 };
 
-const AuthenticatedApp: React.FC = () => {
+const AuthenticatedApp = () => {
     const [currentPage, setCurrentPage] = useState<Page>(() => {
         const initialPage = sessionStorage.getItem('initialPage') as Page | null;
         if (initialPage === 'settings') {
