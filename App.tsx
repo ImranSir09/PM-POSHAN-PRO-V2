@@ -1,23 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
-import { DataProvider, useData } from './hooks/useData';
-import { ThemeProvider } from './hooks/useTheme';
-import { NotificationProvider } from './hooks/useNotifications';
-import { AuthProvider, useAuth } from './hooks/useAuth';
-import Dashboard from './components/pages/Dashboard';
-import MonthlySummary from './components/pages/MonthlySummary';
-import Receipts from './components/pages/Receipts';
-import Settings from './components/pages/Settings';
-import Reports from './components/pages/Reports';
-import Header from './components/layout/Header';
-import Navigation from './components/layout/Navigation';
-import ToastContainer from './components/ui/ToastContainer';
-import LoginPage from './components/pages/LoginPage';
-import SetupPage from './components/pages/SetupPage';
-import WelcomePage from './components/pages/WelcomePage';
-import Modal from './components/ui/Modal';
-import Button from './components/ui/Button';
-import { Page } from './types';
+import { DataProvider, useData } from './hooks/useData.tsx';
+import { ThemeProvider } from './hooks/useTheme.tsx';
+import { NotificationProvider } from './hooks/useNotifications.tsx';
+import { AuthProvider, useAuth } from './hooks/useAuth.tsx';
+import Dashboard from './components/pages/Dashboard.tsx';
+import MonthlySummary from './components/pages/MonthlySummary.tsx';
+import Receipts from './components/pages/Receipts.tsx';
+import Settings from './components/pages/Settings.tsx';
+import Reports from './components/pages/Reports.tsx';
+import Header from './components/layout/Header.tsx';
+import Navigation from './components/layout/Navigation.tsx';
+import ToastContainer from './components/ui/ToastContainer.tsx';
+import LoginPage from './components/pages/LoginPage.tsx';
+import SetupPage from './components/pages/SetupPage.tsx';
+import WelcomePage from './components/pages/WelcomePage.tsx';
+import Modal from './components/ui/Modal.tsx';
+import Button from './components/ui/Button.tsx';
+import { Page } from './types.tsx';
 
 const App: React.FC = () => {
     return (
