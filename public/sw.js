@@ -3,7 +3,6 @@ const CACHE_NAME = "pm-poshan-pro-v24";
 const urlsToCache = [
 "../",
 "../index.html",
-"../index.tsx",
 "../manifest.json",
 "../icon-192.png",
 "../icon-512.png",
@@ -40,7 +39,7 @@ response || fetch(event.request).then(networkResponse => {
 const clone = networkResponse.clone();
 caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
 return networkResponse;
-}).catch(() => caches.match("../index.html"))
+}).catch(() => caches.match("./index.html"))
 )
 );
 });
