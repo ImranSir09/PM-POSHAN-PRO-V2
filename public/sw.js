@@ -1,4 +1,4 @@
-const CACHE_NAME = "pm-poshan-pro-v19";
+const CACHE_NAME = "pm-poshan-pro-v20";
 
 const urlsToCache = [
 "./",
@@ -37,26 +37,21 @@ self.addEventListener("fetch", event => {
 if (event.request.method !== "GET") return;
 
 event.respondWith(
-caches.match(event.request).then(response => {
+fetch(event.request)
+.then(response => {
 
-return response || fetch(event.request).then(networkResponse => {
-
-const clone = networkResponse.clone();
-
+const clone = response.clone();
 caches.open(CACHE_NAME).then(cache => {
 cache.put(event.request, clone);
 });
 
-return networkResponse;
+return response;
 
-}).catch(() => {
-
-if (event.request.mode === "navigate") {
-return caches.match("./index.html");
-}
-
+})
+.catch(() => {
+return caches.match(event.request).then(response => {
+return response || caches.match("./index.html");
 });
-
 })
 );
 
