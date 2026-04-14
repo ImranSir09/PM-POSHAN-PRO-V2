@@ -1,23 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
-import { DataProvider, useData } from './hooks/useData.tsx';
-import { ThemeProvider } from './hooks/useTheme.tsx';
-import { NotificationProvider } from './hooks/useNotifications.tsx';
-import { AuthProvider, useAuth } from './hooks/useAuth.tsx';
-import Dashboard from './components/pages/Dashboard.tsx';
-import MonthlySummary from './components/pages/MonthlySummary.tsx';
-import Receipts from './components/pages/Receipts.tsx';
-import Settings from './components/pages/Settings.tsx';
-import Reports from './components/pages/Reports.tsx';
-import Header from './components/layout/Header.tsx';
-import Navigation from './components/layout/Navigation.tsx';
-import ToastContainer from './components/ui/ToastContainer.tsx';
-import LoginPage from './components/pages/LoginPage.tsx';
-import SetupPage from './components/pages/SetupPage.tsx';
-import WelcomePage from './components/pages/WelcomePage.tsx';
-import Modal from './components/ui/Modal.tsx';
-import Button from './components/ui/Button.tsx';
-import { Page } from './types.tsx';
+import { DataProvider, useData } from './hooks/useData';
+import { ThemeProvider } from './hooks/useTheme';
+import { NotificationProvider } from './hooks/useNotifications';
+import { AuthProvider, useAuth } from './hooks/useAuth';
+import Dashboard from './components/pages/Dashboard';
+import MonthlySummary from './components/pages/MonthlySummary';
+import Receipts from './components/pages/Receipts';
+import Settings from './components/pages/Settings';
+import Reports from './components/pages/Reports';
+import Header from './components/layout/Header';
+import Navigation from './components/layout/Navigation';
+import ToastContainer from './components/ui/ToastContainer';
+import LoginPage from './components/pages/LoginPage';
+import SetupPage from './components/pages/SetupPage';
+import WelcomePage from './components/pages/WelcomePage';
+import Modal from './components/ui/Modal';
+import Button from './components/ui/Button';
+import { Page } from './types';
 
 const App: React.FC = () => {
     return (
@@ -105,20 +105,10 @@ const AuthenticatedApp: React.FC = () => {
     return (
         <NotificationProvider setCurrentPage={setCurrentPage}>
             <div className="min-h-screen text-slate-800 dark:text-slate-200 font-sans">
-                {/* Background Blobs Layer */}
-                <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
-                    <div className="animated-blob blob-1 bg-sky-300 dark:bg-sky-900"></div>
-                    <div className="animated-blob blob-2 bg-teal-300 dark:bg-teal-900"></div>
+                {/* Clean Background Layer */}
+                <div className="fixed inset-0 z-0 bg-slate-50 dark:bg-slate-950">
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-slate-50 to-slate-50 dark:from-indigo-900/20 dark:via-slate-950 dark:to-slate-950"></div>
                 </div>
-
-                {/* Background Illustration Layer */}
-                <div
-                    aria-hidden="true"
-                    className="fixed inset-0 z-0 opacity-10 dark:opacity-[0.02] bg-repeat"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2394a3b8' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    }}
-                ></div>
                 
                 {/* Fixed Header Layer */}
                 <div className="fixed top-0 left-0 right-0 z-20">
@@ -147,11 +137,11 @@ const AuthenticatedApp: React.FC = () => {
                         </svg>
                     </div>
                     <p className="text-slate-600 dark:text-slate-300">
-                        For continuation of services, pay <strong className="text-slate-800 dark:text-white">₹299 annually</strong> through UPI on given details.
+                        Please pay a minimum of <strong className="text-slate-800 dark:text-white">₹100/annually</strong> for the continuation of the service.
                     </p>
-                    <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg w-full border border-slate-200 dark:border-slate-700">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl w-full border border-slate-100 dark:border-slate-800">
                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Pay via UPI to:</p>
-                        <p className="text-lg font-mono font-bold text-sky-700 dark:text-sky-400">+919596555467</p>
+                        <p className="text-lg font-mono font-semibold text-indigo-700 dark:text-indigo-400">+919596555467</p>
                     </div>
                     <Button onClick={handleClosePaymentModal} className="w-full mt-2">
                         I Understand

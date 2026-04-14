@@ -11,30 +11,30 @@ const IllustrationCard: React.FC<IllustrationCardProps> = ({ inchargeName, incha
     const showInchargeDetails = inchargeName && inchargeName.trim() !== '';
 
     return (
-        <Card className="!p-0 overflow-hidden relative bg-gradient-to-br from-sky-500 to-teal-400 dark:from-slate-900 dark:to-sky-900">
-            <div className="p-4 relative z-10">
+        <Card className="!p-0 overflow-hidden relative bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-slate-900 dark:to-indigo-950 shadow-md">
+            <div className="p-5 relative z-10">
                 <div className="flex justify-between items-start">
                     <div>
-                        <h2 className="text-lg font-bold text-white">Welcome!</h2>
-                        <p className="text-sm text-sky-100 dark:text-slate-300 max-w-xs">
+                        <h2 className="text-xl font-bold text-white tracking-tight">Welcome!</h2>
+                        <p className="text-sm text-indigo-100 dark:text-slate-300 max-w-xs mt-1 font-medium">
                             Nourishing the Future, One Meal at a Time.
                         </p>
                     </div>
                      {showInchargeDetails && (
-                        <div className="text-right text-xs flex-shrink-0 ml-2">
+                        <div className="text-right text-xs flex-shrink-0 ml-4 bg-white/10 dark:bg-slate-900/50 backdrop-blur-sm p-2 rounded-lg border border-white/20 dark:border-slate-700/50">
                             <p className="font-semibold text-white truncate">{inchargeName}</p>
-                            <p className="text-sky-200 dark:text-slate-400">MDM Incharge</p>
-                            {inchargeContact && <p className="text-sky-200 dark:text-slate-400">{inchargeContact}</p>}
+                            <p className="text-indigo-200 dark:text-slate-400">MDM Incharge</p>
+                            {inchargeContact && <p className="text-indigo-200 dark:text-slate-400">{inchargeContact}</p>}
                         </div>
                     )}
                 </div>
             </div>
-            <div className="absolute inset-0 z-0 opacity-20 dark:opacity-40">
+            <div className="absolute inset-0 z-0 opacity-20 dark:opacity-30">
                 <svg width="100%" height="100%" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style={{ stopColor: '#0ea5e9', stopOpacity: 1 }} />
-                            <stop offset="100%" style={{ stopColor: '#2dd4bf', stopOpacity: 0.2 }} />
+                            <stop offset="0%" style={{ stopColor: '#818cf8', stopOpacity: 1 }} />
+                            <stop offset="100%" style={{ stopColor: '#c084fc', stopOpacity: 0.2 }} />
                         </linearGradient>
                          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                             <feGaussianBlur stdDeviation="3" result="coloredBlur"/>

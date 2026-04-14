@@ -1,41 +1,20 @@
-PM Poshan Pro
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-Offline ready PM POSHAN Mid Day Meal management system for schools. Designed for fast daily entry and official report export.
+# Run and deploy your AI Studio app
 
-Screenshots
+This contains everything you need to run your app locally.
 
-Daily Entry
-![Daily Entry](public/screenshot1.png)
+View your app in AI Studio: https://ai.studio/apps/ca63c6ea-afdc-41b8-a1e9-4c39ab809a74
 
-Reports Export
-![Reports](public/screenshot2.png)
+## Run Locally
 
-Features
+**Prerequisites:**  Node.js
 
-• Daily attendance entry
-• Auto calculated rice consumption
-• Dal, veg, oil cost calculation
-• Monthly Data Collection Format export
-• Roll statement export
-• Daily consumption register
-• Rice requirement certificate
-• Yearly consumption report
-• Offline support
-• Mobile friendly design
 
-Use Case
-
-Designed for schools to manage PM POSHAN records digitally and generate official reports instantly.
-
-Tech
-
-HTML
-CSS
-JavaScript
-LocalStorage
-
-Author
-
-Emraan Mugloo
-
-This will make your repo look professional immediately.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

@@ -47,11 +47,11 @@ const Header: React.FC = () => {
                     aria-hidden="true"
                 />
             )}
-            <header className="relative z-40 flex items-center justify-between p-3 bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl border border-slate-200/50 dark:border-white/20 shadow-md">
+            <header className="relative z-40 flex items-center justify-between p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
                 <div className="flex items-center space-x-2 sm:space-x-3">
                     <div className="overflow-hidden">
                         <h1 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">{data.settings.schoolDetails.name}</h1>
-                        <p className="text-xs text-slate-500 dark:text-slate-300 truncate">PM Poshan Pro</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">PM Poshan Pro</p>
                     </div>
                 </div>
                 <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">

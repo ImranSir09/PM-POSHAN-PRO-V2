@@ -112,7 +112,7 @@ const DataManagement: React.FC = () => {
                         Please review the details from the file before importing.
                         <strong className="block mt-1 text-yellow-600 dark:text-yellow-400">Warning: This will overwrite all current application data.</strong>
                     </p>
-                    <div className="text-sm space-y-2 bg-slate-100/40 dark:bg-slate-800/50 p-3 rounded-lg">
+                    <div className="text-sm space-y-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 p-4 rounded-xl">
                         <p><strong>School Name:</strong> {importConfirmation?.summary.schoolName}</p>
                         <p><strong>UDISE:</strong> {importConfirmation?.summary.udise}</p>
                         <p><strong>Daily Entries Found:</strong> {importConfirmation?.summary.entryCount}</p>

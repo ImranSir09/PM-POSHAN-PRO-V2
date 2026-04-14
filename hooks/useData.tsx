@@ -222,13 +222,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, []);
 
     const saveMonthlyBalance = useCallback((monthKey: string, balance: MonthlyBalanceData) => {
-        setData(prevData => ({
-            ...prevData,
-            monthlyBalances: {
-                ...prevData.monthlyBalances,
-                [monthKey]: balance,
-            },
-        }));
+        setData(prevData => {
+            const existing = prevData.monthlyBalances[monthKey];
+            // Deep comparison to avoid infinite loops and redundant renders
+            if (existing && 
+                JSON.stringify(existing.rice) === JSON.stringify(balance.rice) && 
+                JSON.stringify(existing.cash) === JSON.stringify(balance.cash)) {
+                return prevData;
+            }
+            return {
+                ...prevData,
+                monthlyBalances: {
+                    ...prevData.monthlyBalances,
+                    [monthKey]: balance,
+                },
+            };
+        });
     }, []);
     
     const updateLastBackupDate = useCallback(() => {

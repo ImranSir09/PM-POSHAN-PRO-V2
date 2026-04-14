@@ -1,6 +1,0 @@
-Add this import at top with other imports
-import InstallFAB from './components/ui/InstallFAB';
-
-Then inside AuthenticatedApp JSX, add before <ToastContainer />
-
-<InstallFAB />

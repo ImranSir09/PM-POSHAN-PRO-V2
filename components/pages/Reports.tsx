@@ -238,13 +238,13 @@ const Reports: React.FC = () => {
                                             <label htmlFor="m-inspected" className="font-medium text-stone-700 dark:text-gray-300 text-sm">Was an inspection done?</label>
                                             <label className="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" id="m-inspected" className="sr-only peer" checked={mdcfData.inspectionReport?.inspected} onChange={e => handleMdcfChange('inspectionReport', 'inspected', e.target.checked)} />
-                                                <div className="w-11 h-6 bg-stone-200 dark:bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-amber-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                                                <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-indigo-500/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                                             </label>
                                         </div>
                                         {mdcfData.inspectionReport?.inspected && (
                                             <div>
                                                 <label htmlFor="m-inspected-by" className="block text-xs font-medium text-stone-600 dark:text-gray-300 mb-1">Inspected by:</label>
-                                                <select id="m-inspected-by" value={mdcfData.inspectionReport.inspectedBy} onChange={e => handleMdcfChange('inspectionReport', 'inspectedBy', e.target.value as InspectionAuthority)} className="w-full bg-amber-100/60 dark:bg-gray-700/50 border border-amber-300/50 dark:border-gray-600 text-stone-800 dark:text-white text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500">
+                                                <select id="m-inspected-by" value={mdcfData.inspectionReport.inspectedBy} onChange={e => handleMdcfChange('inspectionReport', 'inspectedBy', e.target.value as InspectionAuthority)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm">
                                                     <option value="">Select Inspector</option>
                                                     <option value="Task Force">Task Force</option>
                                                     <option value="District Officials">District Officials</option>
@@ -284,12 +284,12 @@ const Reports: React.FC = () => {
                 <Card title="Export Reports">
                     <div className="space-y-3">
                         <div>
-                            <label htmlFor="report-type" className="block text-xs font-medium mb-1 text-stone-600 dark:text-gray-300">Report Type</label>
+                            <label htmlFor="report-type" className="block text-xs font-medium mb-1 text-slate-600 dark:text-slate-300">Report Type</label>
                             <select 
                                 id="report-type" 
                                 value={reportType} 
                                 onChange={e => setReportType(e.target.value)} 
-                                className="w-full bg-amber-100/60 dark:bg-gray-700/50 border border-amber-300/50 dark:border-gray-600 text-stone-800 dark:text-white text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block p-2.5"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                             >
                                 <option value="mdcf">Monthly Data Collection Format (MDCF)</option>
                                 <option value="roll_statement">Roll Statement</option>
@@ -297,28 +297,28 @@ const Reports: React.FC = () => {
                                 <option value="rice_requirement">Rice Requirement Certificate</option>
                                 <option value="yearly_consumption_detailed">Yearly Consumption Report (Detailed)</option>
                             </select>
-                            <p className="mt-1 text-xs text-stone-500 dark:text-gray-400">{reportDescriptions[reportType]}</p>
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{reportDescriptions[reportType]}</p>
                         </div>
                         {needsMonth && (
                             <div>
-                                <label htmlFor="month-select" className="block text-xs font-medium text-stone-600 dark:text-gray-300 mb-1">Select Month</label>
+                                <label htmlFor="month-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Select Month</label>
                                 <input
                                     id="month-select"
                                     type="month"
                                     value={selectedMonth}
                                     onChange={(e) => setSelectedMonth(e.target.value)}
-                                    className="w-full bg-amber-100/60 dark:bg-gray-700/50 border border-amber-300/50 dark:border-gray-600 text-stone-800 dark:text-white text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                                 />
                             </div>
                         )}
                          {needsYear && (
                              <div>
-                                <label htmlFor="year-select" className="block text-xs font-medium text-stone-600 dark:text-gray-300 mb-1">Select Financial Year</label>
+                                <label htmlFor="year-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Select Financial Year</label>
                                 <select
                                     id="year-select"
                                     value={selectedFinancialYear}
                                     onChange={(e) => setSelectedFinancialYear(e.target.value)}
-                                    className="w-full bg-amber-100/60 dark:bg-gray-700/50 border border-amber-300/50 dark:border-gray-600 text-stone-800 dark:text-white text-sm rounded-lg p-2.5 focus:ring-amber-500 focus:border-amber-500"
+                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                                 >
                                     {financialYearOptions.map(year => (
                                         <option key={year} value={year}>{year}</option>

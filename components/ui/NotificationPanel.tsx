@@ -37,31 +37,35 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ notifications, on
   }
 
   return (
-    <div className="absolute top-full right-0 mt-2 w-72 sm:w-80 bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border border-slate-200/50 dark:border-white/20 rounded-lg shadow-2xl z-50 flex flex-col">
-      <div className="p-3 border-b border-slate-200/50 dark:border-white/10 flex justify-between items-center flex-shrink-0">
-        <h3 className="font-bold text-slate-800 dark:text-white">Notifications</h3>
-        <button onClick={onClose} className="text-slate-400 hover:text-slate-800 dark:hover:text-white text-xl leading-none">&times;</button>
+    <div className="absolute top-full right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 flex flex-col overflow-hidden">
+      <div className="p-4 border-b border-slate-100 dark:border-slate-800/60 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50 flex-shrink-0">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Notifications</h3>
+        <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
       </div>
       <div className="p-2 max-h-80 overflow-y-auto flex-grow">
         {notifications.length === 0 ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400 p-4 text-center">No new notifications.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 p-6 text-center">No new notifications.</p>
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {notifications.map(notification => (
-              <li key={notification.id} className="bg-slate-100/40 dark:bg-white/5 p-3 rounded-lg">
+              <li key={notification.id} className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
                 <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0 pt-0.5">
                         <NotificationIcon type={notification.type} />
                     </div>
                     <div className="flex-1">
                         <div className="flex justify-between items-start">
-                             <h4 className="text-sm font-semibold text-slate-800 dark:text-white pr-2">{notification.title}</h4>
-                             <button onClick={() => onDismiss(notification.id)} className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-white text-lg leading-none flex-shrink-0 -mt-1">&times;</button>
+                             <h4 className="text-sm font-medium text-slate-800 dark:text-slate-200 pr-2">{notification.title}</h4>
+                             <button onClick={() => onDismiss(notification.id)} className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors rounded-full p-0.5 hover:bg-slate-200 dark:hover:bg-slate-800 flex-shrink-0 -mt-1">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                             </button>
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">{notification.message}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{notification.message}</p>
                         <Button 
                             onClick={() => handleActionClick(notification)} 
-                            className="w-full mt-3 !py-1 !text-xs" 
+                            className="w-full mt-3 !py-1.5 !text-xs font-medium" 
                             variant="secondary"
                         >
                             {notification.actionLabel}
@@ -74,8 +78,8 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ notifications, on
         )}
       </div>
       {notifications.length > 0 && (
-          <div className="p-2 border-t border-slate-200/50 dark:border-white/10 flex-shrink-0">
-              <button onClick={handleDismissAll} className="w-full text-center text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white py-1 rounded-md hover:bg-slate-100/50 dark:hover:bg-white/10 transition-colors">
+          <div className="p-2 border-t border-slate-100 dark:border-slate-800/60 flex-shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+              <button onClick={handleDismissAll} className="w-full text-center text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-2 rounded-md hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors">
                   Dismiss All
               </button>
           </div>

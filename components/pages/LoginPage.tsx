@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
                 <div className="space-y-4">
                     <div>
                         <p className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Your Security Question:</p>
-                        <p className="text-sm font-semibold text-sky-700 dark:text-sky-400 p-2 bg-slate-100/60 dark:bg-slate-700/50 rounded-lg">
+                        <p className="text-sm font-medium text-indigo-700 dark:text-indigo-400 p-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-xl">
                             {data.auth?.securityQuestion}
                         </p>
                     </div>

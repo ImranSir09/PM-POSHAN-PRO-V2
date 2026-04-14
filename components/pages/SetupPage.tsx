@@ -48,50 +48,9 @@ const SetupPage: React.FC = () => {
         terms: '',
     });
 
-    const [isKeyValid, setIsKeyValid] = useState(false);
-
-useEffect(() => {
-if (!signupKeyInput) return;
-
-fetch("https://sheetdb.io/api/v1/4lvgbdscalcp3?token=xqqd6vt05jo3b0cdpgfgiukj4yye99po0wlqpo38")
-.then(res => res.json())
-.then(data => {
-
-const user = data.find(
-(u:any) =>
-u.key.toUpperCase() === signupKeyInput.trim().toUpperCase() &&
-u.active === "TRUE"
-);
-
-if (!user) {
-setIsKeyValid(false);
-return;
-}
-
-const today = new Date();
-const expiry = new Date(user.expiry);
-
-if (today > expiry) {
-setIsKeyValid(false);
-return;
-}
-
-const saved = localStorage.getItem("device_key");
-
-if (saved && saved !== user.key) {
-setIsKeyValid(false);
-return;
-}
-
-localStorage.setItem("device_key", user.key);
-
-setIsKeyValid(true);
-localStorage.setItem("pm_user", JSON.stringify(user));
-
-})
-.catch(() => setIsKeyValid(false));
-
-}, [signupKeyInput]);
+    const isKeyValid = useMemo(() => {
+        return signupKeyInput.trim() === SIGNUP_KEY;
+    }, [signupKeyInput]);
 
     const validate = useCallback((fieldName?: keyof typeof errors) => {
         const newErrors = { ...errors };
@@ -167,22 +126,18 @@ localStorage.setItem("pm_user", JSON.stringify(user));
     return (
         <>
             <TermsModal isOpen={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
-            <div className="min-h-screen text-slate-800 dark:text-slate-200 font-sans flex items-center justify-center p-4">
-                <div className="fixed top-0 left-0 w-full h-full overflow-hidden">
-                    <div className="animated-blob blob-1 bg-sky-300 dark:bg-sky-900"></div>
-                    <div className="animated-blob blob-2 bg-teal-300 dark:bg-teal-900"></div>
-                </div>
+            <div className="min-h-screen font-sans flex items-center justify-center p-4 relative z-10">
                 <div className="w-full max-w-md z-10">
-                    <div className="text-center mb-4">
-                        <h1 className="text-xl font-bold text-slate-900 dark:text-white">PM Poshan Pro</h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-300">New School Registration</p>
+                    <div className="text-center mb-6">
+                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">PM Poshan Pro</h1>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">New School Registration</p>
                     </div>
                     <Card title="App Activation">
-                        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                        <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                             {/* Activation Section */}
-                            <fieldset className="border border-sky-200 dark:border-sky-900/50 rounded-lg p-3 bg-sky-50/30 dark:bg-sky-900/10">
-                                <legend className="text-xs font-bold text-sky-700 dark:text-sky-400 px-2">School Activation</legend>
-                                <div className="space-y-3">
+                            <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/20">
+                                <legend className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 px-2 uppercase tracking-wider">School Activation</legend>
+                                <div className="space-y-4">
                                     <div>
                                         <Input
                                             label="School UDISE Code (11 Digits)"
@@ -194,9 +149,9 @@ localStorage.setItem("pm_user", JSON.stringify(user));
                                             onBlur={() => validate('udise')}
                                             required
                                             placeholder="e.g. 01010101010"
-                                            className={errors.udise ? 'border-red-500' : ''}
+                                            className={errors.udise ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
                                         />
-                                        {errors.udise && <p className="mt-1 text-[10px] text-red-500">{errors.udise}</p>}
+                                        {errors.udise && <p className="mt-1 text-xs text-red-500">{errors.udise}</p>}
                                     </div>
                                     <div>
                                         <Input
@@ -207,12 +162,12 @@ localStorage.setItem("pm_user", JSON.stringify(user));
                                             onBlur={() => validate('signupKey')}
                                             required
                                             placeholder="Enter signup key"
-                                            className={errors.signupKey ? 'border-red-500' : isKeyValid ? 'border-green-500' : ''}
+                                            className={errors.signupKey ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : isKeyValid ? 'border-emerald-500 focus:ring-emerald-500/20 focus:border-emerald-500' : ''}
                                         />
                                         {errors.signupKey ? (
-                                            <p className="mt-1 text-[10px] text-red-500">{errors.signupKey}</p>
+                                            <p className="mt-1 text-xs text-red-500">{errors.signupKey}</p>
                                         ) : (
-                                            <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400">Please provide the official signup key to proceed.</p>
+                                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Please provide the official signup key to proceed.</p>
                                         )}
                                     </div>
                                 </div>
@@ -227,7 +182,7 @@ localStorage.setItem("pm_user", JSON.stringify(user));
                                     onChange={e => setUsername(e.target.value)}
                                     onBlur={() => validate('username')}
                                     required
-                                    className={errors.username ? 'border-red-500' : ''}
+                                    className={errors.username ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
                                 />
                                 <Input
                                     label="Contact Number"
@@ -237,7 +192,7 @@ localStorage.setItem("pm_user", JSON.stringify(user));
                                     value={contact}
                                     onChange={e => setContact(e.target.value.replace(/[^0-9]/g, ''))}
                                     onBlur={() => validate('contact')}
-                                    className={errors.contact ? 'border-red-500' : ''}
+                                    className={errors.contact ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
                                 />
                                 <PasswordInput
                                     label="Create Password (min. 6)"
@@ -258,15 +213,15 @@ localStorage.setItem("pm_user", JSON.stringify(user));
                             </div>
                             
                             {/* Recovery Section */}
-                            <fieldset className="border border-slate-300/50 dark:border-slate-600 rounded-lg p-3">
-                                <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">Account Recovery</legend>
-                                <div className="space-y-3">
-                                    <div className="text-[10px] text-slate-500 mb-1 italic">Used to reset your password if forgotten.</div>
+                            <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-900/20">
+                                <legend className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 px-2 uppercase tracking-wider">Account Recovery</legend>
+                                <div className="space-y-4">
+                                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 italic">Used to reset your password if forgotten.</div>
                                     <select
                                         id="security-question"
                                         value={securityQuestion}
                                         onChange={e => setSecurityQuestion(e.target.value)}
-                                        className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-900 dark:text-white text-xs rounded-lg p-2"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                                     >
                                         {SECURITY_QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}
                                     </select>
@@ -289,25 +244,25 @@ localStorage.setItem("pm_user", JSON.stringify(user));
                                         checked={agreedToTerms}
                                         onChange={e => setAgreedToTerms(e.target.checked)}
                                         onBlur={() => validate('terms')}
-                                        className="h-4 w-4 rounded border-slate-300 text-sky-600"
+                                        className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                                     />
                                     <label htmlFor="terms-agree" className="text-xs text-slate-600 dark:text-slate-300">
                                         I agree to the{' '}
-                                        <button type="button" onClick={() => setIsTermsModalOpen(true)} className="text-sky-600 underline">Terms and Conditions</button>
+                                        <button type="button" onClick={() => setIsTermsModalOpen(true)} className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms and Conditions</button>
                                     </label>
                                 </div>
-                                 {errors.terms && <p className="mt-1 text-[10px] text-red-500">{errors.terms}</p>}
+                                 {errors.terms && <p className="mt-1 text-xs text-red-500">{errors.terms}</p>}
                             </div>
                             
-                            <Button type="submit" className="w-full" disabled={isProcessing}>
+                            <Button type="submit" className="w-full py-3" disabled={isProcessing}>
                                 {isProcessing ? 'Activating...' : 'Complete Setup'}
                             </Button>
 
-                            <div className="mt-4 text-[10px] pt-4 border-t border-slate-200/50 dark:border-white/10 text-slate-500 dark:text-slate-400 text-center">
-                                <p className="font-bold mb-1">Developer Contact for Signup Key:</p>
+                            <div className="mt-6 text-xs pt-4 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-center">
+                                <p className="font-semibold mb-1 text-slate-700 dark:text-slate-300">Developer Contact for Signup Key:</p>
                                 <p>Imran Gani Mugloo</p>
-                                <p><a href="tel:+919149690096" className="text-sky-600">+91 9149690096</a></p>
-                                <p><a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600">emraanmugloo123@gmail.com</a></p>
+                                <p><a href="tel:+919149690096" className="text-indigo-600 dark:text-indigo-400 hover:underline">+91 9149690096</a></p>
+                                <p><a href="mailto:emraanmugloo123@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">emraanmugloo123@gmail.com</a></p>
                             </div>
                         </form>
                     </Card>

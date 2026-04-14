@@ -14,10 +14,10 @@ const NavButton: React.FC<NavButtonProps> = ({ icon, label, isActive, onClick })
         <button
             onClick={onClick}
             className={`relative flex flex-col items-center justify-center w-full h-16 text-xs font-medium transition-all duration-300 ${
-                isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
         >
-            <div className={`absolute inset-0 transition-opacity duration-300 rounded-lg ${isActive ? 'bg-sky-500/10' : 'opacity-0'}`}></div>
+            <div className={`absolute inset-0 transition-opacity duration-300 rounded-xl ${isActive ? 'bg-slate-100 dark:bg-slate-800' : 'opacity-0'}`}></div>
             <div className="relative z-10 flex flex-col items-center">
                 {icon}
                 <span className="mt-1">{label}</span>
@@ -42,7 +42,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, setCurrentPage }) 
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-40 p-2">
-            <div className="max-w-md mx-auto flex items-center justify-around bg-white/70 dark:bg-slate-800/70 backdrop-blur-lg border border-slate-200/50 dark:border-white/20 rounded-xl shadow-lg">
+            <div className="max-w-md mx-auto flex items-center justify-around bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-2xl shadow-sm">
                 {navItems.map(item => (
                     <NavButton
                         key={item.id}

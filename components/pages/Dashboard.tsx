@@ -6,6 +6,7 @@ import { useData } from '../../hooks/useData';
 import { DailyEntry } from '../../types';
 import { useToast } from '../../hooks/useToast';
 import IllustrationCard from '../ui/IllustrationCard';
+import AlertCard from '../ui/AlertCard';
 import Skeleton from '../ui/Skeleton';
 import DailyEntryPage from './DailyEntry';
 import { calculateMonthlySummary } from '../../services/summaryCalculator';
@@ -17,6 +18,7 @@ const Dashboard: React.FC = () => {
     const { mdmIncharge } = settings;
 
     const [isLoading, setIsLoading] = useState(true);
+    const [showPaymentAlert, setShowPaymentAlert] = useState(true);
 
     // Daily Entry Reminder
     useEffect(() => {
@@ -116,10 +118,23 @@ const Dashboard: React.FC = () => {
         <div className="space-y-4">
             <IllustrationCard inchargeName={mdmIncharge?.name} inchargeContact={mdmIncharge?.contact} />
 
+            {showPaymentAlert && (
+                <AlertCard 
+                    title="Service Continuation Notice" 
+                    onDismiss={() => setShowPaymentAlert(false)}
+                    action={{
+                        label: "I Understand",
+                        onClick: () => setShowPaymentAlert(false)
+                    }}
+                >
+                    <p>Please pay a minimum of ₹100/annually for continuation of the service by UPI on <strong>+919596555467</strong></p>
+                </AlertCard>
+            )}
+
             <DailyEntryPage />
 
             <Card title="This Month's Totals" className="relative overflow-hidden">
-                <div aria-hidden="true" className="absolute -bottom-2 -right-2 text-sky-500/10 dark:text-sky-500/5">
+                <div aria-hidden="true" className="absolute -bottom-2 -right-2 text-indigo-500/10 dark:text-indigo-500/5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M10 20.5c0 .8.6 1.5 1.5 1.5h1c.8 0 1.5-.7 1.5-1.5v-1c0-.8-.7-1.5-1.5-1.5h-1c-.8 0-1.5.7-1.5 1.5v1Z"/>
                         <path d="M8 12h.01"/>
@@ -131,21 +146,21 @@ const Dashboard: React.FC = () => {
                 <div className="relative grid grid-cols-3 gap-4 text-center">
                     <div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">Meal Days</p>
-                        <p className="text-lg font-bold text-sky-700 dark:text-sky-400">{dashboardData.mealDays}</p>
+                        <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{dashboardData.mealDays}</p>
                     </div>
                     <div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">Total Expenditure</p>
-                        <p className="text-lg font-bold text-sky-700 dark:text-sky-400">₹{dashboardData.totalExpenditure.toFixed(2)}</p>
+                        <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">₹{dashboardData.totalExpenditure.toFixed(2)}</p>
                     </div>
                     <div>
                         <p className="text-xs text-slate-500 dark:text-slate-400">Total Rice</p>
-                        <p className="text-lg font-bold text-sky-700 dark:text-sky-400">{dashboardData.totalRice.toFixed(3)} kg</p>
+                        <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{dashboardData.totalRice.toFixed(3)} kg</p>
                     </div>
                 </div>
             </Card>
             
             <Card title="Daily Attendance" className="relative overflow-hidden">
-                <div aria-hidden="true" className="absolute -bottom-2 -right-2 text-sky-500/10 dark:text-sky-500/5">
+                <div aria-hidden="true" className="absolute -bottom-2 -right-2 text-indigo-500/10 dark:text-indigo-500/5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                         <circle cx="9" cy="7" r="4"/>
@@ -159,7 +174,7 @@ const Dashboard: React.FC = () => {
                             <BarChart data={dashboardData.monthlyData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                                 <XAxis dataKey="name" interval={0} tick={{ fill: '#64748b', fontSize: 8 }} axisLine={{ stroke: '#e2e8f0' }} tickLine={{ stroke: '#e2e8f0' }} className="dark:tick={{ fill: '#9ca3af' }} dark:axisLine={{ stroke: '#475569' }} dark:tickLine={{ stroke: '#475569' }}" />
                                 <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={{ stroke: '#e2e8f0' }} tickLine={{ stroke: '#e2e8f0' }} className="dark:tick={{ fill: '#9ca3af' }} dark:axisLine={{ stroke: '#475569' }} dark:tickLine={{ stroke: '#475569' }}" />
-                                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(14, 165, 233, 0.1)' }} />
+                                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99, 102, 241, 0.1)' }} />
 
                                 {/* Add faint reference lines for Sundays with no attendance to make them noticeable */}
                                 {dashboardData.monthlyData.map((entry, index) => {
@@ -169,28 +184,28 @@ const Dashboard: React.FC = () => {
                                     return null;
                                 })}
 
-                                <Bar dataKey="balvatika" stackId="a" fill="#94a3b8" radius={[5, 5, 0, 0]} barSize={10} >
+                                <Bar dataKey="balvatika" stackId="a" fill="#cbd5e1" radius={[5, 5, 0, 0]} barSize={10} >
                                      {dashboardData.monthlyData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.date.getDay() === 0 ? '#f87171' : '#94a3b8'} />
+                                        <Cell key={`cell-${index}`} fill={entry.date.getDay() === 0 ? '#f87171' : '#cbd5e1'} />
                                     ))}
                                 </Bar>
-                                <Bar dataKey="primary" stackId="a" fill="#0ea5e9" barSize={10}>
+                                <Bar dataKey="primary" stackId="a" fill="#6366f1" barSize={10}>
                                     {dashboardData.monthlyData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.date.getDay() === 0 ? '#f87171' : '#0ea5e9'} />
+                                        <Cell key={`cell-${index}`} fill={entry.date.getDay() === 0 ? '#f87171' : '#6366f1'} />
                                     ))}
                                 </Bar>
-                                 <Bar dataKey="middle" stackId="a" fill="#2dd4bf" radius={[5, 5, 0, 0]} barSize={10}>
+                                 <Bar dataKey="middle" stackId="a" fill="#8b5cf6" radius={[5, 5, 0, 0]} barSize={10}>
                                     {dashboardData.monthlyData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.date.getDay() === 0 ? '#f87171' : '#2dd4bf'} />
+                                        <Cell key={`cell-${index}`} fill={entry.date.getDay() === 0 ? '#f87171' : '#8b5cf6'} />
                                     ))}
                                  </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
                      <div className="flex justify-center items-center space-x-4 mt-2 text-xs text-slate-600 dark:text-slate-300">
-                        <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#94a3b8] mr-1"></div>Balvatika</div>
-                        <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#0ea5e9] mr-1"></div>Primary</div>
-                        <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#2dd4bf] mr-1"></div>Middle</div>
+                        <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#cbd5e1] mr-1"></div>Balvatika</div>
+                        <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#6366f1] mr-1"></div>Primary</div>
+                        <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#8b5cf6] mr-1"></div>Middle</div>
                         <div className="flex items-center"><div className="w-3 h-3 rounded-full bg-[#f87171] mr-1"></div>Sunday</div>
                     </div>
                 </div>

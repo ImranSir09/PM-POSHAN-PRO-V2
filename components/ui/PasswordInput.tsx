@@ -29,7 +29,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ label, id, containerClass
         setShowPassword(prev => !prev);
     };
 
-    const baseInputClasses = "w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block p-2.5 placeholder-slate-500 dark:placeholder-slate-400 pr-10";
+    const baseInputClasses = "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-500 block p-2.5 placeholder-slate-400 dark:placeholder-slate-500 pr-10 outline-none transition-all duration-200 shadow-sm";
 
     return (
         <div className={containerClassName}>
@@ -46,7 +46,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ label, id, containerClass
                 <button
                     type="button"
                     onClick={toggleVisibility}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white focus:outline-none"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 focus:outline-none transition-colors"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                     {showPassword ? <EyeSlashIcon /> : <EyeIcon />}

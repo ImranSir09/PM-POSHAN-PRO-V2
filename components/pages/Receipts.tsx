@@ -89,18 +89,18 @@ const Receipts: React.FC = () => {
                         </p>
                         <Input label="Date" id="receipt-date" type="date" value={date} onChange={e => setDate(e.target.value)} required max={todayString}/>
                         
-                        <fieldset className="border border-slate-300/50 dark:border-slate-600 rounded-lg p-3">
-                            <legend className="text-sm font-medium text-sky-700 dark:text-sky-400 px-1">Rice Received (kg)</legend>
-                            <div className="grid grid-cols-3 gap-2">
+                        <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                            <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Rice Received (kg)</legend>
+                            <div className="grid grid-cols-3 gap-3">
                                 <Input label="Balvatika" id="rice-bal" type="number" step="0.01" placeholder="0" value={rice.balvatika} onChange={e => handleValueChange(setRice, 'balvatika', e.target.value)} min="0" max="9999" />
                                 <Input label="Primary" id="rice-pri" type="number" step="0.01" placeholder="0" value={rice.primary} onChange={e => handleValueChange(setRice, 'primary', e.target.value)} min="0" max="9999" />
                                 <Input label="Middle" id="rice-mid" type="number" step="0.01" placeholder="0" value={rice.middle} onChange={e => handleValueChange(setRice, 'middle', e.target.value)} min="0" max="9999" />
                             </div>
                         </fieldset>
 
-                        <fieldset className="border border-slate-300/50 dark:border-slate-600 rounded-lg p-3">
-                            <legend className="text-sm font-medium text-sky-700 dark:text-sky-400 px-1">Cash Received (₹)</legend>
-                            <div className="grid grid-cols-3 gap-2">
+                        <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                            <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Cash Received (₹)</legend>
+                            <div className="grid grid-cols-3 gap-3">
                                 <Input label="Balvatika" id="cash-bal" type="number" step="0.01" placeholder="0" value={cash.balvatika} onChange={e => handleValueChange(setCash, 'balvatika', e.target.value)} min="0" max="99999" />
                                 <Input label="Primary" id="cash-pri" type="number" step="0.01" placeholder="0" value={cash.primary} onChange={e => handleValueChange(setCash, 'primary', e.target.value)} min="0" max="99999" />
                                 <Input label="Middle" id="cash-mid" type="number" step="0.01" placeholder="0" value={cash.middle} onChange={e => handleValueChange(setCash, 'middle', e.target.value)} min="0" max="99999" />
@@ -111,34 +111,44 @@ const Receipts: React.FC = () => {
                     </form>
                 </Card>
                 <Card title="Recent Receipts">
-                    <div className="overflow-x-auto max-h-60">
+                    <div className="overflow-x-auto max-h-60 rounded-xl border border-slate-200 dark:border-slate-800">
                         <table className="w-full text-xs text-left">
-                            <thead className="bg-slate-100/60 dark:bg-slate-800/50 sticky top-0">
+                            <thead className="bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm">
                                 <tr>
-                                    <th className="p-2">Date</th>
-                                    <th className="p-2 text-right">Rice (kg)</th>
-                                    <th className="p-2 text-right">Cash (₹)</th>
-                                    <th className="p-2 text-right">Actions</th>
+                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400" rowSpan={2}>Date</th>
+                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-center border-b border-slate-200 dark:border-slate-800" colSpan={3}>Rice (kg)</th>
+                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-center border-b border-slate-200 dark:border-slate-800" colSpan={3}>Cash (₹)</th>
+                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-right" rowSpan={2}>Actions</th>
+                                </tr>
+                                <tr>
+                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Bal</th>
+                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Pri</th>
+                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Mid</th>
+                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Bal</th>
+                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Pri</th>
+                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Mid</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {data.receipts.length === 0 ? (
-                                    <tr className="border-b border-slate-200/50 dark:border-slate-700">
-                                        <td colSpan={4} className="p-4 text-center text-slate-500 dark:text-slate-400">
+                                    <tr className="border-b border-slate-100 dark:border-slate-800/50">
+                                        <td colSpan={8} className="p-4 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950">
                                             No receipts have been added yet.
                                         </td>
                                     </tr>
                                 ) : (
                                     [...data.receipts].reverse().map(receipt => {
-                                        const totalRice = receipt.rice.balvatika + receipt.rice.primary + receipt.rice.middle;
-                                        const totalCash = receipt.cash.balvatika + receipt.cash.primary + receipt.cash.middle;
                                         return (
-                                            <tr key={receipt.id} className="border-b border-slate-200/50 dark:border-slate-700">
-                                                <td className="p-2">{new Date(receipt.date + 'T00:00:00').toLocaleDateString('en-IN')}</td>
-                                                <td className="p-2 text-right">{totalRice.toFixed(2)}</td>
-                                                <td className="p-2 text-right">{totalCash.toFixed(2)}</td>
-                                                <td className="p-2 text-right">
-                                                    <Button variant="danger" className="px-2 py-1 text-xs" onClick={() => setReceiptToDelete(receipt.id)}>Delete</Button>
+                                            <tr key={receipt.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0 bg-white dark:bg-slate-950">
+                                                <td className="p-3">{new Date(receipt.date + 'T00:00:00').toLocaleDateString('en-IN')}</td>
+                                                <td className="p-3 text-right">{receipt.rice.balvatika.toFixed(2)}</td>
+                                                <td className="p-3 text-right">{receipt.rice.primary.toFixed(2)}</td>
+                                                <td className="p-3 text-right">{receipt.rice.middle.toFixed(2)}</td>
+                                                <td className="p-3 text-right">{receipt.cash.balvatika.toFixed(2)}</td>
+                                                <td className="p-3 text-right">{receipt.cash.primary.toFixed(2)}</td>
+                                                <td className="p-3 text-right">{receipt.cash.middle.toFixed(2)}</td>
+                                                <td className="p-3 text-right">
+                                                    <Button variant="danger" className="px-3 py-1.5 text-xs" onClick={() => setReceiptToDelete(receipt.id)}>Delete</Button>
                                                 </td>
                                             </tr>
                                         );

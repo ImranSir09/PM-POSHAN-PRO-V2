@@ -3,14 +3,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
-<link rel="icon" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./icon-512.png">
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#0ea5e9">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PM Poshan Pro</title>
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-512.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PM Poshan Pro</title>
+    <meta name="theme-color" content="#0ea5e9" />
+    <link rel="manifest" href="/manifest.json" />
     <script>
       // Apply theme immediately to prevent FOUC (Flash of Unstyled Content)
       const theme = localStorage.getItem('pm-poshan-theme') || 'system';
@@ -170,5 +168,16 @@
     </div>
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered: ', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+        });
+      }
+    </script>
   </body>
 </html>

@@ -19,15 +19,15 @@ const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractDa
     const key = isCash ? 'expenditure' : 'consumed';
     const categories: Category[] = ['balvatika', 'primary', 'middle'];
     
-    const thClasses = "p-2 border border-slate-300/50 dark:border-slate-600 whitespace-nowrap";
-    const tdClasses = "p-2 border border-slate-300/50 dark:border-slate-600 whitespace-nowrap";
+    const thClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap";
+    const tdClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap";
 
     return (
         <div>
-            <h3 className="font-bold text-sky-700 dark:text-sky-400 mb-2">{title} ({unit})</h3>
-            <div className="overflow-x-auto rounded-lg border border-slate-300/50 dark:border-slate-600">
+            <h3 className="font-semibold text-indigo-600 dark:text-indigo-400 mb-2">{title} ({unit})</h3>
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
                 <table className="min-w-[540px] w-full text-xs text-left border-collapse">
-                    <thead className="bg-slate-100/60 dark:bg-slate-800/50">
+                    <thead className="bg-slate-50 dark:bg-slate-900/50">
                         <tr>
                             <th className={thClasses}>Category</th>
                             <th className={`${thClasses} text-right`}>Opening</th>
@@ -49,7 +49,7 @@ const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractDa
                             </tr>
                         ))}
                     </tbody>
-                    <tfoot className="font-bold bg-slate-200/50 dark:bg-slate-800">
+                    <tfoot className="font-semibold bg-slate-100 dark:bg-slate-900">
                         <tr>
                             <td className={tdClasses}>Total</td>
                             <td className={`${tdClasses} text-right`}>{total.opening.toFixed(decimals)}</td>
@@ -68,15 +68,15 @@ const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractDa
 const CategoryAbstractTable: React.FC<{ title: string; data: AbstractData; unit: string; decimals: number; }> = ({ title, data, unit, decimals }) => {
     const isCash = unit === '₹';
     const key = isCash ? 'expenditure' : 'consumed';
-    const thClasses = "p-2 border border-slate-300/50 dark:border-slate-600 whitespace-nowrap text-left";
-    const tdClasses = "p-2 border border-slate-300/50 dark:border-slate-600 whitespace-nowrap text-right";
+    const thClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap text-left";
+    const tdClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap text-right";
 
     return (
         <div className="flex-1">
-            <h3 className="font-bold text-sky-700 dark:text-sky-400 mb-2">{title} ({unit})</h3>
-            <div className="overflow-x-auto rounded-lg border border-slate-300/50 dark:border-slate-600">
+            <h3 className="font-semibold text-indigo-600 dark:text-indigo-400 mb-2">{title} ({unit})</h3>
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
                 <table className="w-full text-xs text-left border-collapse">
-                    <thead className="bg-slate-100/60 dark:bg-slate-800/50">
+                    <thead className="bg-slate-50 dark:bg-slate-900/50">
                         <tr>
                             <th className={thClasses}>Opening</th>
                             <th className={thClasses}>Received</th>
@@ -86,12 +86,12 @@ const CategoryAbstractTable: React.FC<{ title: string; data: AbstractData; unit:
                         </tr>
                     </thead>
                     <tbody>
-                         <tr className="bg-white dark:bg-slate-800/30">
+                         <tr className="bg-white dark:bg-slate-950">
                             <td className={tdClasses}>{data.opening.toFixed(decimals)}</td>
                             <td className={tdClasses}>{data.received.toFixed(decimals)}</td>
                             <td className={tdClasses}>{data.total.toFixed(decimals)}</td>
                             <td className={tdClasses}>{(data[key] || 0).toFixed(decimals)}</td>
-                            <td className={`${tdClasses} font-bold text-sky-700 dark:text-sky-400`}>{data.balance.toFixed(decimals)}</td>
+                            <td className={`${tdClasses} font-semibold text-indigo-600 dark:text-indigo-400`}>{data.balance.toFixed(decimals)}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -102,14 +102,14 @@ const CategoryAbstractTable: React.FC<{ title: string; data: AbstractData; unit:
 
 
 const SimpleDailyEntriesTable: React.FC<{ entries: any[] }> = ({ entries }) => (
-    <div className="overflow-x-auto max-h-72">
+    <div className="overflow-x-auto max-h-72 rounded-xl border border-slate-200 dark:border-slate-800">
         <table className="w-full text-xs text-left">
-            <thead className="bg-slate-100/60 dark:bg-slate-800/50 sticky top-0">
+            <thead className="bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm">
                 <tr>
-                    <th className="p-2">Date</th>
-                    <th className="p-2 text-right">Present</th>
-                    <th className="p-2 text-right">Rice (kg)</th>
-                    <th className="p-2 text-right">Cost (₹)</th>
+                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400">Date</th>
+                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-right">Present</th>
+                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-right">Rice (kg)</th>
+                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-right">Cost (₹)</th>
                 </tr>
             </thead>
             <tbody>
@@ -118,25 +118,25 @@ const SimpleDailyEntriesTable: React.FC<{ entries: any[] }> = ({ entries }) => (
                         const date = new Date(entry.date + 'T00:00:00');
                         const isNoMealDay = entry.present === 0;
                         return (
-                            <tr key={entry.id} className={`border-b border-slate-200/50 dark:border-slate-700 ${isNoMealDay ? 'bg-red-100/30 dark:bg-red-900/20' : ''}`}>
-                                <td className="p-2">{date.toLocaleDateString('en-IN')}</td>
+                            <tr key={entry.id} className={`border-b border-slate-100 dark:border-slate-800/50 last:border-0 ${isNoMealDay ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-white dark:bg-slate-950'}`}>
+                                <td className="p-3">{date.toLocaleDateString('en-IN')}</td>
                                 {isNoMealDay ? (
-                                    <td colSpan={3} className="p-2 text-center text-red-700 dark:text-red-300 text-xs italic">
+                                    <td colSpan={3} className="p-3 text-center text-red-600 dark:text-red-400 text-xs italic">
                                         {entry.reasonForNoMeal || 'No Meal Served'}
                                     </td>
                                 ) : (
                                     <>
-                                        <td className="p-2 text-right">{entry.present}</td>
-                                        <td className="p-2 text-right">{entry.rice.toFixed(3)}</td>
-                                        <td className="p-2 text-right">{entry.cost.toFixed(2)}</td>
+                                        <td className="p-3 text-right">{entry.present}</td>
+                                        <td className="p-3 text-right">{entry.rice.toFixed(3)}</td>
+                                        <td className="p-3 text-right">{entry.cost.toFixed(2)}</td>
                                     </>
                                 )}
                             </tr>
                         )
                     })
                 ) : (
-                    <tr className="border-b border-slate-200/50 dark:border-slate-700">
-                        <td colSpan={4} className="p-4 text-center text-slate-500 dark:text-slate-400">
+                    <tr className="border-b border-slate-100 dark:border-slate-800/50">
+                        <td colSpan={4} className="p-4 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950">
                             No entries with meals served for this category in the selected month.
                         </td>
                     </tr>
@@ -198,21 +198,21 @@ const DetailedConsumptionTable: React.FC<{
     const tdClasses = "p-2 whitespace-nowrap";
     
     return (
-        <div className="overflow-x-auto rounded-lg border border-slate-300/50 dark:border-slate-600">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
             <table className="min-w-[768px] w-full text-xs text-left border-collapse">
-                <thead className="bg-slate-100/60 dark:bg-slate-800/50 sticky top-0">
+                <thead className="bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm">
                     <tr>
-                        <th className={thClasses}>S.No</th>
-                        <th className={thClasses}>Date</th>
-                        <th className={`${thClasses} text-right`}>Roll</th>
-                        <th className={`${thClasses} text-right`}>Present</th>
-                        <th className={`${thClasses} text-right`}>Rice (kg)</th>
-                        <th className={`${thClasses} text-right`}>Dal/Veg (₹)</th>
-                        <th className={`${thClasses} text-right`}>Oil/Cond (₹)</th>
-                        <th className={`${thClasses} text-right`}>Salt (₹)</th>
-                        <th className={`${thClasses} text-right`}>Fuel (₹)</th>
-                        <th className={`${thClasses} text-right`}>Total (₹)</th>
-                        <th className={thClasses}>Reason</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400`}>S.No</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400`}>Date</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Roll</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Present</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Rice (kg)</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Dal/Veg (₹)</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Oil/Cond (₹)</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Salt (₹)</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Fuel (₹)</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`}>Total (₹)</th>
+                        <th className={`${thClasses} font-medium text-slate-500 dark:text-slate-400`}>Reason</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -221,9 +221,9 @@ const DetailedConsumptionTable: React.FC<{
                         const reasonText = day.isSunday ? 'Sunday' : (day.reason || 'No Meal Served');
 
                         return (
-                            <tr key={day.date} className={`border-b border-slate-200/50 dark:border-slate-700 ${isNoMealDay ? 'bg-red-100/30 dark:bg-red-900/20' : ''}`}>
+                            <tr key={day.date} className={`border-b border-slate-100 dark:border-slate-800/50 last:border-0 ${isNoMealDay ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-white dark:bg-slate-950'}`}>
                                 {isNoMealDay ? (
-                                     <td colSpan={11} className={`${tdClasses} text-center italic text-red-700 dark:text-red-300`}>
+                                     <td colSpan={11} className={`${tdClasses} text-center italic text-red-600 dark:text-red-400`}>
                                         {new Date(day.date + 'T00:00:00').toLocaleDateString('en-IN')} - {reasonText}
                                     </td>
                                 ) : (
@@ -245,7 +245,7 @@ const DetailedConsumptionTable: React.FC<{
                         );
                     })}
                 </tbody>
-                 <tfoot className="font-bold bg-slate-200/50 dark:bg-slate-800">
+                 <tfoot className="font-semibold bg-slate-100 dark:bg-slate-900">
                     <tr>
                         <td colSpan={3} className={`${tdClasses} text-right`}>Total</td>
                         <td className={`${tdClasses} text-right`}>{totals.present}</td>
@@ -294,12 +294,27 @@ const MonthlySummary: React.FC = () => {
         return totals;
     }, [settings.classRolls]);
 
+    const lastSavedBalanceRef = React.useRef<{ month: string, balance: string } | null>(null);
+
+    const closingBalanceString = JSON.stringify(closingBalance);
     useEffect(() => {
         if (closingBalance && monthEntries.length > 0) {
-            saveMonthlyBalance(selectedMonth, closingBalance);
+            if (
+                !lastSavedBalanceRef.current || 
+                lastSavedBalanceRef.current.month !== selectedMonth || 
+                lastSavedBalanceRef.current.balance !== closingBalanceString
+            ) {
+                console.log("MonthlySummary: Saving balance for", selectedMonth);
+                if (lastSavedBalanceRef.current) {
+                    console.log("Previous balance:", lastSavedBalanceRef.current.balance);
+                    console.log("New balance:", closingBalanceString);
+                }
+                saveMonthlyBalance(selectedMonth, closingBalance);
+                lastSavedBalanceRef.current = { month: selectedMonth, balance: closingBalanceString };
+            }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedMonth, closingBalance]); // Intentionally omitting saveMonthlyBalance
+    }, [selectedMonth, closingBalanceString]); // Intentionally omitting saveMonthlyBalance
 
     useEffect(() => {
         setIsDetailsVisible(false);
@@ -349,7 +364,7 @@ const MonthlySummary: React.FC = () => {
                             type="month"
                             value={selectedMonth}
                             onChange={handleMonthChange}
-                            className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-800 dark:text-white text-sm rounded-lg p-2.5 focus:ring-sky-500 focus:border-sky-500"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                         />
                     </div>
                      <div className="flex-1">
@@ -358,7 +373,7 @@ const MonthlySummary: React.FC = () => {
                             id="view-select"
                             value={view}
                             onChange={(e) => setView(e.target.value as any)}
-                             className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-800 dark:text-white text-sm rounded-lg p-2.5 focus:ring-sky-500 focus:border-sky-500"
+                             className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                         >
                             <option value="overall">Overall</option>
                             <option value="balvatika">Balvatika</option>
@@ -394,20 +409,20 @@ const MonthlySummary: React.FC = () => {
                     <Card title="Meal & Attendance Totals">
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                             <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Meal Days</p>
-                                <p className="text-lg font-bold text-sky-700 dark:text-sky-400">{displayedTotals.mealDays}</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Meal Days</p>
+                                <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">{displayedTotals.mealDays}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Total Students Fed</p>
-                                <p className="text-lg font-bold text-sky-700 dark:text-sky-400">{displayedTotals.present}</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Students Fed</p>
+                                <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">{displayedTotals.present}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Total Expenditure</p>
-                                <p className="text-lg font-bold text-sky-700 dark:text-sky-400">₹{displayedTotals.expenditure.toFixed(2)}</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Expenditure</p>
+                                <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">₹{displayedTotals.expenditure.toFixed(2)}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Total Rice Used</p>
-                                <p className="text-lg font-bold text-sky-700 dark:text-sky-400">{displayedTotals.rice.toFixed(3)} kg</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Rice Used</p>
+                                <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">{displayedTotals.rice.toFixed(3)} kg</p>
                             </div>
                         </div>
                     </Card>

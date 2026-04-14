@@ -237,22 +237,22 @@ const DailyEntryPage: React.FC = () => {
         <>
              <Modal isOpen={isEntryModalOpen} onClose={() => setEntryModalOpen(false)} title={`Entry for ${new Date(selectedDate+'T00:00:00').toLocaleDateString('en-IN')}`} zIndex="z-40">
                 <div className="space-y-4">
-                     <fieldset className="border border-slate-300/50 dark:border-slate-600 rounded-lg p-3">
-                        <legend className="text-sm font-medium text-sky-700 dark:text-sky-400 px-1">Students Present</legend>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                     <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                        <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Students Present</legend>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <NumberInput label={`Balvatika (${onRoll.balvatika})`} id="balvatika" value={present.balvatika} onChange={val => handlePresentChange('balvatika', val)} min={0} max={onRoll.balvatika} />
                             <NumberInput label={`Primary (${onRoll.primary})`} id="primary" value={present.primary} onChange={val => handlePresentChange('primary', val)} min={0} max={onRoll.primary} />
                             <NumberInput label={`Middle (${onRoll.middle})`} id="middle" value={present.middle} onChange={val => handlePresentChange('middle', val)} min={0} max={onRoll.middle} />
                         </div>
                     </fieldset>
 
-                     <fieldset className="border border-slate-300/50 dark:border-slate-600 rounded-lg p-3">
-                        <legend className="text-sm font-medium text-sky-700 dark:text-sky-400 px-1">Auto-calculated Consumption</legend>
+                     <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                        <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Auto-calculated Consumption</legend>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
                             {Object.entries(consumption).map(([key, value]) => (
-                                <div key={key} className="bg-slate-100/40 dark:bg-slate-800/50 p-2 rounded-md">
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{key === 'dalVeg' ? 'Dal & Veg' : key === 'oilCond' ? 'Oil & Cond.' : key}</p>
-                                    <p className="font-semibold text-slate-800 dark:text-white">{key === 'rice' ? `${value} kg` : `₹${value}`}</p>
+                                <div key={key} className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize mb-1">{key === 'dalVeg' ? 'Dal & Veg' : key === 'oilCond' ? 'Oil & Cond.' : key}</p>
+                                    <p className="font-semibold text-slate-900 dark:text-white">{key === 'rice' ? `${value} kg` : `₹${value}`}</p>
                                 </div>
                             ))}
                         </div>
@@ -274,7 +274,7 @@ const DailyEntryPage: React.FC = () => {
                 <div className="space-y-4">
                     <p className="text-sm text-slate-600 dark:text-slate-300">Please provide a reason for not serving the meal today.</p>
                     <div>
-                        <label htmlFor="main-reason-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Main Reason</label>
+                        <label htmlFor="main-reason-select" className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5">Main Reason</label>
                         <select
                             id="main-reason-select"
                             value={mainReason}
@@ -282,7 +282,7 @@ const DailyEntryPage: React.FC = () => {
                                 setMainReason(e.target.value as MainReason);
                                 setSubReason(''); // Reset sub-reason when main reason changes
                             }}
-                            className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-800 dark:text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block p-2.5"
+                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 shadow-sm transition-all outline-none"
                         >
                             <option value="">Select a reason...</option>
                             {MAIN_REASONS.map(reason => <option key={reason} value={reason}>{reason}</option>)}
@@ -291,12 +291,12 @@ const DailyEntryPage: React.FC = () => {
 
                     {currentSubReasons.length > 0 && (
                         <div>
-                            <label htmlFor="sub-reason-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Sub-Reason</label>
+                            <label htmlFor="sub-reason-select" className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5">Sub-Reason</label>
                             <select
                                 id="sub-reason-select"
                                 value={subReason}
                                 onChange={(e) => setSubReason(e.target.value)}
-                                className="w-full bg-slate-100/60 dark:bg-slate-700/50 border border-slate-300/50 dark:border-slate-600 text-slate-800 dark:text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block p-2.5"
+                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 shadow-sm transition-all outline-none"
                             >
                                 <option value="">Select a sub-reason...</option>
                                 {currentSubReasons.map(reason => <option key={reason} value={reason}>{reason}</option>)}
@@ -311,7 +311,7 @@ const DailyEntryPage: React.FC = () => {
                 </div>
             </Modal>
             <Card title="Daily Meal Entry" className="relative overflow-hidden">
-                <div aria-hidden="true" className="absolute -bottom-4 -right-4 text-sky-500/10 dark:text-sky-500/5">
+                <div aria-hidden="true" className="absolute -bottom-4 -right-4 text-indigo-500/10 dark:text-indigo-500/5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M2 12.2c0-3.3 2.9-6.2 6.5-6.2h7c3.6 0 6.5 2.9 6.5 6.2c0 1.9-1.2 3.6-2.7 4.5l-1.5 1c-1.1.7-2.3 1.3-3.3 1.3H9.5c-1 0-2.2-.6-3.3-1.3l-1.5-1C3.2 15.8 2 14.1 2 12.2Z"/>
                         <path d="M6 6s.5 2.2 2.2 2.2"/>
@@ -324,7 +324,7 @@ const DailyEntryPage: React.FC = () => {
                         <div className="space-y-3">
                             <Input label="Select Date" id="entry-date" type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} max={today} />
                             {isSunday && (
-                                <div className="text-center p-2 bg-red-100 dark:bg-red-900/30 rounded-lg text-red-700 dark:text-red-300 text-xs">
+                                <div className="text-center p-2 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-600 dark:text-red-400 text-xs border border-red-100 dark:border-red-900/50">
                                     Entries are disabled for Sundays.
                                 </div>
                             )}
@@ -341,7 +341,7 @@ const DailyEntryPage: React.FC = () => {
                         <div>
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="font-semibold">{new Date(today + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'long' })}</p>
+                                    <p className="font-semibold text-slate-900 dark:text-slate-100">{new Date(today + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'long' })}</p>
                                     <p className="text-sm text-slate-500 dark:text-slate-400">{new Date(today + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}</p>
                                 </div>
                                 <div className="text-right">
@@ -354,13 +354,13 @@ const DailyEntryPage: React.FC = () => {
                                             Add / Edit
                                         </Button>
                                     )}
-                                    <button onClick={() => setShowDatePicker(true)} className="block w-full text-center text-sky-500 hover:text-sky-600 dark:text-sky-400 dark:hover:text-sky-300 text-xs pt-1">
+                                    <button onClick={() => setShowDatePicker(true)} className="block w-full text-center text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs pt-2 font-medium transition-colors">
                                         Edit another...
                                     </button>
                                 </div>
                             </div>
                             {isSunday && selectedDate === today && (
-                                <div className={`text-center mt-3 p-2 rounded-lg text-xs ${entryExists ? 'bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-500/50 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-500/50 text-red-700 dark:text-red-300'}`}>
+                                <div className={`text-center mt-4 p-3 rounded-xl text-xs font-medium ${entryExists ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 text-red-700 dark:text-red-400'}`}>
                                     {entryExists ? 'Today has been marked as a non-meal day.' : 'Entries are disabled for today (Sunday).'}
                                 </div>
                             )}

@@ -122,7 +122,13 @@ export const NotificationProvider: React.FC<{ children: ReactNode; setCurrentPag
             }
         }
 
-        setActiveNotifications(potentialNotifications);
+        setActiveNotifications(prev => {
+            // Deep comparison to avoid redundant renders and potential infinite loops
+            if (JSON.stringify(prev) === JSON.stringify(potentialNotifications)) {
+                return prev;
+            }
+            return potentialNotifications;
+        });
     }, [data]);
     
     const notifications = useMemo(() => {

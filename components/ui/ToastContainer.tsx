@@ -11,14 +11,14 @@ const Toast: React.FC<{ message: ToastMessage; onDismiss: (id: string) => void }
     }, [message.id, onDismiss]);
     
     const typeClasses: Record<ToastType, string> = {
-        success: 'from-green-500/80 to-green-600/80 border-green-400',
-        error: 'from-red-500/80 to-red-600/80 border-red-400',
-        info: 'from-sky-500/80 to-sky-600/80 border-sky-400',
+        success: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50',
+        error: 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800/50',
+        info: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800/50',
     }
 
     return (
         <div 
-            className={`w-full max-w-sm p-3 rounded-lg shadow-lg text-white text-sm font-semibold bg-gradient-to-r ${typeClasses[message.type]} border-l-4 backdrop-blur-md`}
+            className={`w-full max-w-sm p-4 rounded-xl shadow-lg text-sm font-medium border ${typeClasses[message.type]} backdrop-blur-md cursor-pointer transition-all`}
             onClick={() => onDismiss(message.id)}
         >
             {message.message}
