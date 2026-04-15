@@ -41,8 +41,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         sessionStorage.removeItem('pm-poshan-auth');
     };
 
-    const setupAccount = async (authData: AuthData, udise?: string) => {
-        setupAccountData(authData, udise);
+    const setupAccount = async (authData: AuthData) => {
+        setupAccountData(authData);
         setIsAuthenticated(true);
         sessionStorage.setItem('pm-poshan-auth', 'true');
     };

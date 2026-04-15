@@ -125,7 +125,7 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
         riceAbstracts[cat] = {
             opening: riceOpening,
             received: riceReceived,
-            total: parseFloat((riceOpening + riceReceived).toFixed(3)),
+            total: riceOpening + riceReceived,
             consumed: riceConsumed,
             balance: parseFloat((riceOpening + riceReceived - riceConsumed).toFixed(3)),
         };
@@ -137,7 +137,7 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
         cashAbstracts[cat] = {
             opening: cashOpening,
             received: cashReceived,
-            total: parseFloat((cashOpening + cashReceived).toFixed(2)),
+            total: cashOpening + cashReceived,
             expenditure: cashExpenditure,
             balance: parseFloat((cashOpening + cashReceived - cashExpenditure).toFixed(2)),
         };

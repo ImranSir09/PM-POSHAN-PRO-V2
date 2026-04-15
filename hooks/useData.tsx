@@ -46,7 +46,13 @@ const getInitialData = (): AppData => {
             let dataToProcess: AppData = {
                 ...defaultData,
                 ...parsedData,
-                auth: { ...defaultData.auth, ...(parsedData.auth || {}) },
+                auth: { 
+                    username: parsedData.auth?.username || defaultData.auth.username,
+                    securityQuestion: parsedData.auth?.securityQuestion || defaultData.auth.securityQuestion,
+                    securityAnswer: parsedData.auth?.securityAnswer || defaultData.auth.securityAnswer,
+                    password: parsedData.auth?.password,
+                    contact: parsedData.auth?.contact
+                },
                 settings: deepMerge(DEFAULT_SETTINGS, parsedData.settings || {}),
             };
 

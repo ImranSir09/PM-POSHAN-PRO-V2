@@ -140,9 +140,9 @@ const generateMDCF = (data: AppData, selectedMonth: string, overrideData?: MdcfO
         startY: doc.lastAutoTable.finalY + 8,
         head: [['Component', 'Opening Balance', 'Received', 'Expenditure', 'Closing Balance']],
         body: [
-            ['Cooking Cost - Bal Vatika', cashAbstracts.balvatika.opening.toFixed(2), cashAbstracts.balvatika.received.toFixed(2), cashAbstracts.balvatika.expenditure.toFixed(2), cashAbstracts.balvatika.balance.toFixed(2)],
-            ['Cooking Cost - Primary', cashAbstracts.primary.opening.toFixed(2), cashAbstracts.primary.received.toFixed(2), cashAbstracts.primary.expenditure.toFixed(2), cashAbstracts.primary.balance.toFixed(2)],
-            ['Cooking Cost - Upper Primary', cashAbstracts.middle.opening.toFixed(2), cashAbstracts.middle.received.toFixed(2), cashAbstracts.middle.expenditure.toFixed(2), cashAbstracts.middle.balance.toFixed(2)],
+            ['Cooking Cost - Bal Vatika', cashAbstracts.balvatika.opening.toFixed(2), cashAbstracts.balvatika.received.toFixed(2), (cashAbstracts.balvatika.expenditure || 0).toFixed(2), cashAbstracts.balvatika.balance.toFixed(2)],
+            ['Cooking Cost - Primary', cashAbstracts.primary.opening.toFixed(2), cashAbstracts.primary.received.toFixed(2), (cashAbstracts.primary.expenditure || 0).toFixed(2), cashAbstracts.primary.balance.toFixed(2)],
+            ['Cooking Cost - Upper Primary', cashAbstracts.middle.opening.toFixed(2), cashAbstracts.middle.received.toFixed(2), (cashAbstracts.middle.expenditure || 0).toFixed(2), cashAbstracts.middle.balance.toFixed(2)],
         ],
         theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 },
     });
@@ -171,9 +171,9 @@ const generateMDCF = (data: AppData, selectedMonth: string, overrideData?: MdcfO
         startY: doc.lastAutoTable.finalY + 8,
         head: [['Component', 'Opening Balance', 'Received', 'Utilized', 'Closing Balance']],
         body: [
-            ['Rice - Bal Vatika', riceAbstracts.balvatika.opening.toFixed(3), riceAbstracts.balvatika.received.toFixed(3), riceAbstracts.balvatika.consumed.toFixed(3), riceAbstracts.balvatika.balance.toFixed(3)],
-            ['Rice - Primary', riceAbstracts.primary.opening.toFixed(3), riceAbstracts.primary.received.toFixed(3), riceAbstracts.primary.consumed.toFixed(3), riceAbstracts.primary.balance.toFixed(3)],
-            ['Rice - Upper Primary', riceAbstracts.middle.opening.toFixed(3), riceAbstracts.middle.received.toFixed(3), riceAbstracts.middle.consumed.toFixed(3), riceAbstracts.middle.balance.toFixed(3)],
+            ['Rice - Bal Vatika', riceAbstracts.balvatika.opening.toFixed(3), riceAbstracts.balvatika.received.toFixed(3), (riceAbstracts.balvatika.consumed || 0).toFixed(3), riceAbstracts.balvatika.balance.toFixed(3)],
+            ['Rice - Primary', riceAbstracts.primary.opening.toFixed(3), riceAbstracts.primary.received.toFixed(3), (riceAbstracts.primary.consumed || 0).toFixed(3), riceAbstracts.primary.balance.toFixed(3)],
+            ['Rice - Upper Primary', riceAbstracts.middle.opening.toFixed(3), riceAbstracts.middle.received.toFixed(3), (riceAbstracts.middle.consumed || 0).toFixed(3), riceAbstracts.middle.balance.toFixed(3)],
         ],
         theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 },
     });
