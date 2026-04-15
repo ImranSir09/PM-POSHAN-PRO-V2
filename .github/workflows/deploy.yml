@@ -24,16 +24,22 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci || npm install
+        run: |
+          npm install
+          npm list --depth=0
 
       - name: Build
-        run: npm run build
-
-      - name: List output
-        run: ls -R dist
+        run: |
+          npm run build
+          echo "Checking dist directory..."
+          ls -la dist
+          if [ ! -f "dist/index.html" ]; then
+            echo "Error: dist/index.html not found!"
+            exit 1
+          fi
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
