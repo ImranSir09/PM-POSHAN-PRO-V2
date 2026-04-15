@@ -407,7 +407,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string): Blob
                 ['Opening', riceCatAbstract.opening.toFixed(3)],
                 ['Received', riceCatAbstract.received.toFixed(3)],
                 ['Total', riceCatAbstract.total.toFixed(3)],
-                ['Consumed', riceCatAbstract.consumed.toFixed(3)],
+                ['Consumed', (riceCatAbstract.consumed || 0).toFixed(3)],
                 ['Balance', { content: riceCatAbstract.balance.toFixed(3), styles: { fontStyle: 'bold' } }],
             ],
             theme: 'grid',
@@ -428,7 +428,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string): Blob
                 ['Opening', cashCatAbstract.opening.toFixed(2)],
                 ['Received', cashCatAbstract.received.toFixed(2)],
                 ['Total', cashCatAbstract.total.toFixed(2)],
-                ['Expenditure', cashCatAbstract.expenditure.toFixed(2)],
+                ['Expenditure', (cashCatAbstract.expenditure || 0).toFixed(2)],
                 ['Balance', { content: cashCatAbstract.balance.toFixed(2), styles: { fontStyle: 'bold' } }],
             ],
             theme: 'grid',
@@ -579,11 +579,11 @@ const generateYearlyConsumptionDetailedPDF = (data: AppData, financialYear: stri
                 mealsServed,
                 rice.opening.toFixed(3),
                 rice.received.toFixed(3),
-                rice.consumed.toFixed(3),
+                (rice.consumed || 0).toFixed(3),
                 { content: rice.balance.toFixed(3), styles: { fontStyle: 'bold' } },
                 cash.opening.toFixed(2),
                 cash.received.toFixed(2),
-                cash.expenditure.toFixed(2),
+                (cash.expenditure || 0).toFixed(2),
                 { content: cash.balance.toFixed(2), styles: { fontStyle: 'bold' } },
             ];
 
@@ -599,11 +599,11 @@ const generateYearlyConsumptionDetailedPDF = (data: AppData, financialYear: stri
             monthTotals.mealsServed += mealsServed;
             monthTotals.riceOpening += rice.opening;
             monthTotals.riceReceived += rice.received;
-            monthTotals.riceConsumed += rice.consumed;
+            monthTotals.riceConsumed += (rice.consumed || 0);
             monthTotals.riceClosing += rice.balance;
             monthTotals.cashOpening += cash.opening;
             monthTotals.cashReceived += cash.received;
-            monthTotals.cashExpenditure += cash.expenditure;
+            monthTotals.cashExpenditure += (cash.expenditure || 0);
             monthTotals.cashClosing += cash.balance;
         });
         

@@ -7,7 +7,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     login: (password: string) => Promise<boolean>;
     logout: () => void;
-    setupAccount: (authData: AuthData, udise?: string) => Promise<void>;
+    setupAccount: (authData: AuthData) => Promise<void>;
     resetPassword: (answer: string, newPass: string) => Promise<boolean>;
 }
 

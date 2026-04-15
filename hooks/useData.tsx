@@ -42,14 +42,14 @@ const getInitialData = (): AppData => {
     try {
         const savedData = localStorage.getItem(APP_DATA_KEY);
         if (savedData) {
-            const parsedData = JSON.parse(savedData) as Partial<AppData>;
+            const parsedData = (JSON.parse(savedData) || {}) as Partial<AppData>;
             let dataToProcess: AppData = {
                 ...defaultData,
                 ...parsedData,
                 auth: { 
-                    username: parsedData.auth?.username || defaultData.auth.username,
-                    securityQuestion: parsedData.auth?.securityQuestion || defaultData.auth.securityQuestion,
-                    securityAnswer: parsedData.auth?.securityAnswer || defaultData.auth.securityAnswer,
+                    username: parsedData.auth?.username || defaultData.auth!.username,
+                    securityQuestion: parsedData.auth?.securityQuestion || defaultData.auth!.securityQuestion,
+                    securityAnswer: parsedData.auth?.securityAnswer || defaultData.auth!.securityAnswer,
                     password: parsedData.auth?.password,
                     contact: parsedData.auth?.contact
                 },

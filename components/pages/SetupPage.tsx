@@ -90,7 +90,7 @@ const SetupPage: React.FC = () => {
         
         setErrors(newErrors);
         return Object.values(newErrors).every(error => error === '');
-    }, [udise, signupKeyInput, isKeyValid, username, contact, password, confirmPassword, securityAnswer, agreedToTerms, errors]);
+    }, [udise, signupKeyInput, username, contact, password, confirmPassword, securityAnswer, agreedToTerms, errors]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -113,7 +113,7 @@ const SetupPage: React.FC = () => {
                     password,
                     securityQuestion,
                     securityAnswer,
-                }, udise);
+                });
                 
                 showToast(`Setup complete for ${validation.schoolName || 'your school'}! Welcome.`, 'success');
             } catch (error) {
