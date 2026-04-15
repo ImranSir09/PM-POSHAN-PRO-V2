@@ -47,7 +47,7 @@ const Header: React.FC = () => {
                     aria-hidden="true"
                 />
             )}
-            <header className="relative z-40 flex items-center justify-between p-3 glass-panel rounded-2xl">
+            <header className="relative z-40 flex items-center justify-between p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
                 <div className="flex items-center space-x-2 sm:space-x-3">
                     <div className="overflow-hidden">
                         <h1 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">{data.settings.schoolDetails.name}</h1>
