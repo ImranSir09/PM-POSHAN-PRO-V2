@@ -8,7 +8,6 @@ const urlsToCache = [
   'index.html',
   // Scripts and other assets will be cached on first load via the 'fetch' event handler.
   // Pre-caching only the entry points is a good strategy.
-  'index.tsx', 
   'manifest.json',
   'icons/icon-192.svg',
   'icons/icon-512.svg',
