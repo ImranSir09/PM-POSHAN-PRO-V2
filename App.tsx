@@ -129,19 +129,28 @@ const AuthenticatedApp: React.FC = () => {
                 <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
             </div>
             
-            <Modal isOpen={showPaymentModal} onClose={handleClosePaymentModal} title="Service Continuation">
+            <Modal isOpen={showPaymentModal} onClose={handleClosePaymentModal} title="Service Subscription">
                 <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="bg-sky-100 dark:bg-sky-900/50 p-4 rounded-full">
-                        <svg className="w-8 h-8 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <div className="bg-indigo-100 dark:bg-indigo-900/50 p-4 rounded-full">
+                        <svg className="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
-                    <p className="text-slate-600 dark:text-slate-300">
-                        Please pay a minimum of <strong className="text-slate-800 dark:text-white">₹100/annually</strong> for the continuation of the service.
-                    </p>
-                    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl w-full border border-slate-100 dark:border-slate-800">
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Pay via UPI to:</p>
-                        <p className="text-lg font-mono font-semibold text-indigo-700 dark:text-indigo-400">+919596555467</p>
+                    <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Support PM Poshan Pro</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            To support the continued development and maintenance of this application, we kindly request a nominal annual contribution. Your support ensures the service remains reliable and feature-rich for all schools.
+                        </p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl w-full border border-slate-100 dark:border-slate-800 space-y-3">
+                        <div className="flex justify-between items-center text-sm">
+                            <span className="text-slate-500 dark:text-slate-400">Annual Contribution:</span>
+                            <span className="font-bold text-slate-900 dark:text-white">₹100</span>
+                        </div>
+                        <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider font-semibold text-center">Pay via UPI to</p>
+                            <p className="text-xl font-mono font-bold text-indigo-700 dark:text-indigo-400 text-center">+919596555467</p>
+                        </div>
                     </div>
                     <Button onClick={handleClosePaymentModal} className="w-full mt-2">
                         I Understand
