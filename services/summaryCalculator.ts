@@ -125,9 +125,9 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
         riceAbstracts[cat] = {
             opening: riceOpening,
             received: riceReceived,
-            total: riceOpening + riceReceived,
+            total: parseFloat((riceOpening + riceReceived).toFixed(3)),
             consumed: riceConsumed,
-            balance: riceOpening + riceReceived - riceConsumed,
+            balance: parseFloat((riceOpening + riceReceived - riceConsumed).toFixed(3)),
         };
         
         const cashOpening = openingBalance.cash?.[cat] || 0;
@@ -137,9 +137,9 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
         cashAbstracts[cat] = {
             opening: cashOpening,
             received: cashReceived,
-            total: cashOpening + cashReceived,
+            total: parseFloat((cashOpening + cashReceived).toFixed(2)),
             expenditure: cashExpenditure,
-            balance: cashOpening + cashReceived - cashExpenditure,
+            balance: parseFloat((cashOpening + cashReceived - cashExpenditure).toFixed(2)),
         };
     });
 
