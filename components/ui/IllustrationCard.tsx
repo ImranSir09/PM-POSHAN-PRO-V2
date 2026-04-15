@@ -11,8 +11,8 @@ const IllustrationCard: React.FC<IllustrationCardProps> = ({ inchargeName, incha
     const showInchargeDetails = inchargeName && inchargeName.trim() !== '';
 
     return (
-        <Card className="!p-0 overflow-hidden relative bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-slate-900 dark:to-indigo-950 shadow-md">
-            <div className="p-5 relative z-10">
+        <Card className="!p-0 overflow-hidden relative bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-slate-900 dark:to-indigo-950 shadow-md border-none">
+            <div className="p-6 relative z-10">
                 <div className="flex justify-between items-start">
                     <div>
                         <h2 className="text-xl font-bold text-white tracking-tight">Welcome!</h2>

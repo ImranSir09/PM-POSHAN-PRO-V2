@@ -42,7 +42,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, setCurrentPage }) 
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-40 p-2">
-            <div className="max-w-md mx-auto flex items-center justify-around bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-2xl shadow-sm">
+            <div className="max-w-md mx-auto flex items-center justify-around glass-panel rounded-2xl">
                 {navItems.map(item => (
                     <NavButton
                         key={item.id}

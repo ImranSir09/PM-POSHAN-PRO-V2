@@ -4,8 +4,30 @@
 
 @layer base {
   body {
-    @apply font-sans;
+    @apply font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased;
   }
+}
+
+/* Recipe 8: Clean Utility / Minimal + Recipe 11: SaaS Landing */
+.card-container {
+  @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-6 transition-all duration-500;
+}
+
+.card-container:hover {
+  @apply shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] border-slate-300/50 dark:border-slate-700/50 transform -translate-y-1;
+}
+
+.big-stat {
+  @apply text-4xl font-light tracking-tight text-indigo-600 dark:text-indigo-400;
+}
+
+.text-muted {
+  @apply text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-[0.15em];
+}
+
+/* Glass effect for navigation and headers */
+.glass-panel {
+  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/20 dark:border-slate-800/20 shadow-lg;
 }
 
 .animated-blob {
