@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
-import { SIGNUP_KEY } from '../../constants';
+import { validateUserWithSheetDB } from '../../services/sheetdbService';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -48,10 +48,6 @@ const SetupPage: React.FC = () => {
         terms: '',
     });
 
-    const isKeyValid = useMemo(() => {
-        return signupKeyInput.trim() === SIGNUP_KEY;
-    }, [signupKeyInput]);
-
     const validate = useCallback((fieldName?: keyof typeof errors) => {
         const newErrors = { ...errors };
         
@@ -61,11 +57,7 @@ const SetupPage: React.FC = () => {
                 if (udise.length !== 11) return 'UDISE code must be exactly 11 digits.';
                 return '';
             },
-            signupKey: () => {
-                if (!signupKeyInput) return 'Signup Key is required.';
-                if (!isKeyValid) return 'Invalid Signup Key.';
-                return '';
-            },
+            signupKey: () => !signupKeyInput ? 'Registration Key is required.' : '',
             username: () => !username ? 'Username is required.' : '',
             contact: () => {
                 if (contact && !/^\d{10}$/.test(contact)) return 'Contact number must be 10 digits.';
@@ -105,7 +97,16 @@ const SetupPage: React.FC = () => {
         if (validate()) {
             setIsProcessing(true);
             try {
-                // Setup account and also save the UDISE to settings immediately
+                // 1. Validate with SheetDB first
+                const validation = await validateUserWithSheetDB(udise, signupKeyInput);
+                
+                if (!validation.success) {
+                    showToast(validation.error || 'Validation failed.', 'error');
+                    setIsProcessing(false);
+                    return;
+                }
+
+                // 2. If valid, proceed with account setup
                 await setupAccount({
                     username,
                     contact,
@@ -113,7 +114,8 @@ const SetupPage: React.FC = () => {
                     securityQuestion,
                     securityAnswer,
                 }, udise);
-                showToast('Setup complete! Welcome.', 'success');
+                
+                showToast(`Setup complete for ${validation.schoolName || 'your school'}! Welcome.`, 'success');
             } catch (error) {
                 showToast('An error occurred during setup.', 'error');
                 setIsProcessing(false);
@@ -155,19 +157,19 @@ const SetupPage: React.FC = () => {
                                     </div>
                                     <div>
                                         <Input
-                                            label="Signup Key"
+                                            label="Registration Key"
                                             id="signup-key"
                                             value={signupKeyInput}
                                             onChange={e => setSignupKeyInput(e.target.value)}
                                             onBlur={() => validate('signupKey')}
                                             required
-                                            placeholder="Enter signup key"
-                                            className={errors.signupKey ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : isKeyValid ? 'border-emerald-500 focus:ring-emerald-500/20 focus:border-emerald-500' : ''}
+                                            placeholder="Enter your unique registration key"
+                                            className={errors.signupKey ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
                                         />
                                         {errors.signupKey ? (
                                             <p className="mt-1 text-xs text-red-500">{errors.signupKey}</p>
                                         ) : (
-                                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Please provide the official signup key to proceed.</p>
+                                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Please provide your unique registration key provided by the developer.</p>
                                         )}
                                     </div>
                                 </div>
@@ -259,7 +261,7 @@ const SetupPage: React.FC = () => {
                             </Button>
 
                             <div className="mt-6 text-xs pt-4 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-center">
-                                <p className="font-semibold mb-1 text-slate-700 dark:text-slate-300">Developer Contact for Signup Key:</p>
+                                <p className="font-semibold mb-1 text-slate-700 dark:text-slate-300">Developer Contact for Registration Key:</p>
                                 <p>Imran Gani Mugloo</p>
                                 <p><a href="tel:+919149690096" className="text-indigo-600 dark:text-indigo-400 hover:underline">+91 9149690096</a></p>
                                 <p><a href="mailto:emraanmugloo123@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">emraanmugloo123@gmail.com</a></p>
