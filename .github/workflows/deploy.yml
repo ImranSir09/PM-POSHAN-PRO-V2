@@ -24,10 +24,13 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci || npm install
 
       - name: Build
         run: npm run build
+
+      - name: List output
+        run: ls -R dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
