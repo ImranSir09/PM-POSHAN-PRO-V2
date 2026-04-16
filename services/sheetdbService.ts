@@ -31,7 +31,16 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
         const searchUrl = `${apiUrl}/search?udise=${udise}&registration_key=${registrationKey}`;
         console.log('Fetching from SheetDB:', searchUrl.replace(apiUrl.split('/').pop() || '', '***')); // Mask API ID in logs
         
-        const response = await fetch(searchUrl);
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        const apiKey = import.meta.env.VITE_SHEETDB_API_KEY;
+        if (apiKey) {
+            headers['Authorization'] = `Bearer ${apiKey}`;
+        }
+
+        const response = await fetch(searchUrl, { headers });
         console.log('SheetDB Response status:', response.status);
         
         if (!response.ok) {
