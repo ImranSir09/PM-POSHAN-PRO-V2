@@ -17,11 +17,17 @@ const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', classNam
         danger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-sm focus:ring-2 focus:ring-rose-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900',
     };
 
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        console.log('Button clicked:', children);
+        if (props.onClick) props.onClick(e);
+    };
+
     return (
         <button 
             className={`${baseClasses} ${variantClasses[variant]} ${className}`} 
             disabled={isLoading || props.disabled}
             {...props}
+            onClick={handleClick}
         >
             {isLoading ? (
                 <>

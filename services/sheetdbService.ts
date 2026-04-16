@@ -8,16 +8,22 @@ export interface SheetDBUser {
 }
 
 export const validateUserWithSheetDB = async (udise: string, registrationKey: string): Promise<{ success: boolean; schoolName?: string; error?: string }> => {
-    const apiUrl = import.meta.env.VITE_SHEETDB_URL;
+    let apiUrl = import.meta.env.VITE_SHEETDB_URL;
     
-    if (!apiUrl) {
-        console.error('SheetDB API URL is not configured.');
-        return { success: false, error: 'System configuration error. Please contact developer.' };
+    if (!apiUrl || apiUrl.includes('YOUR_API_ID')) {
+        console.error('SheetDB API URL is not configured or still has placeholder.');
+        return { success: false, error: 'System configuration error. Please set your SheetDB URL in settings.' };
     }
 
+    // Remove trailing slash if present
+    apiUrl = apiUrl.replace(/\/$/, '');
+
     try {
-        // SheetDB search endpoint: GET /search?column=value
-        const response = await fetch(`${apiUrl}/search?udise=${udise}&registration_key=${registrationKey}`);
+        const searchUrl = `${apiUrl}/search?udise=${udise}&registration_key=${registrationKey}`;
+        console.log('Fetching from SheetDB:', searchUrl);
+        
+        const response = await fetch(searchUrl);
+        console.log('SheetDB Response status:', response.status);
         
         if (!response.ok) {
             throw new Error('Failed to connect to validation server.');

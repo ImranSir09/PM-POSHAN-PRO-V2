@@ -17,6 +17,7 @@ const SECURITY_QUESTIONS = [
 ];
 
 const SetupPage: React.FC = () => {
+    console.log('SetupPage rendering');
     const { setupAccount } = useAuth();
     const { showToast } = useToast();
     
@@ -38,6 +39,10 @@ const SetupPage: React.FC = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [verifiedSchoolName, setVerifiedSchoolName] = useState('');
+
+    useEffect(() => {
+        console.log('SetupPage State:', { isVerified, isProcessing, udise, signupKeyInput });
+    }, [isVerified, isProcessing, udise, signupKeyInput]);
 
     const [errors, setErrors] = useState({
         udise: '',
@@ -79,10 +84,16 @@ const SetupPage: React.FC = () => {
             terms: () => !agreedToTerms ? 'You must agree to the Terms and Conditions to proceed.' : '',
         };
 
+        let isValid = true;
         if (fieldName) {
-            newErrors[fieldName] = validators[fieldName]();
+            const error = validators[fieldName]();
+            newErrors[fieldName] = error;
+            isValid = error === '';
+            
             if (fieldName === 'password' && confirmPassword) {
-                newErrors.confirmPassword = validators.confirmPassword();
+                const confirmErr = validators.confirmPassword();
+                newErrors.confirmPassword = confirmErr;
+                if (confirmErr) isValid = false;
             }
         } else {
             // Only validate relevant fields based on current step
@@ -91,21 +102,27 @@ const SetupPage: React.FC = () => {
                 : (['udise', 'signupKey'] as const);
 
             fieldsToValidate.forEach(key => {
-                newErrors[key] = validators[key]();
+                const error = validators[key]();
+                newErrors[key] = error;
+                if (error) isValid = false;
             });
         }
         
+        console.log('Validation check:', { isVerified, isValid, newErrors });
         setErrors(newErrors);
-        return isVerified 
-            ? !newErrors.username && !newErrors.password && !newErrors.confirmPassword && !newErrors.securityAnswer && !newErrors.terms
-            : !newErrors.udise && !newErrors.signupKey;
+        return isValid;
     }, [udise, signupKeyInput, username, contact, password, confirmPassword, securityAnswer, agreedToTerms, errors, isVerified]);
 
     const handleVerify = async () => {
-        if (validate()) {
+        console.log('handleVerify called');
+        const isValid = validate();
+        console.log('Validation result:', isValid, errors);
+        if (isValid) {
             setIsProcessing(true);
             try {
+                console.log('Calling validateUserWithSheetDB with:', udise, signupKeyInput);
                 const validation = await validateUserWithSheetDB(udise, signupKeyInput);
+                console.log('Validation response:', validation);
                 if (validation.success) {
                     setVerifiedSchoolName(validation.schoolName || 'Verified School');
                     setIsVerified(true);
@@ -114,10 +131,13 @@ const SetupPage: React.FC = () => {
                     showToast(validation.error || 'Invalid UDISE or Key combination.', 'error');
                 }
             } catch (error) {
+                console.error('handleVerify error:', error);
                 showToast('Connection error. Please try again.', 'error');
             } finally {
                 setIsProcessing(false);
             }
+        } else {
+            showToast('Please check the errors above.', 'info');
         }
     };
 
