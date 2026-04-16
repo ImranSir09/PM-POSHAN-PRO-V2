@@ -1,13 +1,16 @@
 {
-  "name": "pm-poshan-pro",
+  "name": "pm-poshan-pro-v2",
   "private": true,
-  "version": "2.1.0",
+  "version": "0.0.0",
+  "homepage": "https://imransir09.github.io/PM-POSHAN-PRO-V2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:gh": "BASE_URL=/PM-POSHAN-PRO-V2/ vite build",
     "preview": "vite preview",
-    "lint": "tsc --noEmit"
+    "predeploy": "npm run build:gh",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@google/genai": "^1.16.0",
