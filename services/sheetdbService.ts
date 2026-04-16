@@ -20,11 +20,16 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
     }
 
     // Remove trailing slash if present
-    apiUrl = apiUrl.replace(/\/$/, '');
+    apiUrl = apiUrl.trim().replace(/\/$/, '');
+
+    // Ensure protocol is present
+    if (!apiUrl.startsWith('http')) {
+        apiUrl = `https://${apiUrl}`;
+    }
 
     try {
         const searchUrl = `${apiUrl}/search?udise=${udise}&registration_key=${registrationKey}`;
-        console.log('Fetching from SheetDB:', searchUrl);
+        console.log('Fetching from SheetDB:', searchUrl.replace(apiUrl.split('/').pop() || '', '***')); // Mask API ID in logs
         
         const response = await fetch(searchUrl);
         console.log('SheetDB Response status:', response.status);
@@ -85,6 +90,10 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
         }
     } catch (error) {
         console.error('SheetDB Validation Error:', error);
-        return { success: false, error: 'Connection error. Please check your internet and try again.' };
+        const message = error instanceof Error ? error.message : 'Unknown connection error';
+        return { 
+            success: false, 
+            error: `Connection error: ${message}. Please check your API URL and internet connection.` 
+        };
     }
 };
