@@ -1,4 +1,6 @@
 
+import { showToast } from '../hooks/useToast';
+
 export interface SheetDBUser {
     udise: string;
     registration_key: string;
@@ -11,8 +13,10 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
     let apiUrl = import.meta.env.VITE_SHEETDB_URL;
     
     if (!apiUrl || apiUrl.includes('YOUR_API_ID')) {
-        console.error('SheetDB API URL is not configured or still has placeholder.');
-        return { success: false, error: 'System configuration error. Please set your SheetDB URL in settings.' };
+        const errorMsg = 'SheetDB API URL is not configured. Please set VITE_SHEETDB_URL in settings.';
+        console.error(errorMsg);
+        showToast(errorMsg, 'error');
+        return { success: false, error: errorMsg };
     }
 
     // Remove trailing slash if present
@@ -26,20 +30,32 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
         console.log('SheetDB Response status:', response.status);
         
         if (!response.ok) {
-            throw new Error('Failed to connect to validation server.');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.message || 'Failed to connect to validation server.');
         }
 
-        const data: SheetDBUser[] = await response.json();
+        const data = await response.json();
+        console.log('SheetDB Data received:', data);
 
-        if (data && data.length > 0) {
-            const user = data[0];
+        if (Array.isArray(data) && data.length > 0) {
+            // Find an exact match in the returned results (SheetDB search can be fuzzy)
+            const user = data.find((u: any) => 
+                String(u.udise).trim() === String(udise).trim() && 
+                String(u.registration_key).trim() === String(registrationKey).trim()
+            ) as SheetDBUser | undefined;
+            
+            if (!user) {
+                return { success: false, error: 'No exact match found for these credentials.' };
+            }
 
             // 1. Check if account is active
             // SheetDB returns booleans as strings "TRUE"/"FALSE" or "1"/"0" sometimes
+            const activeVal = String(user.active).toUpperCase();
             const isActive = user.active === undefined || 
                            user.active === true || 
-                           user.active === 'TRUE' || 
-                           user.active === '1';
+                           activeVal === 'TRUE' || 
+                           activeVal === '1' ||
+                           activeVal === 'ACTIVE';
             
             if (!isActive) {
                 return { success: false, error: 'This account has been deactivated. Please contact support.' };
@@ -48,12 +64,14 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
             // 2. Check Expiry Date
             if (user.expiry_date) {
                 const expiry = new Date(user.expiry_date);
-                const today = new Date();
-                // Set hours to 0 to compare only dates
-                today.setHours(0, 0, 0, 0);
-                
-                if (expiry < today) {
-                    return { success: false, error: 'This registration key has expired.' };
+                if (!isNaN(expiry.getTime())) {
+                    const today = new Date();
+                    // Set hours to 0 to compare only dates
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (expiry < today) {
+                        return { success: false, error: 'This registration key has expired.' };
+                    }
                 }
             }
 

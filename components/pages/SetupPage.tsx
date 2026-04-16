@@ -59,10 +59,11 @@ const SetupPage: React.FC = () => {
                 if (udise.length !== 11) return 'UDISE code must be exactly 11 digits.';
                 return '';
             },
-            signupKey: () => !signupKeyInput ? 'Registration Key is required.' : '',
-            username: () => !username ? 'Username is required.' : '',
+            signupKey: () => !signupKeyInput.trim() ? 'Registration Key is required.' : '',
+            username: () => !username.trim() ? 'Username is required.' : '',
             contact: () => {
-                if (contact && !/^\d{10}$/.test(contact)) return 'Contact number must be 10 digits.';
+                const trimmedContact = contact.trim();
+                if (trimmedContact && !/^\d{10}$/.test(trimmedContact)) return 'Contact number must be 10 digits.';
                 return '';
             },
             password: () => {
@@ -111,19 +112,21 @@ const SetupPage: React.FC = () => {
     const handleVerify = async () => {
         console.log('handleVerify called');
         const isValid = validate();
-        console.log('Validation result:', isValid, errors);
         if (isValid) {
             setIsProcessing(true);
             try {
-                console.log('Calling validateUserWithSheetDB with:', udise, signupKeyInput);
-                const validation = await validateUserWithSheetDB(udise, signupKeyInput);
+                console.log('Calling validateUserWithSheetDB with:', udise, signupKeyInput.trim());
+                const validation = await validateUserWithSheetDB(udise, signupKeyInput.trim());
                 console.log('Validation response:', validation);
                 if (validation.success) {
                     setVerifiedSchoolName(validation.schoolName || 'Verified School');
                     setIsVerified(true);
                     showToast('School verified successfully!', 'success');
                 } else {
-                    showToast(validation.error || 'Invalid UDISE or Key combination.', 'error');
+                    // Set a specific error for the fields if possible, or show a toast
+                    const errorMsg = validation.error || 'Invalid UDISE or Key combination.';
+                    showToast(errorMsg, 'error');
+                    setErrors(prev => ({ ...prev, udise: errorMsg, signupKey: errorMsg }));
                 }
             } catch (error) {
                 console.error('handleVerify error:', error);
