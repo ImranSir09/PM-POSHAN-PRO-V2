@@ -57,6 +57,15 @@ const AppContent: React.FC = () => {
 
     const needsSetup = !data.auth?.password;
 
+    useEffect(() => {
+        console.log('App State:', { 
+            hasPassword: !!data.auth?.password, 
+            isAuthenticated, 
+            welcomeScreenShown: data.welcomeScreenShown,
+            needsSetup
+        });
+    }, [data.auth?.password, isAuthenticated, data.welcomeScreenShown, needsSetup]);
+
     if (needsSetup) {
         return <SetupPage />;
     }

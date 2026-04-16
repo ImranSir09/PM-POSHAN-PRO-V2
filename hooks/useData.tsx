@@ -130,7 +130,7 @@ interface DataContextType {
     resetData: () => void;
     updateLastBackupDate: () => void;
     updateAuth: (authData: AuthData) => void;
-    setupAccountData: (authData: AuthData) => void;
+    setupAccountData: (authData: AuthData, udise: string, schoolName: string) => void;
     markWelcomeAsShown: () => void;
 }
 
@@ -204,10 +204,16 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setData(prevData => ({ ...prevData, auth: authData }));
     }, []);
 
-    const setupAccountData = useCallback((authData: AuthData) => {
+    const setupAccountData = useCallback((authData: AuthData, udise: string, schoolName: string) => {
+        console.log('Setting up account data for:', schoolName, udise);
         setData(prevData => {
             const newSettings = {
                 ...prevData.settings,
+                schoolDetails: {
+                    ...prevData.settings.schoolDetails,
+                    udise: udise,
+                    name: schoolName || prevData.settings.schoolDetails.name,
+                },
                 mdmIncharge: {
                     name: authData.username,
                     contact: authData.contact || '',

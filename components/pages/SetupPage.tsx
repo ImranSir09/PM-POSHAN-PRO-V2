@@ -113,7 +113,7 @@ const SetupPage: React.FC = () => {
                     password,
                     securityQuestion,
                     securityAnswer,
-                });
+                }, udise, validation.schoolName || '');
                 
                 showToast(`Setup complete for ${validation.schoolName || 'your school'}! Welcome.`, 'success');
             } catch (error) {

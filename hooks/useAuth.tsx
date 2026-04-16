@@ -7,7 +7,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     login: (password: string) => Promise<boolean>;
     logout: () => void;
-    setupAccount: (authData: AuthData) => Promise<void>;
+    setupAccount: (authData: AuthData, udise: string, schoolName: string) => Promise<void>;
     resetPassword: (answer: string, newPass: string) => Promise<boolean>;
 }
 
@@ -41,8 +41,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         sessionStorage.removeItem('pm-poshan-auth');
     };
 
-    const setupAccount = async (authData: AuthData) => {
-        setupAccountData(authData);
+    const setupAccount = async (authData: AuthData, udise: string, schoolName: string) => {
+        setupAccountData(authData, udise, schoolName);
         setIsAuthenticated(true);
         sessionStorage.setItem('pm-poshan-auth', 'true');
     };
