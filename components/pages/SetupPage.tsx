@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { validateUserWithSheetDB } from '../../services/sheetdbService';
@@ -17,7 +17,6 @@ const SECURITY_QUESTIONS = [
 ];
 
 const SetupPage: React.FC = () => {
-    console.log('SetupPage rendering');
     const { setupAccount } = useAuth();
     const { showToast } = useToast();
     
@@ -39,10 +38,6 @@ const SetupPage: React.FC = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [verifiedSchoolName, setVerifiedSchoolName] = useState('');
-
-    useEffect(() => {
-        console.log('SetupPage State:', { isVerified, isProcessing, udise, signupKeyInput });
-    }, [isVerified, isProcessing, udise, signupKeyInput]);
 
     const [errors, setErrors] = useState({
         udise: '',
