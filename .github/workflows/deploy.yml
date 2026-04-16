@@ -26,6 +26,8 @@ jobs:
 
       - name: Build for GitHub Pages
         run: npm run build:gh
+        env:
+         VITE_SHEETDB_URL: ${{ secrets.VITE_SHEETDB_URL }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
