@@ -9,7 +9,7 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
     const apiUrl = import.meta.env.VITE_SHEETDB_URL;
     
     if (!apiUrl) {
-        console.error('https://sheetdb.io/api/v1/4lvgbdscalcp3');
+        console.error('SheetDB API URL is not configured.');
         return { success: false, error: 'System configuration error. Please contact developer.' };
     }
 
