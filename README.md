@@ -15,7 +15,7 @@ GitHub Pages
 https://imransir09.github.io/PM-POSHAN-PRO-V2/
 
 Vercel  
-(Add your Vercel link)
+https://pm-poshan-pro-v2.vercel.app/
 
 ---
 
