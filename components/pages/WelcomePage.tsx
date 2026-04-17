@@ -19,7 +19,7 @@ const WelcomePage: React.FC = () => {
                 <Card className="w-full text-center">
                     <div className="p-6">
                         <div className="flex justify-center mb-6">
-                            <img src="/icon-192.png" style={{ width: 80 }} />
+                            <img src="icon-192.png" style={{ width: 80 }} />
                         </div>
                         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome to PM Poshan Pro!</h1>
                         <p className="mt-4 text-sm text-slate-600 dark:text-slate-300">
