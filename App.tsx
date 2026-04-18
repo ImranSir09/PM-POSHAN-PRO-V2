@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import InstallPrompt from "./components/InstallPrompt";
 import { DataProvider, useData } from './hooks/useData';
 import { ThemeProvider } from './hooks/useTheme';
 import { NotificationProvider } from './hooks/useNotifications';
