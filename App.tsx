@@ -68,19 +68,38 @@ const AppContent: React.FC = () => {
     }, [data.auth?.password, isAuthenticated, data.welcomeScreenShown, needsSetup]);
 
     if (needsSetup) {
-        return <SetupPage />;
-    }
+    return (
+        <>
+            <InstallPrompt />
+            <SetupPage />
+        </>
+    );
+}
 
-    if (!isAuthenticated) {
-        return <LoginPage />;
-    }
-    
-    // If authenticated, but the welcome screen hasn't been shown, show it.
-    if (data.welcomeScreenShown === false) {
-        return <WelcomePage />;
-    }
-    
-    return <AuthenticatedApp />;
+if (!isAuthenticated) {
+    return (
+        <>
+            <InstallPrompt />
+            <LoginPage />
+        </>
+    );
+}
+
+if (data.welcomeScreenShown === false) {
+    return (
+        <>
+            <InstallPrompt />
+            <WelcomePage />
+        </>
+    );
+}
+
+return (
+    <>
+        <InstallPrompt />
+        <AuthenticatedApp />
+    </>
+);
 };
 
 const AuthenticatedApp: React.FC = () => {
