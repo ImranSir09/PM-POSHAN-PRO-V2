@@ -65,7 +65,7 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
             // 1. Check if account is active
             // SheetDB returns booleans as strings "TRUE"/"FALSE" or "1"/"0" sometimes
             const activeVal = String(user.active).toUpperCase();
-            const isActive = user.active === undefined || 
+            const isActive = user.active ===
                            user.active === true || 
                            activeVal === 'TRUE' || 
                            activeVal === '1' ||
