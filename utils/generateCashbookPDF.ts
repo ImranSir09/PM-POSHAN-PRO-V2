@@ -8,13 +8,25 @@ export const generateCashbookPDF = (data: any, month: string) => {
   const allExpenses = Array.isArray(data.dailyEntries) ? data.dailyEntries : [];
 
   // Filter current month
-  const receipts = allReceipts.filter((r: any) =>
-    r.date?.startsWith(month)
-  );
+  const isSameMonth = (dateStr: string) => {
+  if (!dateStr) return false;
 
-  const expenses = allExpenses.filter((e: any) =>
-    e.date?.startsWith(month)
-  );
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return false;
+
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+
+  return `${y}-${m}` === month;
+};
+
+const receipts = allReceipts.filter((r: any) =>
+  isSameMonth(r.date)
+);
+
+const expenses = allExpenses.filter((e: any) =>
+  isSameMonth(e.date)
+);
 
   // Calculate opening balance from previous data
   const previousReceipts = allReceipts
