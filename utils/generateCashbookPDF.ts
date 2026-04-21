@@ -68,5 +68,8 @@ export const generateCashbookPDF = (data: any, month: string) => {
     ],
   });
 
-  doc.save(`Cashbook-${month}.pdf`);
+  return {
+  pdfBlob: doc.output("blob"),
+  filename: `Cashbook-${month}.pdf`
+};
 };
