@@ -1,6 +1,6 @@
 import { AppData, Category, ClassRoll, Settings } from '../types';
 import { calculateMonthlySummary, getOpeningBalanceInfo } from './summaryCalculator';
-import { generateCashbookPDF } from "./utils/generateCashbookPDF";
+import { generateCashbookPDF } from "../utils/generateCashbookPDF";
 
 interface jsPDF {
     autoTable: (options: any) => jsPDF;
