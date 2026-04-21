@@ -691,7 +691,10 @@ export const generatePDFReport = (reportType: string, data: AppData, parameter: 
             filename = `${schoolName}_Yearly_Consumption_${parameter.replace('-', '_')}.pdf`;
             break;
             case 'cashbook':
-    return generateCashbookPDF(data, parameter);
+    const result = generateCashbookPDF(data, parameter);
+    pdfBlob = result.pdfBlob;
+    filename = result.filename;
+    break;
         default:
             throw new Error('Invalid report type selected.');
     }
