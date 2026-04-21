@@ -4,19 +4,49 @@ import "jspdf-autotable";
 export const generateCashbookPDF = (data: any, month: string) => {
   const doc = new jsPDF();
 
-  const receipts = Array.isArray(data.receipts) ? data.receipts : [];
-  const expenses = Array.isArray(data.dailyEntries) ? data.dailyEntries : [];
+  const allReceipts = Array.isArray(data.receipts) ? data.receipts : [];
+  const allExpenses = Array.isArray(data.dailyEntries) ? data.dailyEntries : [];
 
-  let openingBalance = Number(data.openingBalance || 0);
+  // Filter current month
+  const receipts = allReceipts.filter((r: any) =>
+    r.date?.startsWith(month)
+  );
 
-  const totalIncome = receipts.reduce((sum: number, r: any) => sum + (parseFloat(r.amount) || 0), 0);
-  const totalExpense = expenses.reduce((sum: number, e: any) => sum + (parseFloat(e.totalCost) || 0), 0);
+  const expenses = allExpenses.filter((e: any) =>
+    e.date?.startsWith(month)
+  );
+
+  // Calculate opening balance from previous data
+  const previousReceipts = allReceipts
+    .filter((r: any) => r.date < `${month}-01`)
+    .reduce((sum: number, r: any) => sum + (parseFloat(r.amount) || 0), 0);
+
+  const previousExpenses = allExpenses
+    .filter((e: any) => e.date < `${month}-01`)
+    .reduce((sum: number, e: any) => sum + (parseFloat(e.totalCost) || 0), 0);
+
+  const openingBalance = previousReceipts - previousExpenses;
+
+  if (receipts.length === 0 && expenses.length === 0) {
+    throw new Error("No data available for this month");
+  }
+
+  const totalIncome = receipts.reduce(
+    (sum: number, r: any) => sum + (parseFloat(r.amount) || 0),
+    0
+  );
+
+  const totalExpense = expenses.reduce(
+    (sum: number, e: any) => sum + (parseFloat(e.totalCost) || 0),
+    0
+  );
 
   const totalAvailable = openingBalance + totalIncome;
   const closingBalance = totalAvailable - totalExpense;
 
-  doc.setFontSize(16);
-  doc.text("Cash Book - Page 1", 14, 15);
+  // -------- PAGE 1 --------
+  doc.setFontSize(14);
+  doc.text("PM POSHAN CASHBOOK", 14, 15);
 
   doc.setFontSize(10);
   doc.text(`Month: ${month}`, 14, 22);
@@ -25,9 +55,9 @@ export const generateCashbookPDF = (data: any, month: string) => {
     startY: 30,
     head: [["Particulars", "Amount"]],
     body: [
-      ["Opening Balance", openingBalance],
-      ["Total Income", totalIncome],
-      ["Total Available", totalAvailable],
+      ["Opening Balance", openingBalance.toFixed(2)],
+      ["Total Income", totalIncome.toFixed(2)],
+      ["Total Available", totalAvailable.toFixed(2)],
     ],
   });
 
@@ -37,24 +67,25 @@ export const generateCashbookPDF = (data: any, month: string) => {
     startY: lastY + 10,
     head: [["Date", "Description", "Amount"]],
     body: receipts.map((r: any) => [
-      r.date,
+      r.date || "",
       r.description || "Receipt",
-      r.amount,
+      (parseFloat(r.amount) || 0).toFixed(2),
     ]),
   });
 
+  // -------- PAGE 2 --------
   doc.addPage();
 
-  doc.setFontSize(16);
-  doc.text("Cash Book - Page 2", 14, 15);
+  doc.setFontSize(14);
+  doc.text("PM POSHAN CASHBOOK", 14, 15);
 
   doc.autoTable({
     startY: 25,
     head: [["Date", "Description", "Amount"]],
     body: expenses.map((e: any) => [
-      e.date,
+      e.date || "",
       "Meal Expense",
-      e.totalCost,
+      (parseFloat(e.totalCost) || 0).toFixed(2),
     ]),
   });
 
@@ -64,14 +95,18 @@ export const generateCashbookPDF = (data: any, month: string) => {
     startY: lastY2 + 10,
     head: [["Summary", "Amount"]],
     body: [
-      ["Total Income", totalIncome],
-      ["Total Expenditure", totalExpense],
-      ["Closing Balance", closingBalance],
+      ["Total Income", totalIncome.toFixed(2)],
+      ["Total Expenditure", totalExpense.toFixed(2)],
+      ["Closing Balance", closingBalance.toFixed(2)],
     ],
   });
 
+  // -------- SIGNATURES --------
+  doc.text("MDM Incharge", 20, 280);
+  doc.text("Head of Institution", 140, 280);
+
   return {
     pdfBlob: doc.output("blob"),
-    filename: `Cashbook-${month}.pdf`
+    filename: `Cashbook-${month}.pdf`,
   };
 };
