@@ -7,34 +7,57 @@ export const generateCashbookPDF = (data: any, month: string) => {
   const allReceipts = Array.isArray(data.receipts) ? data.receipts : [];
   const allExpenses = Array.isArray(data.dailyEntries) ? data.dailyEntries : [];
 
-  // Filter current month
+  // -------- DATE HELPERS --------
+  const parseDate = (dateStr: string) => {
+    if (!dateStr) return null;
+
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d;
+
+    // fallback for dd-mm-yyyy
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const [dd, mm, yyyy] = parts;
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+
+    return null;
+  };
+
   const isSameMonth = (dateStr: string) => {
-  if (!dateStr) return false;
+    const d = parseDate(dateStr);
+    if (!d) return false;
 
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return false;
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
 
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
+    return `${y}-${m}` === month;
+  };
 
-  return `${y}-${m}` === month;
-};
+  const isBeforeMonth = (dateStr: string) => {
+    const d = parseDate(dateStr);
+    if (!d) return false;
 
-const receipts = allReceipts.filter((r: any) =>
-  isSameMonth(r.date)
-);
+    const [year, mon] = month.split("-").map(Number);
+    return d < new Date(year, mon - 1, 1);
+  };
 
-const expenses = allExpenses.filter((e: any) =>
-  isSameMonth(e.date)
-);
+  // -------- FILTER DATA --------
+  const receipts = allReceipts.filter((r: any) =>
+    isSameMonth(r.date)
+  );
 
-  // Calculate opening balance from previous data
+  const expenses = allExpenses.filter((e: any) =>
+    isSameMonth(e.date)
+  );
+
+  // -------- OPENING BALANCE --------
   const previousReceipts = allReceipts
-    .filter((r: any) => r.date < `${month}-01`)
+    .filter((r: any) => isBeforeMonth(r.date))
     .reduce((sum: number, r: any) => sum + (parseFloat(r.amount) || 0), 0);
 
   const previousExpenses = allExpenses
-    .filter((e: any) => e.date < `${month}-01`)
+    .filter((e: any) => isBeforeMonth(e.date))
     .reduce((sum: number, e: any) => sum + (parseFloat(e.totalCost) || 0), 0);
 
   const openingBalance = previousReceipts - previousExpenses;
