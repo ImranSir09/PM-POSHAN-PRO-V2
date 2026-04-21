@@ -17,7 +17,8 @@ const reportDescriptions: Record<string, string> = {
     roll_statement: "Creates a summary of student enrollment numbers by class and social category.",
     daily_consumption: "Produces a detailed, register-style log of daily meals, attendance, and expenditure for the selected month.",
     rice_requirement: "Generates a formal certificate for the monthly rice requirement based on enrollment and working days.",
-    yearly_consumption_detailed: "A comprehensive yearly report with category-wise monthly breakdowns of consumption, stock, and funds."
+    yearly_consumption_detailed: "A comprehensive yearly report with category-wise monthly breakdowns of consumption, stock, and funds.",
+    cashbook: "Generates a two-page cashbook with opening balance, receipts, expenditure, and closing balance.",
 };
 
 type MdcfDataType = Partial<Pick<Settings, 'healthStatus' | 'inspectionReport' | 'cooks' | 'mmeExpenditure'>>;
@@ -296,6 +297,7 @@ const Reports: React.FC = () => {
                                 <option value="daily_consumption">Daily Consumption Register</option>
                                 <option value="rice_requirement">Rice Requirement Certificate</option>
                                 <option value="yearly_consumption_detailed">Yearly Consumption Report (Detailed)</option>
+                                <option value="cashbook">Cashbook (Monthly)</option>
                             </select>
                             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{reportDescriptions[reportType]}</p>
                         </div>
