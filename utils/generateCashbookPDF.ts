@@ -6,8 +6,11 @@ export const generateCashbookPDF = (data: any, month: string) => {
   const doc = new jsPDF();
 
   const summary = calculateMonthlySummary(data, month);
-
   const { cashAbstracts, monthEntries } = summary;
+
+  const schoolName = data?.settings?.schoolDetails?.name || "School Name";
+  const udise = data?.settings?.schoolDetails?.udise || "";
+  const zone = data?.settings?.schoolDetails?.block || "Zone";
 
   // ---------- TOTALS ----------
   const openingBalance =
@@ -30,65 +33,101 @@ export const generateCashbookPDF = (data: any, month: string) => {
     cashAbstracts.primary.balance +
     cashAbstracts.middle.balance;
 
-  const totalAvailable = openingBalance + totalIncome;
+  // ---------- HEADER ----------
+  const addHeader = () => {
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-  // ---------- DAILY EXPENSE ROWS ----------
-  const expenseRows = monthEntries.map((e: any) => [
-    e.date || "",
-    "Meal Expense",
-    (e.totalCost || 0).toFixed(2),
-  ]);
+    doc.setFontSize(16);
+    doc.setFont(undefined, "bold");
+    doc.text(schoolName.toUpperCase(), pageWidth / 2, 12, { align: "center" });
 
-  // ---------- PAGE 1 ----------
-  doc.setFontSize(14);
-  doc.text("PM POSHAN CASHBOOK", 14, 15);
+    doc.setFontSize(10);
+    doc.setFont(undefined, "normal");
+    if (udise) {
+      doc.text(`UDISE: ${udise}`, pageWidth / 2, 17, { align: "center" });
+    }
 
-  doc.setFontSize(10);
-  doc.text(`Month: ${month}`, 14, 22);
+    doc.setFontSize(13);
+    doc.setFont(undefined, "bold");
+    doc.text("PM POSHAN CASHBOOK", pageWidth / 2, 23, { align: "center" });
+
+    doc.setFontSize(10);
+    doc.setFont(undefined, "normal");
+    doc.text(`Month: ${month}`, 14, 30);
+  };
+
+  // ---------- PAGE 1 (RECEIPTS) ----------
+  addHeader();
 
   doc.autoTable({
-    startY: 30,
-    head: [["Particulars", "Amount"]],
+    startY: 35,
+    head: [["Receipt No", "Particulars", "Amount (₹)"]],
     body: [
-      ["Opening Balance", openingBalance.toFixed(2)],
-      ["Total Income", totalIncome.toFixed(2)],
-      ["Total Available", totalAvailable.toFixed(2)],
+      [
+        "R-001",
+        openingBalance >= 0 ? "Opening Balance" : "Opening Deficit",
+        Math.abs(openingBalance).toFixed(2),
+      ],
+      [
+        "R-002",
+        `Received from Zonal Education Office (${zone})`,
+        totalIncome.toFixed(2),
+      ],
+      [
+        "",
+        "Total Available",
+        (openingBalance + totalIncome).toFixed(2),
+      ],
     ],
+  });
+
+  // ---------- PAGE 2 (EXPENDITURE) ----------
+  doc.addPage();
+  addHeader();
+
+  let runningBalance = openingBalance;
+  let voucherCounter = 1;
+
+  const expenseRows: any[] = [];
+
+  monthEntries.forEach((e: any) => {
+    const amount = parseFloat(e.totalCost) || 0;
+
+    if (amount > 0) {
+      runningBalance -= amount;
+
+      const voucherNo = `V-${String(voucherCounter).padStart(3, "0")}`;
+
+      expenseRows.push([
+        voucherNo,
+        e.date,
+        "Mid Day Meal Expenditure",
+        amount.toFixed(2),
+        runningBalance.toFixed(2),
+      ]);
+
+      voucherCounter++;
+    }
+  });
+
+  doc.autoTable({
+    startY: 35,
+    head: [["Voucher No", "Date", "Particulars", "Debit (₹)", "Balance (₹)"]],
+    body: expenseRows,
   });
 
   const lastY = (doc as any).lastAutoTable?.finalY || 40;
 
   doc.autoTable({
     startY: lastY + 10,
-    head: [["Type", "Amount"]],
-    body: [
-      ["Funds Received (Balvatika)", cashAbstracts.balvatika.received.toFixed(2)],
-      ["Funds Received (Primary)", cashAbstracts.primary.received.toFixed(2)],
-      ["Funds Received (Upper Primary)", cashAbstracts.middle.received.toFixed(2)],
-    ],
-  });
-
-  // ---------- PAGE 2 ----------
-  doc.addPage();
-
-  doc.setFontSize(14);
-  doc.text("PM POSHAN CASHBOOK", 14, 15);
-
-  doc.autoTable({
-    startY: 25,
-    head: [["Date", "Description", "Amount"]],
-    body: expenseRows,
-  });
-
-  const lastY2 = (doc as any).lastAutoTable?.finalY || 40;
-
-  doc.autoTable({
-    startY: lastY2 + 10,
-    head: [["Summary", "Amount"]],
+    head: [["Summary", "Amount (₹)"]],
     body: [
       ["Total Income", totalIncome.toFixed(2)],
       ["Total Expenditure", totalExpense.toFixed(2)],
-      ["Closing Balance", closingBalance.toFixed(2)],
+      [
+        closingBalance >= 0 ? "Closing Balance" : "Deficit",
+        Math.abs(closingBalance).toFixed(2),
+      ],
     ],
   });
 
