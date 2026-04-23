@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/license-educational-green)
 ![Status](https://img.shields.io/badge/status-active-success)
 
-A modern, offline-first web application for managing and tracking PM-POSHAN (Mid-Day Meal) programs in schools.
+A modern, offline-first web application for managing and tracking PM-POSHAN (Mid-Day Meal) programs in schools of Jammu and Kashmir.
 
 ---
 
