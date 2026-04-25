@@ -168,15 +168,15 @@ const AuthenticatedApp: React.FC = () => {
 />
                     </div>
                     <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Support PM Poshan Pro</h3>
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Welcome to PM Poshan Pro</h3>
                         <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                            To support the continued development and maintenance of this application, we kindly request a nominal annual contribution. Your support ensures the service remains reliable and feature-rich for all schools.
+                            To support the continued development and maintenance of this application, we kindly request a nominal contribution. Your support ensures the service remains reliable and feature-rich for all schools.
                         </p>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl w-full border border-slate-100 dark:border-slate-800 space-y-3">
                         <div className="flex justify-between items-center text-sm">
                             <span className="text-slate-500 dark:text-slate-400">Annual Contribution:</span>
-                            <span className="font-bold text-slate-900 dark:text-white">₹299</span>
+                            <span className="font-bold text-slate-900 dark:text-white">₹99</span>
                         </div>
                         <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
                             <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider font-semibold text-center">Pay via UPI to</p>
