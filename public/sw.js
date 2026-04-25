@@ -1,4 +1,4 @@
-const CACHE_NAME = "pm-poshan-v16";
+const CACHE_NAME = "pm-poshan-v17";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
