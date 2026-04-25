@@ -61,7 +61,7 @@ export const generateCashbookPDF = (data: any, month: string) => {
 
   doc.autoTable({
     startY: 35,
-    head: [["Receipt No", "Particulars", "Amount (₹)"]],
+    head: [["Receipt No", "Particulars", "Amount (Rs)"]],
     body: [
       [
         "R-001",
@@ -112,7 +112,7 @@ export const generateCashbookPDF = (data: any, month: string) => {
 
   doc.autoTable({
     startY: 35,
-    head: [["Voucher No", "Date", "Particulars", "Debit (₹)", "Balance (₹)"]],
+    head: [["Voucher No", "Date", "Particulars", "Debit (Rs)", "Balance (Rs)"]],
     body: expenseRows,
   });
 
@@ -120,7 +120,7 @@ export const generateCashbookPDF = (data: any, month: string) => {
 
   doc.autoTable({
     startY: lastY + 10,
-    head: [["Summary", "Amount (₹)"]],
+    head: [["Summary", "Amount (Rs)"]],
     body: [
       ["Total Income", totalIncome.toFixed(2)],
       ["Total Expenditure", totalExpense.toFixed(2)],
