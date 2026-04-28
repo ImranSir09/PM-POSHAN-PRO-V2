@@ -175,7 +175,7 @@ const AuthenticatedApp: React.FC = () => {
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl w-full border border-slate-100 dark:border-slate-800 space-y-3">
                         <div className="flex justify-between items-center text-sm">
-                            <span className="text-slate-500 dark:text-slate-400">Annual Contribution:</span>
+                            <span className="text-slate-500 dark:text-slate-400">Contribution:</span>
                             <span className="font-bold text-slate-900 dark:text-white">₹99</span>
                         </div>
                         <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
