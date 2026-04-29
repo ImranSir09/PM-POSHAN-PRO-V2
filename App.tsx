@@ -141,7 +141,7 @@ const AuthenticatedApp: React.FC = () => {
             <Modal isOpen={showPaymentModal} onClose={handleClosePaymentModal} title="Service Subscription">
                 <div className="flex flex-col items-center text-center space-y-4">
                     <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <img src="./icons/icon-192.png" alt="Logo" className="w-16 h-16 object-contain" />
+                        <img src="icons/icon-192.png" alt="Logo" className="w-16 h-16 object-contain" />
                     </div>
                     <div className="space-y-2">
                         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Support PM Poshan Pro</h3>
