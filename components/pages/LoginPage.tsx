@@ -14,6 +14,7 @@ const LoginPage: React.FC = () => {
     const { data } = useData();
     const { showToast } = useToast();
     
+    const [udise, setUdise] = useState(data.settings.schoolDetails.udise || '');
     const [password, setPassword] = useState('');
     const [isForgotModalOpen, setForgotModalOpen] = useState(false);
     const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -24,11 +25,17 @@ const LoginPage: React.FC = () => {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!udise.trim() || !password.trim()) {
+            showToast('Please enter both UDISE and Password.', 'error');
+            return;
+        }
+
         setIsLoading(true);
         try {
-            const success = await login(password);
+            const success = await login(udise.trim(), password);
             if (!success) {
-                showToast('Incorrect password.', 'error');
+                showToast('Incorrect UDISE code or Password.', 'error');
             }
         } catch (error) {
             showToast('An error occurred during login.', 'error');
@@ -114,6 +121,16 @@ const LoginPage: React.FC = () => {
                     </div>
                     <Card>
                         <form onSubmit={handleLogin} className="space-y-4">
+                            <Input
+                                label="School UDISE Code"
+                                id="udise"
+                                type="tel"
+                                maxLength={11}
+                                value={udise}
+                                onChange={e => setUdise(e.target.value.replace(/[^0-9]/g, ''))}
+                                required
+                                placeholder="11-digit UDISE code"
+                            />
                             <PasswordInput
                                 label="Password"
                                 id="password"

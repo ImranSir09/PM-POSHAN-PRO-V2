@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
-import { validateUserWithSheetDB } from '../../services/sheetdbService';
+import { validateSchoolWithSupabase } from '../../services/supabaseService';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -124,8 +124,8 @@ const SetupPage: React.FC = () => {
         if (isValid) {
             setIsProcessing(true);
             try {
-                console.log('Calling validateUserWithSheetDB with:', udise, signupKeyInput.trim());
-                const validation = await validateUserWithSheetDB(udise, signupKeyInput.trim());
+                console.log('Calling validateSchoolWithSupabase with:', udise, signupKeyInput.trim());
+                const validation = await validateSchoolWithSupabase(udise, signupKeyInput.trim());
                 console.log('Validation response:', validation);
                 if (validation.success) {
                     setVerifiedSchoolName(validation.schoolName || 'Verified School');
@@ -188,16 +188,16 @@ const SetupPage: React.FC = () => {
                     {!isVerified ? (
                         <Card title="Step 1: School Activation">
                             <div className="space-y-5">
-                                {(!import.meta.env.VITE_SHEETDB_URL || import.meta.env.VITE_SHEETDB_URL.includes('YOUR_API_ID')) && (
+                                {(!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('your_supabase')) && (
                                     <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl mb-4">
                                         <p className="text-xs font-semibold text-amber-800 dark:text-amber-300 flex items-center">
                                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                             </svg>
-                                            Configuration Required
+                                            Cloud Setup Required
                                         </p>
                                         <p className="text-[10px] text-amber-700 dark:text-amber-400 mt-1">
-                                            The SheetDB API URL is not set in AI Studio Settings. Please add <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded">VITE_SHEETDB_URL</code> to the Settings menu (gear icon in top right).
+                                            The Supabase URL is not set. Please add <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded">VITE_SUPABASE_URL</code> and <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> to the Settings menu.
                                         </p>
                                     </div>
                                 )}
