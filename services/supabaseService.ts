@@ -27,7 +27,7 @@ export const validateSchoolWithSupabase = async (udise: string, registrationKey:
 
         if (error) {
             if (error.code === 'PGRST116') {
-                return { success: false, error: 'Registration not found for this UDISE.' };
+                return { success: false, error: 'NOT_FOUND' };
             }
             throw error;
         }
@@ -39,10 +39,32 @@ export const validateSchoolWithSupabase = async (udise: string, registrationKey:
             };
         }
 
-        return { success: false, error: 'Invalid registration key.' };
+        return { success: false, error: 'INVALID_KEY' };
     } catch (error: any) {
         console.error('Supabase validation error:', error);
         return { success: false, error: error.message || 'Connection error' };
+    }
+};
+
+/**
+ * Submits a request for school activation to the developer.
+ */
+export const submitRegistrationRequest = async (udise: string, schoolName: string, contactInfo: string): Promise<void> => {
+    if (!supabase) return;
+
+    const { error } = await supabase
+        .from('registration_requests')
+        .insert({
+            udise,
+            school_name: schoolName,
+            contact_info: contactInfo,
+            status: 'pending',
+            created_at: new Date().toISOString()
+        });
+
+    if (error) {
+        console.error('Supabase request error:', error);
+        throw new Error(`Failed to send request: ${error.message}`);
     }
 };
 

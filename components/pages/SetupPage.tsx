@@ -47,6 +47,12 @@ const SetupPage: React.FC = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [verifiedSchoolName, setVerifiedSchoolName] = useState('');
+    const [isNewSchoolFlow, setIsNewSchoolFlow] = useState(false);
+    const [isRequestingActivation, setIsRequestingActivation] = useState(false);
+    const [activationCodeInput, setActivationCodeInput] = useState('');
+    const [newSchoolName, setNewSchoolName] = useState('');
+    const [contactInfoInput, setContactInfoInput] = useState('');
+    const [requestSent, setRequestSent] = useState(false);
 
     const [errors, setErrors] = useState({
         udise: '',
@@ -57,6 +63,7 @@ const SetupPage: React.FC = () => {
         confirmPassword: '',
         securityAnswer: '',
         terms: '',
+        activationCode: '', // Added
     });
 
     const validate = useCallback((fieldName?: keyof typeof errors) => {
@@ -129,13 +136,20 @@ const SetupPage: React.FC = () => {
                 console.log('Validation response:', validation);
                 if (validation.success) {
                     setVerifiedSchoolName(validation.schoolName || 'Verified School');
+                    setPassword(signupKeyInput.trim());
+                    setConfirmPassword(signupKeyInput.trim());
                     setIsVerified(true);
                     showToast('School verified successfully!', 'success');
+                } else if (validation.error === 'NOT_FOUND') {
+                    setIsNewSchoolFlow(true);
+                    showToast('UDISE not found. You can register this school now.', 'info');
                 } else {
                     // Set a specific error for the fields if possible, or show a toast
-                    const errorMsg = validation.error || 'Invalid UDISE or Key combination.';
+                    const errorMsg = validation.error === 'INVALID_KEY' 
+                        ? 'Incorrect Registration Key for this UDISE.' 
+                        : (validation.error || 'Invalid UDISE or Key combination.');
                     showToast(errorMsg, 'error');
-                    setErrors(prev => ({ ...prev, udise: errorMsg, signupKey: errorMsg }));
+                    setErrors(prev => ({ ...prev, signupKey: errorMsg }));
                 }
             } catch (error) {
                 console.error('handleVerify error:', error);
@@ -169,6 +183,54 @@ const SetupPage: React.FC = () => {
             }
         } else {
             showToast('Please correct the errors and try again.', 'error');
+        }
+    };
+
+    const handleRegisterNew = () => {
+        if (!newSchoolName.trim()) {
+            setErrors(prev => ({ ...prev, username: 'School Name is required for registration.' }));
+            return;
+        }
+
+        if (!activationCodeInput.trim()) {
+            setErrors(prev => ({ ...prev, activationCode: 'Activation code is required for registration.' }));
+            showToast('Activation code is required.', 'error');
+            return;
+        }
+
+        // Check against activation code
+        // You can set this in AI Studio Settings as VITE_ACTIVATION_CODE
+        const MASTER_CODE = import.meta.env.VITE_ACTIVATION_CODE || 'PM-POSHAN-2024';
+        
+        if (activationCodeInput.trim() !== MASTER_CODE) {
+            setErrors(prev => ({ ...prev, activationCode: 'Invalid activation code.' }));
+            showToast('Incorrect activation code. Please contact the administrator.', 'error');
+            return;
+        }
+
+        setVerifiedSchoolName(newSchoolName);
+        setPassword(signupKeyInput.trim());
+        setConfirmPassword(signupKeyInput.trim());
+        setIsVerified(true);
+        showToast('Activation successful! Proceeding to setup.', 'success');
+    };
+
+    const handleSendRequest = async () => {
+        if (!newSchoolName.trim() || !contactInfoInput.trim()) {
+            showToast('Please provide both School Name and Contact Info.', 'error');
+            return;
+        }
+
+        setIsProcessing(true);
+        try {
+            const { submitRegistrationRequest } = await import('../../services/supabaseService');
+            await submitRegistrationRequest(udise, newSchoolName, contactInfoInput);
+            setRequestSent(true);
+            showToast('Request sent successfully!', 'success');
+        } catch (error: any) {
+            showToast(error.message || 'Failed to send request.', 'error');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -221,6 +283,7 @@ const SetupPage: React.FC = () => {
                                     id="signup-key"
                                     value={signupKeyInput}
                                     onChange={e => setSignupKeyInput(e.target.value)}
+                                    disabled={isNewSchoolFlow}
                                     onBlur={() => validate('signupKey')}
                                     required
                                     placeholder="Enter your unique registration key"
@@ -229,12 +292,107 @@ const SetupPage: React.FC = () => {
                                 {errors.signupKey ? (
                                     <p className="mt-1 text-xs text-red-500">{errors.signupKey}</p>
                                 ) : (
-                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Please provide your unique registration key provided by the developer.</p>
+                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                        {isNewSchoolFlow ? 'This will be your login password for this UDISE.' : 'Please provide your unique registration key provided by the developer.'}
+                                    </p>
                                 )}
                                 
-                                <Button onClick={handleVerify} className="w-full py-3" isLoading={isProcessing}>
-                                    Verify School Details
-                                </Button>
+                                {isNewSchoolFlow ? (
+                                    <div className="space-y-4 pt-2 animate-in slide-in-from-top-2">
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                                            <p className="text-xs text-blue-800 dark:text-blue-300 font-medium">
+                                                <b>New School:</b> UDISE <b>{udise}</b> is not registered.
+                                            </p>
+                                        </div>
+
+                                        {!isRequestingActivation ? (
+                                            <div className="space-y-4">
+                                                <div className="p-3 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl text-[11px] text-blue-700 dark:text-blue-400">
+                                                    If you have an <b>Activation Code</b> from the developer, enter it below to register instantly.
+                                                </div>
+                                                <Input
+                                                    label="Activation Code"
+                                                    id="activation-code"
+                                                    type="password"
+                                                    value={activationCodeInput}
+                                                    onChange={e => setActivationCodeInput(e.target.value)}
+                                                    required
+                                                    placeholder="Enter Developer Secret Code"
+                                                />
+                                                {errors.activationCode && <p className="text-xs text-red-500 -mt-2">{errors.activationCode}</p>}
+                                                <Input
+                                                    label="Official School Name"
+                                                    id="new-school-name"
+                                                    value={newSchoolName}
+                                                    onChange={e => setNewSchoolName(e.target.value)}
+                                                    required
+                                                    placeholder="e.g. Govt Primary School..."
+                                                />
+                                                <div className="flex flex-col gap-2">
+                                                    <Button onClick={handleRegisterNew} className="w-full" disabled={!newSchoolName.trim() || !activationCodeInput.trim()}>
+                                                        Register & Activate
+                                                    </Button>
+                                                    <div className="text-center py-2">
+                                                        <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">OR</span>
+                                                    </div>
+                                                    <Button variant="secondary" onClick={() => setIsRequestingActivation(true)} className="w-full border-blue-200 text-blue-600 dark:border-blue-800 dark:text-blue-400">
+                                                        Request Activation Key
+                                                    </Button>
+                                                    <Button variant="ghost" onClick={() => setIsNewSchoolFlow(false)} className="w-full text-slate-400 text-xs">
+                                                        Cancel
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ) : requestSent ? (
+                                            <div className="p-6 text-center space-y-4 animate-in zoom-in-95">
+                                                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Request Submitted!</h3>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                                    Your request for UDISE <b>{udise}</b> has been sent. The developer will contact you via your registered email/phone with a unique <b>Registration Key</b>.
+                                                </p>
+                                                <Button variant="secondary" onClick={() => setIsNewSchoolFlow(false)} className="w-full mt-4">
+                                                    Back to Login
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                <p className="text-xs text-slate-600 dark:text-slate-400 px-1">
+                                                    Provide your contact details. The developer will verify your UDISE and send a unique key to your email/phone.
+                                                </p>
+                                                <Input
+                                                    label="Official School Name"
+                                                    value={newSchoolName}
+                                                    onChange={e => setNewSchoolName(e.target.value)}
+                                                    required
+                                                    placeholder="Enter Full School Name"
+                                                />
+                                                <Input
+                                                    label="Contact Info (Email or Phone)"
+                                                    value={contactInfoInput}
+                                                    onChange={e => setContactInfoInput(e.target.value)}
+                                                    required
+                                                    placeholder="developer@example.com or 91..."
+                                                />
+                                                <div className="flex gap-2">
+                                                    <Button variant="secondary" onClick={() => setIsRequestingActivation(false)} className="flex-1">
+                                                        Back
+                                                    </Button>
+                                                    <Button onClick={handleSendRequest} className="flex-[2]" isLoading={isProcessing}>
+                                                        Submit Request
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <Button onClick={handleVerify} className="w-full py-3" isLoading={isProcessing}>
+                                        Verify School Details
+                                    </Button>
+                                )}
                                 
                                 <div className="mt-6 text-xs pt-4 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-center">
                                     <p className="font-semibold mb-1 text-slate-700 dark:text-slate-300">Developer Contact for Registration Key:</p>
