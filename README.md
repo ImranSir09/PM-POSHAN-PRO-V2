@@ -1,53 +1,20 @@
-# PM POSHAN PRO
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-![Build](https://img.shields.io/github/actions/workflow/status/ImranSir09/PM-POSHAN-PRO-V2/deploy.yml?label=deploy)
-![Version](https://img.shields.io/badge/version-2.1.0-blue)
-![License](https://img.shields.io/badge/license-educational-green)
-![Status](https://img.shields.io/badge/status-active-success)
+# Run and deploy your AI Studio app
 
-A modern, offline-first web application for managing and tracking PM-POSHAN (Mid-Day Meal) programs in schools of Jammu and Kashmir with cloud backup for paid users.
+This contains everything you need to run your app locally.
 
----
+View your app in AI Studio: https://ai.studio/apps/ca63c6ea-afdc-41b8-a1e9-4c39ab809a74
 
-## Live Demo
+## Run Locally
 
-GitHub Pages  
-https://imransir09.github.io/PM-POSHAN-PRO-V2/
+**Prerequisites:**  Node.js
 
----
 
-## Features
-
-- Offline-first architecture
-- Fast and mobile-friendly UI
-- School registration and verification
-- Daily meal tracking system
-- Dashboard with analytics
-- PDF report generation
-- Secure and reliable data handling
-- Works on low connectivity environments
-
----
-
-## Tech Stack
-
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- LocalStorage
-- GitHub Actions
-- SheetDB API
-
----
-
-## Screenshots
-
-Add screenshots here for better presentation
-
----
-
-## Developer
-
-Imran Gani 
-Teacher Zone Vailoo 
-
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

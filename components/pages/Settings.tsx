@@ -41,10 +41,8 @@ const SectionTotalRow: React.FC<{ label: string, totals: ReturnType<typeof calcu
     </tr>
 );
 
-const Settings: React.FC = () => {
-
+const SettingsPage: React.FC = () => {
     const { data, updateSettings } = useData();
-
     const [settings, setSettings] = useState<Settings>(data.settings);
     const [isUdiseValid, setIsUdiseValid] = useState(settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0);
     const [isRatesEditable, setIsRatesEditable] = useState(false);

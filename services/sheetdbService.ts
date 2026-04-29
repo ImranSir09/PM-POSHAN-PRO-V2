@@ -65,10 +65,14 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
             // 1. Check if account is active
             // SheetDB returns booleans as strings "TRUE"/"FALSE" or "1"/"0" sometimes
             const activeVal = String(user.active).toUpperCase();
-            const isActive = activeVal === "TRUE";
+            const isActive = user.active === undefined || 
+                           user.active === true || 
+                           activeVal === 'TRUE' || 
+                           activeVal === '1' ||
+                           activeVal === 'ACTIVE';
             
             if (!isActive) {
-                return { success: false, error: 'This account has been deactivated. Please contact Imran Gani Mugloo.' };
+                return { success: false, error: 'This account has been deactivated. Please contact support.' };
             }
 
             // 2. Check Expiry Date

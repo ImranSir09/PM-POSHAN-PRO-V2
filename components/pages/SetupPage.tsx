@@ -179,11 +179,7 @@ const SetupPage: React.FC = () => {
                 <div className="w-full max-w-md z-10">
                     <div className="text-center mb-6">
                         <div className="flex justify-center mb-4">
-                            <img
-  src={`${import.meta.env.BASE_URL}icon-192.png`}
-  alt="PM Poshan Pro Logo"
-  className="w-16 h-16 rounded-full object-cover shadow-md border border-gray-200"
-/>
+                            <img src="/icons/icon-192.png" alt="PM Poshan Pro Logo" className="w-16 h-16 rounded-xl shadow-md" />
                         </div>
                         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">PM Poshan Pro</h1>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">New School Registration</p>

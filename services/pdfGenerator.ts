@@ -1,6 +1,5 @@
 import { AppData, Category, ClassRoll, Settings } from '../types';
 import { calculateMonthlySummary, getOpeningBalanceInfo } from './summaryCalculator';
-import { generateCashbookPDF } from "../utils/generateCashbookPDF";
 
 interface jsPDF {
     autoTable: (options: any) => jsPDF;
@@ -690,11 +689,6 @@ export const generatePDFReport = (reportType: string, data: AppData, parameter: 
             pdfBlob = generateYearlyConsumptionDetailedPDF(data, parameter);
             filename = `${schoolName}_Yearly_Consumption_${parameter.replace('-', '_')}.pdf`;
             break;
-            case 'cashbook':
-    const result = generateCashbookPDF(data, parameter);
-    pdfBlob = result.pdfBlob;
-    filename = result.filename;
-    break;
         default:
             throw new Error('Invalid report type selected.');
     }
