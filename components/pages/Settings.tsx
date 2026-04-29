@@ -45,48 +45,6 @@ const Settings: React.FC = () => {
 
     const { data, updateSettings } = useData();
 
-    // 👇 ADD HERE
-    const backupData = async () => {
-        const udise = data.settings?.schoolDetails?.udise;
-
-        if (!udise) {
-            alert("UDISE missing");
-            return;
-        }
-
-        const { error } = await supabase.from('backups').insert([
-            {
-                udise,
-                data: data
-            }
-        ]);
-
-        if (error) {
-            console.error(error);
-            alert("Backup failed");
-        } else {
-            alert("Backup successful");
-        }
-    };
-
-    const restoreData = async () => {
-        const udise = data.settings?.schoolDetails?.udise;
-
-        const { data: backups } = await supabase
-            .from('backups')
-            .select('*')
-            .eq('udise', udise)
-            .order('created_at', { ascending: false })
-            .limit(1);
-
-        if (!backups?.length) {
-            alert("No backup found");
-            return;
-        }
-
-        localStorage.setItem("pmPoshanData_v2", JSON.stringify(backups[0].data));
-        location.reload();
-    };
     const [settings, setSettings] = useState<Settings>(data.settings);
     const [isUdiseValid, setIsUdiseValid] = useState(settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0);
     const [isRatesEditable, setIsRatesEditable] = useState(false);
