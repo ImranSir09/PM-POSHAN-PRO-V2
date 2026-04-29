@@ -2,6 +2,7 @@
 import React, { useRef, useState } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
+import { supabase } from '../../lib/supabase';
 import { useData } from '../../hooks/useData';
 import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
@@ -12,6 +13,66 @@ const DataManagement: React.FC = () => {
     const { data, importData, resetData, updateLastBackupDate } = useData();
     const { showToast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+const getUdise = () => {
+    try {
+        const raw = localStorage.getItem("pmPoshanData_v2");
+        const parsed = raw ? JSON.parse(raw) : {};
+        return parsed?.settings?.schoolDetails?.udise || null;
+    } catch {
+        return null;
+    }
+};
+
+const backupToCloud = async () => {
+    const udise = getUdise();
+
+    if (!udise) {
+        showToast("UDISE not found", "error");
+        return;
+    }
+
+    const raw = localStorage.getItem("pmPoshanData_v2");
+    const fullData = raw ? JSON.parse(raw) : {};
+
+    const { error } = await supabase.from('backups').upsert(
+    [
+        {
+            udise,
+            data: fullData
+        }
+    ],
+    { onConflict: 'udise' }
+);
+
+    if (error) showToast("Backup failed", "error");
+    else showToast("Backup saved", "success");
+};
+
+const restoreFromCloud = async () => {
+    const udise = getUdise();
+
+    if (!udise) {
+        showToast("UDISE not found", "error");
+        return;
+    }
+
+    const { data: row, error } = await supabase
+        .from('backups')
+        .select('*')
+        .eq('udise', udise)
+        .single();
+
+    if (error || !row) {
+        showToast("No backup found", "error");
+        return;
+    }
+
+    localStorage.setItem("pmPoshanData_v2", JSON.stringify(row.data));
+    showToast("Restored. Reloading...", "success");
+
+    setTimeout(() => window.location.reload(), 1000);
+};
     
     // Local Backup State
     const [isResetModalOpen, setResetModalOpen] = useState(false);
@@ -144,6 +205,15 @@ const DataManagement: React.FC = () => {
                             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
                         </div>
                     </div>
+<div className="space-y-2 pt-2">
+    <Button onClick={backupToCloud} className="w-full">
+        Backup to Cloud
+    </Button>
+
+    <Button onClick={restoreFromCloud} variant="secondary" className="w-full">
+        Restore from Cloud
+    </Button>
+</div>
                 </Card>
 
                 <Card title="Reset Application">
