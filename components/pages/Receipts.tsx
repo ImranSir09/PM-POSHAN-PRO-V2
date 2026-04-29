@@ -86,6 +86,21 @@ const Receipts: React.FC = () => {
         // save locally
         addReceipt(newReceipt);
 
+        // debug udise code
+        const raw1 = localStorage.getItem("pmposhan_school");
+const raw2 = localStorage.getItem("pmposhan_data");
+
+const school1 = raw1 ? JSON.parse(raw1) : {};
+const school2 = raw2 ? JSON.parse(raw2) : {};
+
+const udise =
+    school1?.udise ||
+    school1?.settings?.schoolDetails?.udise ||
+    school2?.udise ||
+    school2?.settings?.schoolDetails?.udise;
+
+alert("UDISE = " + udise);
+
         // supabase sync
         const school = JSON.parse(localStorage.getItem("pmposhan_school") || "{}");
 const udise = school?.udise;
