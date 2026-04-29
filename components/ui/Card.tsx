@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 interface CardProps {
     children: ReactNode;
     className?: string;
-    title?: string;
+    title?: ReactNode;
 }
 
 const Card: React.FC<CardProps> = ({ children, className = '', title }) => {

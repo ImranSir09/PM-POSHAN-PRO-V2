@@ -7,6 +7,8 @@ import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
 import { AppData } from '../../types';
 import { validateImportData } from '../../services/dataValidator';
+import { uploadBackup, downloadBackup } from '../../services/supabaseService';
+import { Cloud, CloudDownload, CloudUpload, Info, Loader2 } from 'lucide-react';
 
 const DataManagement: React.FC = () => {
     const { data, importData, resetData, updateLastBackupDate } = useData();
@@ -16,6 +18,12 @@ const DataManagement: React.FC = () => {
     // Local Backup State
     const [isResetModalOpen, setResetModalOpen] = useState(false);
     const [importConfirmation, setImportConfirmation] = useState<{ data: AppData; summary: Record<string, string | number> } | null>(null);
+
+    // Cloud Backup State
+    const [isCloudSyncing, setIsCloudSyncing] = useState(false);
+    const [syncCode, setSyncCode] = useState('');
+    const [inputSyncCode, setInputSyncCode] = useState('');
+    const [showCloudInfo, setShowCloudInfo] = useState(false);
 
     const handleExport = () => {
         try {
@@ -96,6 +104,46 @@ const DataManagement: React.FC = () => {
         setResetModalOpen(false);
     };
 
+    const handleCloudBackup = async () => {
+        setIsCloudSyncing(true);
+        try {
+            const code = await uploadBackup(data);
+            setSyncCode(code);
+            showToast('Data uploaded to cloud! Save your sync code.', 'success');
+            updateLastBackupDate();
+        } catch (error: any) {
+            showToast(error.message || 'Cloud backup failed.', 'error');
+        } finally {
+            setIsCloudSyncing(false);
+        }
+    };
+
+    const handleCloudRestore = async () => {
+        if (!inputSyncCode.trim()) {
+            showToast('Please enter a sync code.', 'error');
+            return;
+        }
+
+        setIsCloudSyncing(true);
+        try {
+            const cloudData = await downloadBackup(inputSyncCode.trim());
+            const { isValid, errors, summary } = validateImportData(cloudData);
+
+            if (!isValid) {
+                errors.forEach(err => showToast(err, 'error'));
+                showToast('Restore failed. Cloud data is invalid.', 'error');
+                return;
+            }
+
+            setImportConfirmation({ data: cloudData, summary });
+            showToast('Cloud data retrieved! Please confirm restore.', 'success');
+        } catch (error: any) {
+            showToast(error.message || 'Cloud restore failed.', 'error');
+        } finally {
+            setIsCloudSyncing(false);
+        }
+    };
+
     return (
         <>
             <Modal isOpen={isResetModalOpen} onClose={() => setResetModalOpen(false)} title="Confirm Reset">
@@ -127,6 +175,7 @@ const DataManagement: React.FC = () => {
 
             <div className="space-y-4">
                 <Card title="Data Backup & Restore">
+                    {/* ... existing local backup ... */}
                     <div className="space-y-3">
                         <div>
                             <p className="text-sm font-medium mb-1">Export Data (Local File)</p>
@@ -135,13 +184,90 @@ const DataManagement: React.FC = () => {
                             </p>
                             <Button onClick={handleExport} className="w-full">Export to JSON</Button>
                         </div>
-                        <div>
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
                             <p className="text-sm font-medium mb-1">Import Data (Local File)</p>
                             <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
                                 Restore data from a backup file. <span className="font-bold text-yellow-600 dark:text-yellow-400">Warning: Replaces all current data.</span>
                             </p>
                             <Button onClick={handleImportClick} variant="secondary" className="w-full">Select File to Import</Button>
                             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
+                        </div>
+                    </div>
+                </Card>
+
+                <Card title={
+                    <div className="flex items-center justify-between">
+                        <span>Cloud Sync (Supabase)</span>
+                        <button onClick={() => setShowCloudInfo(!showCloudInfo)} className="text-slate-400 hover:text-sky-500 transition-colors">
+                            <Info size={18} />
+                        </button>
+                    </div>
+                }>
+                    <div className="space-y-4">
+                        {showCloudInfo && (
+                            <div className="bg-sky-50 dark:bg-sky-900/30 border border-sky-100 dark:border-sky-800 p-3 rounded-lg text-xs text-sky-800 dark:text-sky-300 mb-2 animate-in fade-in slide-in-from-top-1">
+                                <p className="font-medium mb-1 flex items-center gap-1">
+                                    <Cloud size={14} /> How Cloud Sync works:
+                                </p>
+                                <ul className="list-disc list-inside space-y-1">
+                                    <li>Backup stores your data securely in the cloud.</li>
+                                    <li>You get a unique 6-character <b>Sync Code</b>.</li>
+                                    <li>Use this code on any device to restore your data.</li>
+                                    <li>Restore overwrites your current local data.</li>
+                                </ul>
+                            </div>
+                        )}
+
+                        <div className="space-y-2">
+                            <div className="flex flex-col gap-2">
+                                <Button 
+                                    onClick={handleCloudBackup} 
+                                    disabled={isCloudSyncing}
+                                    variant="secondary"
+                                    className="w-full bg-sky-50 hover:bg-sky-100 dark:bg-sky-900/20 dark:hover:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800"
+                                >
+                                    {isCloudSyncing ? (
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    ) : (
+                                        <CloudUpload className="w-4 h-4 mr-2" />
+                                    )}
+                                    {isCloudSyncing ? 'Syncing...' : 'Upload to Cloud'}
+                                </Button>
+
+                                {syncCode && (
+                                    <div className="p-3 bg-green-50 dark:bg-green-900/30 border border-green-100 dark:border-green-800 rounded-lg text-center animate-in zoom-in-95">
+                                        <p className="text-xs text-green-800 dark:text-green-300 mb-1">Your Cloud Sync Code:</p>
+                                        <p className="text-2xl font-black tracking-widest text-green-700 dark:text-green-400">{syncCode}</p>
+                                        <p className="text-[10px] text-green-600 dark:text-green-500 mt-1">Copy and save this code!</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Restore from Cloud</p>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Enter Sync Code"
+                                        value={inputSyncCode}
+                                        onChange={(e) => setInputSyncCode(e.target.value.toUpperCase())}
+                                        maxLength={6}
+                                        className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-sky-500 dark:text-white"
+                                    />
+                                    <Button 
+                                        onClick={handleCloudRestore} 
+                                        disabled={isCloudSyncing || inputSyncCode.length < 6}
+                                        className="whitespace-nowrap px-4"
+                                    >
+                                        {isCloudSyncing ? (
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                        ) : (
+                                            <CloudDownload className="w-4 h-4 mr-2" />
+                                        )}
+                                        Restore
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </Card>
