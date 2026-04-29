@@ -2,7 +2,8 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useData } from './useData';
 import { AuthData } from '../types';
-import { validateSchoolWithSupabase, registerSchoolWithSupabase } from '../services/supabaseService';
+import { validateUserWithSheetDB } from '../services/sheetdbService';
+import { registerSchoolWithSupabase } from '../services/supabaseService';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -33,8 +34,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return true;
         }
 
-        // Otherwise check Supabase
-        const validation = await validateSchoolWithSupabase(udise, password);
+        // Otherwise check SheetDB
+        const validation = await validateUserWithSheetDB(udise, password);
         if (validation.success) {
             // If local data is empty or mismatched, we should populate the basics
             // This ensures a smooth move to a new device

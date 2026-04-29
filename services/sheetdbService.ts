@@ -52,15 +52,19 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
         console.log('SheetDB Data received:', data);
 
         if (Array.isArray(data) && data.length > 0) {
-            // Find an exact match in the returned results (SheetDB search can be fuzzy)
-            const user = data.find((u: any) => 
-                String(u.udise).trim() === String(udise).trim() && 
-                String(u.registration_key).trim() === String(registrationKey).trim()
-            ) as SheetDBUser | undefined;
+            // Find an exact match for UDISE first
+            const udiseMatch = data.find((u: any) => String(u.udise).trim() === String(udise).trim());
             
-            if (!user) {
-                return { success: false, error: 'No exact match found for these credentials.' };
+            if (!udiseMatch) {
+                return { success: false, error: 'NOT_FOUND' };
             }
+
+            // Check key
+            if (String(udiseMatch.registration_key).trim() !== String(registrationKey).trim()) {
+                return { success: false, error: 'INVALID_KEY' };
+            }
+
+            const user = udiseMatch as SheetDBUser;
 
             // 1. Check if account is active
             // SheetDB returns booleans as strings "TRUE"/"FALSE" or "1"/"0" sometimes
@@ -95,7 +99,7 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
                 schoolName: user.school_name 
             };
         } else {
-            return { success: false, error: 'Invalid UDISE code or Registration Key.' };
+            return { success: false, error: 'NOT_FOUND' };
         }
     } catch (error) {
         console.error('SheetDB Validation Error:', error);

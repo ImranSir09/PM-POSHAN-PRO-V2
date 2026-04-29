@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
-import { validateSchoolWithSupabase } from '../../services/supabaseService';
+import { validateUserWithSheetDB } from '../../services/sheetdbService';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -48,11 +48,8 @@ const SetupPage: React.FC = () => {
     const [isVerified, setIsVerified] = useState(false);
     const [verifiedSchoolName, setVerifiedSchoolName] = useState('');
     const [isNewSchoolFlow, setIsNewSchoolFlow] = useState(false);
-    const [isRequestingActivation, setIsRequestingActivation] = useState(false);
     const [activationCodeInput, setActivationCodeInput] = useState('');
     const [newSchoolName, setNewSchoolName] = useState('');
-    const [contactInfoInput, setContactInfoInput] = useState('');
-    const [requestSent, setRequestSent] = useState(false);
 
     const [errors, setErrors] = useState({
         udise: '',
@@ -131,8 +128,8 @@ const SetupPage: React.FC = () => {
         if (isValid) {
             setIsProcessing(true);
             try {
-                console.log('Calling validateSchoolWithSupabase with:', udise, signupKeyInput.trim());
-                const validation = await validateSchoolWithSupabase(udise, signupKeyInput.trim());
+                console.log('Calling validateUserWithSheetDB with:', udise, signupKeyInput.trim());
+                const validation = await validateUserWithSheetDB(udise, signupKeyInput.trim());
                 console.log('Validation response:', validation);
                 if (validation.success) {
                     setVerifiedSchoolName(validation.schoolName || 'Verified School');
@@ -215,25 +212,6 @@ const SetupPage: React.FC = () => {
         showToast('Activation successful! Proceeding to setup.', 'success');
     };
 
-    const handleSendRequest = async () => {
-        if (!newSchoolName.trim() || !contactInfoInput.trim()) {
-            showToast('Please provide both School Name and Contact Info.', 'error');
-            return;
-        }
-
-        setIsProcessing(true);
-        try {
-            const { submitRegistrationRequest } = await import('../../services/supabaseService');
-            await submitRegistrationRequest(udise, newSchoolName, contactInfoInput);
-            setRequestSent(true);
-            showToast('Request sent successfully!', 'success');
-        } catch (error: any) {
-            showToast(error.message || 'Failed to send request.', 'error');
-        } finally {
-            setIsProcessing(false);
-        }
-    };
-
     return (
         <>
             <TermsModal isOpen={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
@@ -250,16 +228,16 @@ const SetupPage: React.FC = () => {
                     {!isVerified ? (
                         <Card title="Step 1: School Activation">
                             <div className="space-y-5">
-                                {(!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('your_supabase')) && (
+                                {(!import.meta.env.VITE_SHEETDB_URL || import.meta.env.VITE_SHEETDB_URL.includes('YOUR_API_ID')) && (
                                     <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl mb-4">
                                         <p className="text-xs font-semibold text-amber-800 dark:text-amber-300 flex items-center">
                                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                             </svg>
-                                            Cloud Setup Required
+                                            SheetDB Setup Required
                                         </p>
                                         <p className="text-[10px] text-amber-700 dark:text-amber-400 mt-1">
-                                            The Supabase URL is not set. Please add <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded">VITE_SUPABASE_URL</code> and <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> to the Settings menu.
+                                            The SheetDB URL is not set. Please add <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded">VITE_SHEETDB_URL</code> to the Settings menu.
                                         </p>
                                     </div>
                                 )}
@@ -303,90 +281,35 @@ const SetupPage: React.FC = () => {
                                             <p className="text-xs text-blue-800 dark:text-blue-300 font-medium">
                                                 <b>New School:</b> UDISE <b>{udise}</b> is not registered.
                                             </p>
+                                            <p className="text-[10px] text-blue-700 dark:text-blue-400 mt-1">Please provide the <b>Activation Code</b> provided by the developer to register.</p>
                                         </div>
-
-                                        {!isRequestingActivation ? (
-                                            <div className="space-y-4">
-                                                <div className="p-3 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl text-[11px] text-blue-700 dark:text-blue-400">
-                                                    If you have an <b>Activation Code</b> from the developer, enter it below to register instantly.
-                                                </div>
-                                                <Input
-                                                    label="Activation Code"
-                                                    id="activation-code"
-                                                    type="password"
-                                                    value={activationCodeInput}
-                                                    onChange={e => setActivationCodeInput(e.target.value)}
-                                                    required
-                                                    placeholder="Enter Developer Secret Code"
-                                                />
-                                                {errors.activationCode && <p className="text-xs text-red-500 -mt-2">{errors.activationCode}</p>}
-                                                <Input
-                                                    label="Official School Name"
-                                                    id="new-school-name"
-                                                    value={newSchoolName}
-                                                    onChange={e => setNewSchoolName(e.target.value)}
-                                                    required
-                                                    placeholder="e.g. Govt Primary School..."
-                                                />
-                                                <div className="flex flex-col gap-2">
-                                                    <Button onClick={handleRegisterNew} className="w-full" disabled={!newSchoolName.trim() || !activationCodeInput.trim()}>
-                                                        Register & Activate
-                                                    </Button>
-                                                    <div className="text-center py-2">
-                                                        <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">OR</span>
-                                                    </div>
-                                                    <Button variant="secondary" onClick={() => setIsRequestingActivation(true)} className="w-full border-blue-200 text-blue-600 dark:border-blue-800 dark:text-blue-400">
-                                                        Request Activation Key
-                                                    </Button>
-                                                    <Button variant="ghost" onClick={() => setIsNewSchoolFlow(false)} className="w-full text-slate-400 text-xs">
-                                                        Cancel
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ) : requestSent ? (
-                                            <div className="p-6 text-center space-y-4 animate-in zoom-in-95">
-                                                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full">
-                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                </div>
-                                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Request Submitted!</h3>
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                                    Your request for UDISE <b>{udise}</b> has been sent. The developer will contact you via your registered email/phone with a unique <b>Registration Key</b>.
-                                                </p>
-                                                <Button variant="secondary" onClick={() => setIsNewSchoolFlow(false)} className="w-full mt-4">
-                                                    Back to Login
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <div className="space-y-4">
-                                                <p className="text-xs text-slate-600 dark:text-slate-400 px-1">
-                                                    Provide your contact details. The developer will verify your UDISE and send a unique key to your email/phone.
-                                                </p>
-                                                <Input
-                                                    label="Official School Name"
-                                                    value={newSchoolName}
-                                                    onChange={e => setNewSchoolName(e.target.value)}
-                                                    required
-                                                    placeholder="Enter Full School Name"
-                                                />
-                                                <Input
-                                                    label="Contact Info (Email or Phone)"
-                                                    value={contactInfoInput}
-                                                    onChange={e => setContactInfoInput(e.target.value)}
-                                                    required
-                                                    placeholder="developer@example.com or 91..."
-                                                />
-                                                <div className="flex gap-2">
-                                                    <Button variant="secondary" onClick={() => setIsRequestingActivation(false)} className="flex-1">
-                                                        Back
-                                                    </Button>
-                                                    <Button onClick={handleSendRequest} className="flex-[2]" isLoading={isProcessing}>
-                                                        Submit Request
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        )}
+                                        <Input
+                                            label="Activation Code"
+                                            id="activation-code"
+                                            type="password"
+                                            value={activationCodeInput}
+                                            onChange={e => setActivationCodeInput(e.target.value)}
+                                            required
+                                            placeholder="Enter Developer Secret Code"
+                                        />
+                                        {errors.activationCode && <p className="text-xs text-red-500 -mt-2">{errors.activationCode}</p>}
+                                        
+                                        <Input
+                                            label="Official School Name"
+                                            id="new-school-name"
+                                            value={newSchoolName}
+                                            onChange={e => setNewSchoolName(e.target.value)}
+                                            required
+                                            placeholder="e.g. Govt Primary School..."
+                                        />
+                                        <div className="flex gap-2">
+                                            <Button variant="secondary" onClick={() => setIsNewSchoolFlow(false)} className="flex-1">
+                                                Cancel
+                                            </Button>
+                                            <Button onClick={handleRegisterNew} className="flex-[2]" disabled={!newSchoolName.trim() || !activationCodeInput.trim()}>
+                                                Register & Activate
+                                            </Button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <Button onClick={handleVerify} className="w-full py-3" isLoading={isProcessing}>

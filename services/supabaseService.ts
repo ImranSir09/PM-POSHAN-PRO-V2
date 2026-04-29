@@ -47,28 +47,6 @@ export const validateSchoolWithSupabase = async (udise: string, registrationKey:
 };
 
 /**
- * Submits a request for school activation to the developer.
- */
-export const submitRegistrationRequest = async (udise: string, schoolName: string, contactInfo: string): Promise<void> => {
-    if (!supabase) return;
-
-    const { error } = await supabase
-        .from('registration_requests')
-        .insert({
-            udise,
-            school_name: schoolName,
-            contact_info: contactInfo,
-            status: 'pending',
-            created_at: new Date().toISOString()
-        });
-
-    if (error) {
-        console.error('Supabase request error:', error);
-        throw new Error(`Failed to send request: ${error.message}`);
-    }
-};
-
-/**
  * Registers a new school on Supabase.
  */
 export const registerSchoolWithSupabase = async (udise: string, registrationKey: string, schoolName: string): Promise<void> => {
