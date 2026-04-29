@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/license-educational-green)
 ![Status](https://img.shields.io/badge/status-active-success)
 
-A modern, offline-first web application for managing and tracking PM-POSHAN (Mid-Day Meal) programs in schools of Jammu and Kashmir.
+A modern, offline-first web application for managing and tracking PM-POSHAN (Mid-Day Meal) programs in schools of Jammu and Kashmir with cloud backup for paid users.
 
 ---
 
@@ -13,9 +13,6 @@ A modern, offline-first web application for managing and tracking PM-POSHAN (Mid
 
 GitHub Pages  
 https://imransir09.github.io/PM-POSHAN-PRO-V2/
-
-Vercel  
-https://pm-poshan-pro-v2.vercel.app/
 
 ---
 
