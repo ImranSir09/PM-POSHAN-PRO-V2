@@ -88,7 +88,7 @@ const Receipts: React.FC = () => {
 
         // supabase sync
         const school = JSON.parse(localStorage.getItem("pmposhan_school") || "{}");
-        const udise = school?.udise;
+        const udise = school?.udise || "TEST_SCHOOL";
 
         if (udise) {
             try {
