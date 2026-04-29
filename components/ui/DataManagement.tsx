@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -14,103 +13,127 @@ const DataManagement: React.FC = () => {
     const { showToast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-const getUdise = () => {
-    try {
-        const raw = localStorage.getItem("pmPoshanData_v2");
-        const parsed = raw ? JSON.parse(raw) : {};
-        return parsed?.settings?.schoolDetails?.udise || null;
-    } catch {
-        return null;
-    }
-};
-
-const backupToCloud = async () => {
-    const udise = getUdise();
-
-    if (!udise) {
-        showToast("UDISE not found", "error");
-        return;
-    }
-
-    const raw = localStorage.getItem("pmPoshanData_v2");
-    const fullData = raw ? JSON.parse(raw) : {};
-
-    const { error } = await supabase.from('backups').upsert(
-    [
-        {
-            udise,
-            data: fullData
+    // ✅ SAFE UDISE FETCH
+    const getUdise = () => {
+        try {
+            const raw = localStorage.getItem("pmPoshanData_v2");
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            return parsed?.settings?.schoolDetails?.udise || null;
+        } catch (e) {
+            console.error("UDISE parse error", e);
+            return null;
         }
-    ],
-    { onConflict: 'udise' }
-);
+    };
 
-    if (error) showToast("Backup failed", "error");
-    else showToast("Backup saved", "success");
-};
+    // ✅ BACKUP (SAFE + UPSERT FIXED)
+    const backupToCloud = async () => {
+        const udise = getUdise();
 
-const restoreFromCloud = async () => {
-    const udise = getUdise();
+        if (!udise) {
+            showToast("UDISE not found", "error");
+            return;
+        }
 
-    if (!udise) {
-        showToast("UDISE not found", "error");
-        return;
-    }
+        try {
+            const raw = localStorage.getItem("pmPoshanData_v2");
+            const fullData = raw ? JSON.parse(raw) : {};
 
-    const { data: row, error } = await supabase
-        .from('backups')
-        .select('*')
-        .eq('udise', udise)
-        .single();
+            const { error } = await supabase.from('backups').upsert(
+                [
+                    {
+                        udise,
+                        data: fullData
+                    }
+                ],
+                { onConflict: 'udise' }
+            );
 
-    if (error || !row) {
-        showToast("No backup found", "error");
-        return;
-    }
+            if (error) {
+                console.error(error);
+                showToast("Backup failed", "error");
+            } else {
+                showToast("Backup saved", "success");
+            }
 
-    localStorage.setItem("pmPoshanData_v2", JSON.stringify(row.data));
-    showToast("Restored. Reloading...", "success");
+        } catch (e) {
+            console.error("Backup crash:", e);
+            showToast("Backup error", "error");
+        }
+    };
 
-    setTimeout(() => window.location.reload(), 1000);
-};
-    
-    // Local Backup State
+    // ✅ RESTORE (NO CRASH VERSION)
+    const restoreFromCloud = async () => {
+        const udise = getUdise();
+
+        if (!udise) {
+            showToast("UDISE not found", "error");
+            return;
+        }
+
+        try {
+            const { data: row, error } = await supabase
+                .from('backups')
+                .select('*')
+                .eq('udise', udise)
+                .limit(1)
+                .maybeSingle();
+
+            if (error) {
+                console.error(error);
+                showToast("Restore failed", "error");
+                return;
+            }
+
+            if (!row || !row.data) {
+                showToast("No backup found", "error");
+                return;
+            }
+
+            localStorage.setItem("pmPoshanData_v2", JSON.stringify(row.data));
+
+            showToast("Restored successfully", "success");
+
+            setTimeout(() => window.location.reload(), 800);
+
+        } catch (e) {
+            console.error("Restore crash:", e);
+            showToast("Unexpected error", "error");
+        }
+    };
+
+    // UI STATE
     const [isResetModalOpen, setResetModalOpen] = useState(false);
     const [importConfirmation, setImportConfirmation] = useState<{ data: AppData; summary: Record<string, string | number> } | null>(null);
 
     const handleExport = () => {
         try {
             const jsonString = JSON.stringify(data, null, 2);
-            // Use text/plain with charset to ensure mobile devices treat it as readable text.
-            // The 'download' attribute below forces it to save as a file with the .json extension,
-            // preventing the browser from just opening it in a tab.
             const blob = new Blob([jsonString], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            
+
             const schoolName = (data.settings.schoolDetails.name || 'School').replace(/[\\/:"*?<>|.\s]+/g, '_');
-            
+
             const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            const dateString = `${yyyy}-${mm}-${dd}`;
-            
+            const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+            a.href = url;
             a.download = `PM_POSHAN_Backup_${schoolName}_${dateString}.json`;
             document.body.appendChild(a);
             a.click();
-            
+
             setTimeout(() => {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             }, 100);
 
-            showToast('Data exported successfully!', 'success');
+            showToast('Export successful', 'success');
             updateLastBackupDate();
+
         } catch (error) {
-            showToast('Error exporting data. Check browser permissions or try again.', 'error');
-            console.error("Data export failed:", error);
+            console.error(error);
+            showToast('Export failed', 'error');
         }
     };
 
@@ -126,25 +149,27 @@ const restoreFromCloud = async () => {
         reader.onload = (e) => {
             try {
                 const text = e.target?.result;
-                if (typeof text !== 'string') throw new Error('Invalid file content');
+                if (typeof text !== 'string') throw new Error();
+
                 const parsedData = JSON.parse(text);
                 const { isValid, errors, summary } = validateImportData(parsedData);
 
                 if (!isValid) {
                     errors.forEach(err => showToast(err, 'error'));
-                    showToast('Import failed. The file is invalid or corrupted.', 'error');
                     return;
                 }
+
                 setImportConfirmation({ data: parsedData as AppData, summary });
-            } catch (error) {
-                showToast('Failed to read or parse the file. It may be corrupted.', 'error');
-                console.error(error);
+
+            } catch {
+                showToast('Invalid file', 'error');
             }
         };
+
         reader.readAsText(file);
-        event.target.value = ''; // Reset input
+        event.target.value = '';
     };
-    
+
     const handleConfirmImport = () => {
         if (importConfirmation) {
             importData(importConfirmation.data);
@@ -160,97 +185,41 @@ const restoreFromCloud = async () => {
     return (
         <>
             <Modal isOpen={isResetModalOpen} onClose={() => setResetModalOpen(false)} title="Confirm Reset">
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">Are you sure you want to delete ALL data? This action cannot be undone. It is highly recommended to export your data first.</p>
+                <p className="text-sm mb-4">Delete all data permanently?</p>
                 <div className="flex justify-end space-x-2">
-                    <Button variant="secondary" onClick={() => setResetModalOpen(false)}>Cancel</Button>
-                    <Button variant="danger" onClick={handleReset}>Yes, Reset Data</Button>
+                    <Button onClick={() => setResetModalOpen(false)}>Cancel</Button>
+                    <Button variant="danger" onClick={handleReset}>Reset</Button>
                 </div>
             </Modal>
-            
-            <Modal isOpen={!!importConfirmation} onClose={() => setImportConfirmation(null)} title="Confirm Data Import">
+
+            <Modal isOpen={!!importConfirmation} onClose={() => setImportConfirmation(null)} title="Confirm Import">
                 <div className="space-y-4">
-                    <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Please review the details from the file before importing.
-                        <strong className="block mt-1 text-yellow-600 dark:text-yellow-400">Warning: This will overwrite all current application data.</strong>
-                    </p>
-                    <div className="text-sm space-y-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 p-4 rounded-xl">
-                        <p><strong>School Name:</strong> {importConfirmation?.summary.schoolName}</p>
-                        <p><strong>UDISE:</strong> {importConfirmation?.summary.udise}</p>
-                        <p><strong>Daily Entries Found:</strong> {importConfirmation?.summary.entryCount}</p>
-                        <p><strong>Receipts Found:</strong> {importConfirmation?.summary.receiptCount}</p>
+                    <p className="text-sm">This will overwrite current data.</p>
+                    <div className="text-sm p-3 border rounded">
+                        <p>School: {importConfirmation?.summary.schoolName}</p>
+                        <p>UDISE: {importConfirmation?.summary.udise}</p>
                     </div>
                     <div className="flex justify-end space-x-2">
-                        <Button variant="secondary" onClick={() => setImportConfirmation(null)}>Cancel</Button>
-                        <Button variant="danger" onClick={handleConfirmImport}>Confirm & Overwrite</Button>
+                        <Button onClick={() => setImportConfirmation(null)}>Cancel</Button>
+                        <Button variant="danger" onClick={handleConfirmImport}>Confirm</Button>
                     </div>
                 </div>
             </Modal>
 
             <div className="space-y-4">
                 <Card title="Data Backup & Restore">
-                    <div className="space-y-3">
-                        <div>
-                            <p className="text-sm font-medium mb-1">Export Data (Local File)</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                                Save all app data to a file. Store it safely to prevent data loss.
-                            </p>
-                            <Button onClick={handleExport} className="w-full">Export to JSON</Button>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium mb-1">Import Data (Local File)</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                                Restore data from a backup file. <span className="font-bold text-yellow-600 dark:text-yellow-400">Warning: Replaces all current data.</span>
-                            </p>
-                            <Button onClick={handleImportClick} variant="secondary" className="w-full">Select File to Import</Button>
-                            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
-                        </div>
-                    </div>
-<div className="space-y-2 pt-2">
-    <Button onClick={backupToCloud} className="w-full">
-        Backup to Cloud
-    </Button>
+                    <div className="space-y-2">
+                        <Button onClick={handleExport}>Export JSON</Button>
+                        <Button onClick={handleImportClick}>Import JSON</Button>
+                        <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden />
 
-    <Button onClick={restoreFromCloud} variant="secondary" className="w-full">
-        Restore from Cloud
-    </Button>
-</div>
+                        <Button onClick={backupToCloud}>Backup to Cloud</Button>
+                        <Button onClick={restoreFromCloud} variant="secondary">Restore from Cloud</Button>
+                    </div>
                 </Card>
 
-                <Card title="Reset Application">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                        <span className="font-bold text-red-600 dark:text-red-400">This action is irreversible.</span> It will permanently delete all data. Ensure you have a backup if you wish to restore later.
-                    </p>
-                    <Button onClick={() => setResetModalOpen(true)} variant="danger" className="w-full">Reset All Data</Button>
-                </Card>
-
-                <Card title="Help & About">
-                    <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300">
-                         <div>
-                            <h3 className="font-semibold text-sky-700 dark:text-sky-400">App Guide</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                A quick guide to the app's main functions:
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 mt-2 text-xs">
-                                <li><b>Dashboard:</b> Your daily hub. Add/edit today's meal entry and see a monthly overview.</li>
-                                <li><b>Summary:</b> View detailed monthly breakdowns of consumption and stock balances.</li>
-                                <li><b>Receipts:</b> Log all incoming rice and cash to keep your records accurate.</li>
-                                <li><b>Reports:</b> Generate PDF reports and manage your application data.</li>
-                                <li><b>Settings:</b> Crucial for accuracy! Configure your school details, enrollment, and food rates here.</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-sky-700 dark:text-sky-400">Feedback & Support</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                Have questions or suggestions? Your feedback is valuable! Please get in touch.
-                            </p>
-                        </div>
-                        <div className="text-xs pt-2 border-t border-slate-200/50 dark:border-white/10">
-                            <p><strong>App Version:</strong> 2.1.0</p>
-                            <p><strong>Developer:</strong> Imran Gani Mugloo</p>
-                            <p><strong>Contact:</strong> <a href="tel:+919149690096" className="text-sky-600 dark:text-sky-400 hover:underline">+91 9149690096</a></p>
-                            <p><strong>Email:</strong> <a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">emraanmugloo123@gmail.com</a></p>
-                        </div>
-                    </div>
+                <Card title="Reset">
+                    <Button onClick={() => setResetModalOpen(true)} variant="danger">Reset App</Button>
                 </Card>
             </div>
         </>
