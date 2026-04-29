@@ -28,6 +28,8 @@ jobs:
         run: npm run build:gh
         env:
          VITE_SHEETDB_URL: ${{ secrets.VITE_SHEETDB_URL }}
+         VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+         VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
