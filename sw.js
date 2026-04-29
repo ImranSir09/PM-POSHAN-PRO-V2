@@ -1,17 +1,15 @@
 
 // sw.js
 
-const CACHE_NAME = 'pm-poshan-pro-cache-v3';
+const CACHE_NAME = 'pm-poshan-pro-cache-v2';
 // This list should contain the "app shell" - the minimal resources needed to get the app UI showing.
 const urlsToCache = [
-  '/', // This is often aliased to index.html
-  '/index.html',
-  // Scripts and other assets will be cached on first load via the 'fetch' event handler.
-  // Pre-caching only the entry points is a good strategy.
-  '/index.tsx', 
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
+  './', 
+  './index.html',
+  './index.tsx', 
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
   // Critical CDNs
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
