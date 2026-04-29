@@ -12,6 +12,9 @@ permissions:
 
 jobs:
   build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,20 +29,8 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Project Structure Debug
-        run: |
-          echo "Current Directory: $(pwd)"
-          ls -R
-
       - name: Build
-        run: |
-          if [ -f package.json ]; then
-            npm run build
-          else
-            echo "Error: package.json not found in root. Checking subdirectories..."
-            find . -maxdepth 2 -name package.json
-            exit 1
-          fi
+        run: npm run build
         env:
           VITE_SHEETDB_URL: ${{ secrets.VITE_SHEETDB_URL }}
           VITE_SHEETDB_API_KEY: ${{ secrets.VITE_SHEETDB_API_KEY }}
