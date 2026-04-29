@@ -86,27 +86,20 @@ const Receipts: React.FC = () => {
         // save locally
         addReceipt(newReceipt);
 
-        const raw1 = localStorage.getItem("pmposhan_school");
-const raw2 = localStorage.getItem("pmposhan_data");
-
-let udise;
+        let udise;
 
 try {
-    const school1 = raw1 ? JSON.parse(raw1) : {};
-    const school2 = raw2 ? JSON.parse(raw2) : {};
+    const raw = localStorage.getItem("pmposhan_data");
+    const data = raw ? JSON.parse(raw) : {};
 
-    udise =
-        school1?.udise ||
-        school1?.settings?.schoolDetails?.udise ||
-        school2?.udise ||
-        school2?.settings?.schoolDetails?.udise;
+    udise = data?.settings?.schoolDetails?.udise;
 
 } catch (e) {
-    console.error("Storage parse error", e);
+    console.error("Storage error", e);
 }
 
 if (!udise) {
-    alert("UDISE not found");
+    alert("UDISE not found. Please save school settings again.");
     return;
 }
 
