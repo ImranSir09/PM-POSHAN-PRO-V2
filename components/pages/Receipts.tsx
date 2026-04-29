@@ -89,7 +89,7 @@ const Receipts: React.FC = () => {
         let udise;
 
 try {
-    const raw = localStorage.getItem("pmposhan_data");
+    const raw = localStorage.getItem("pmPoshanData_v2");
     const data = raw ? JSON.parse(raw) : {};
 
     udise = data?.settings?.schoolDetails?.udise;
