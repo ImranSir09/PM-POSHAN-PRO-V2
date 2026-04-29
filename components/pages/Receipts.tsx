@@ -3,7 +3,7 @@ import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { useData } from '../../hooks/useData';
 import { useToast } from '../../hooks/useToast';
 import { CategoryBalance, Category, Receipt } from '../../types';
