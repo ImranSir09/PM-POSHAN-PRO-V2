@@ -106,9 +106,8 @@ if (!udise) {
         // supabase sync
         if (udise) {
             try {
-                await supabase.from('receipts').upsert([
+                const { error } = await supabase.from('receipts').insert([
                     {
-                        id: newReceipt.id,
                         udise,
                         date,
                         rice: riceBalance,
