@@ -76,7 +76,6 @@ const Receipts: React.FC = () => {
             return;
         }
 
-        // ✅ Create receipt
         const newReceipt: Receipt = {
             id: Date.now().toString(),
             date,
@@ -84,14 +83,13 @@ const Receipts: React.FC = () => {
             cash: cashBalance
         };
 
-        // ✅ Save locally
+        // save locally
         addReceipt(newReceipt);
 
-        // ✅ Get UDISE
+        // supabase sync
         const school = JSON.parse(localStorage.getItem("pmposhan_school") || "{}");
         const udise = school?.udise;
 
-        // ✅ Sync to Supabase (safe)
         if (udise) {
             try {
                 await supabase.from('receipts').upsert([
@@ -124,9 +122,8 @@ const Receipts: React.FC = () => {
             }
         }
 
-        showToast('Receipt saved and synced!', 'success');
+        showToast('Receipt saved successfully!', 'success');
 
-        // ✅ Reset form
         setRice({ balvatika: '', primary: '', middle: '' });
         setCash({ balvatika: '', primary: '', middle: '' });
     };
@@ -160,6 +157,8 @@ const Receipts: React.FC = () => {
             </Modal>
 
             <div className="space-y-4">
+
+                {/* FORM */}
                 <Card title="Add New Receipt">
                     <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -194,6 +193,49 @@ const Receipts: React.FC = () => {
                         </Button>
                     </form>
                 </Card>
+
+                {/* HISTORY */}
+                <Card title="Receipt History">
+                    {data.receipts.length === 0 ? (
+                        <p className="text-sm text-gray-500">No receipts available</p>
+                    ) : (
+                        <div className="space-y-3">
+                            {[...data.receipts].reverse().map((r) => (
+                                <div key={r.id} className="p-3 border rounded-xl">
+
+                                    <p className="font-semibold">
+                                        Date: {r.date}
+                                    </p>
+
+                                    <div className="mt-2">
+                                        <p className="text-sm font-medium">Rice (kg)</p>
+                                        <p>Balvatika: {r.rice.balvatika}</p>
+                                        <p>Primary: {r.rice.primary}</p>
+                                        <p>Middle: {r.rice.middle}</p>
+                                    </div>
+
+                                    <div className="mt-2">
+                                        <p className="text-sm font-medium">Cash (₹)</p>
+                                        <p>Balvatika: {r.cash.balvatika}</p>
+                                        <p>Primary: {r.cash.primary}</p>
+                                        <p>Middle: {r.cash.middle}</p>
+                                    </div>
+
+                                    <div className="mt-2 text-right">
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => setReceiptToDelete(r.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Card>
+
             </div>
         </>
     );
