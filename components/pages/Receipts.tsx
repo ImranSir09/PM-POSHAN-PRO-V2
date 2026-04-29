@@ -87,8 +87,8 @@ const Receipts: React.FC = () => {
         addReceipt(newReceipt);
 
         // supabase sync
-        const appData = JSON.parse(localStorage.getItem("pmposhan_data") || "{}");
-const udise = appData?.settings?.schoolDetails?.udise;
+        const school = JSON.parse(localStorage.getItem("pmposhan_school") || "{}");
+const udise = school?.udise;
         if (udise) {
             try {
                 await supabase.from('receipts').upsert([
