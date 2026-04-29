@@ -10,63 +10,59 @@ export const supabase = (supabaseUrl && supabaseAnonKey)
     : null;
 
 /**
- * Generates a random 6-character alphanumeric code for sync.
- */
-const generateSyncCode = (length = 6): string => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-};
-
-/**
- * Backs up the current local data to Supabase.
- * Returns the generated sync code.
+ * Backs up the current local data to Supabase using the School's UDISE code.
  */
 export const uploadBackup = async (data: AppData): Promise<string> => {
     if (!supabase) {
         throw new Error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment.');
     }
 
-    const syncCode = generateSyncCode();
-    // We stringify the data. In a production app, you might want to encrypt this first.
+    const udiseCode = data.settings.schoolDetails.udise;
+    
+    if (!udiseCode || udiseCode.length < 5) {
+        throw new Error('Invalid UDISE code. Please set your school UDISE code in Settings first.');
+    }
+
     const encryptedData = JSON.stringify(data);
 
+    // Using upsert: matches on udise_code. If it exists, it updates; otherwise inserts.
     const { error } = await supabase
         .from('backups')
-        .insert({ 
-            sync_code: syncCode, 
+        .upsert({ 
+            udise_code: udiseCode, 
             encrypted_data: encryptedData,
-            created_at: new Date().toISOString()
-        });
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'udise_code' });
 
     if (error) {
         console.error('Supabase backup error:', error);
         throw new Error(`Cloud backup failed: ${error.message}`);
     }
 
-    return syncCode;
+    return udiseCode;
 };
 
 /**
- * Retrieves a backup from Supabase using a sync code.
+ * Retrieves a backup from Supabase using a UDISE code.
  */
-export const downloadBackup = async (code: string): Promise<AppData> => {
+export const downloadBackup = async (udiseCode: string): Promise<AppData> => {
     if (!supabase) {
         throw new Error('Supabase is not configured.');
+    }
+
+    if (!udiseCode || udiseCode.length < 5) {
+        throw new Error('Please enter a valid UDISE code.');
     }
 
     const { data, error } = await supabase
         .from('backups')
         .select('encrypted_data')
-        .eq('sync_code', code.toUpperCase())
+        .eq('udise_code', udiseCode)
         .single();
 
     if (error) {
         if (error.code === 'PGRST116') {
-            throw new Error('Invalid sync code. No backup found.');
+            throw new Error(`No cloud backup found for UDISE: ${udiseCode}`);
         }
         console.error('Supabase retrieval error:', error);
         throw new Error(`Cloud restore failed: ${error.message}`);

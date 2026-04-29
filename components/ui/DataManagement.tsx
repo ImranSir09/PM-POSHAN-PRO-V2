@@ -21,8 +21,8 @@ const DataManagement: React.FC = () => {
 
     // Cloud Backup State
     const [isCloudSyncing, setIsCloudSyncing] = useState(false);
-    const [syncCode, setSyncCode] = useState('');
-    const [inputSyncCode, setInputSyncCode] = useState('');
+    const [lastSyncedUdise, setLastSyncedUdise] = useState('');
+    const [inputUdiseCode, setInputUdiseCode] = useState('');
     const [showCloudInfo, setShowCloudInfo] = useState(false);
 
     const handleExport = () => {
@@ -107,9 +107,9 @@ const DataManagement: React.FC = () => {
     const handleCloudBackup = async () => {
         setIsCloudSyncing(true);
         try {
-            const code = await uploadBackup(data);
-            setSyncCode(code);
-            showToast('Data uploaded to cloud! Save your sync code.', 'success');
+            const udise = await uploadBackup(data);
+            setLastSyncedUdise(udise);
+            showToast('Data uploaded to cloud using UDISE code!', 'success');
             updateLastBackupDate();
         } catch (error: any) {
             showToast(error.message || 'Cloud backup failed.', 'error');
@@ -119,14 +119,23 @@ const DataManagement: React.FC = () => {
     };
 
     const handleCloudRestore = async () => {
-        if (!inputSyncCode.trim()) {
-            showToast('Please enter a sync code.', 'error');
+        const inputCode = inputUdiseCode.trim();
+        const currentUdise = data.settings.schoolDetails.udise;
+
+        if (!inputCode) {
+            showToast('Please enter a UDISE code.', 'error');
+            return;
+        }
+
+        // Security check: If a UDISE is already set, don't allow restoring from a different one
+        if (currentUdise && currentUdise !== inputCode) {
+            showToast(`Restore blocked. The entered UDISE (${inputCode}) does not match your currently configured school (${currentUdise}).`, 'error');
             return;
         }
 
         setIsCloudSyncing(true);
         try {
-            const cloudData = await downloadBackup(inputSyncCode.trim());
+            const cloudData = await downloadBackup(inputCode);
             const { isValid, errors, summary } = validateImportData(cloudData);
 
             if (!isValid) {
@@ -136,7 +145,7 @@ const DataManagement: React.FC = () => {
             }
 
             setImportConfirmation({ data: cloudData, summary });
-            showToast('Cloud data retrieved! Please confirm restore.', 'success');
+            showToast(`Cloud data retrieved for UDISE: ${inputCode}! Please confirm restore.`, 'success');
         } catch (error: any) {
             showToast(error.message || 'Cloud restore failed.', 'error');
         } finally {
@@ -210,9 +219,9 @@ const DataManagement: React.FC = () => {
                                     <Cloud size={14} /> How Cloud Sync works:
                                 </p>
                                 <ul className="list-disc list-inside space-y-1">
-                                    <li>Backup stores your data securely in the cloud.</li>
-                                    <li>You get a unique 6-character <b>Sync Code</b>.</li>
-                                    <li>Use this code on any device to restore your data.</li>
+                                    <li>Backup stores your data securely using your school's <b>UDISE Code</b>.</li>
+                                    <li>Ensure your UDISE code is correctly set in <b>Settings</b>.</li>
+                                    <li>Use that UDISE code on any device to restore your data.</li>
                                     <li>Restore overwrites your current local data.</li>
                                 </ul>
                             </div>
@@ -220,9 +229,10 @@ const DataManagement: React.FC = () => {
 
                         <div className="space-y-2">
                             <div className="flex flex-col gap-2">
+                                <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">Current UDISE: {data.settings.schoolDetails.udise || 'Not Set'}</p>
                                 <Button 
                                     onClick={handleCloudBackup} 
-                                    disabled={isCloudSyncing}
+                                    disabled={isCloudSyncing || !data.settings.schoolDetails.udise}
                                     variant="secondary"
                                     className="w-full bg-sky-50 hover:bg-sky-100 dark:bg-sky-900/20 dark:hover:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800"
                                 >
@@ -234,29 +244,26 @@ const DataManagement: React.FC = () => {
                                     {isCloudSyncing ? 'Syncing...' : 'Upload to Cloud'}
                                 </Button>
 
-                                {syncCode && (
-                                    <div className="p-3 bg-green-50 dark:bg-green-900/30 border border-green-100 dark:border-green-800 rounded-lg text-center animate-in zoom-in-95">
-                                        <p className="text-xs text-green-800 dark:text-green-300 mb-1">Your Cloud Sync Code:</p>
-                                        <p className="text-2xl font-black tracking-widest text-green-700 dark:text-green-400">{syncCode}</p>
-                                        <p className="text-[10px] text-green-600 dark:text-green-500 mt-1">Copy and save this code!</p>
+                                {lastSyncedUdise && (
+                                    <div className="p-2 bg-green-50 dark:bg-green-900/30 border border-green-100 dark:border-green-800 rounded-lg text-center animate-in zoom-in-95">
+                                        <p className="text-[10px] text-green-800 dark:text-green-300">Successfully synced UDISE: <b>{lastSyncedUdise}</b></p>
                                     </div>
                                 )}
                             </div>
 
                             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Restore from Cloud</p>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Restore from Cloud (Enter UDISE)</p>
                                 <div className="flex gap-2">
                                     <input 
                                         type="text" 
-                                        placeholder="Enter Sync Code"
-                                        value={inputSyncCode}
-                                        onChange={(e) => setInputSyncCode(e.target.value.toUpperCase())}
-                                        maxLength={6}
+                                        placeholder="Enter UDISE Code"
+                                        value={inputUdiseCode}
+                                        onChange={(e) => setInputUdiseCode(e.target.value)}
                                         className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-sky-500 dark:text-white"
                                     />
                                     <Button 
                                         onClick={handleCloudRestore} 
-                                        disabled={isCloudSyncing || inputSyncCode.length < 6}
+                                        disabled={isCloudSyncing || inputUdiseCode.length < 5}
                                         className="whitespace-nowrap px-4"
                                     >
                                         {isCloudSyncing ? (
