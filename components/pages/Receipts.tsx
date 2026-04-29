@@ -83,56 +83,45 @@ const Receipts: React.FC = () => {
             cash: cashBalance
         };
 
-        // save locally
+        // ✅ Save locally
         addReceipt(newReceipt);
 
-        let udise;
+        // ✅ Get UDISE from app state (correct way)
+        const udise = data.settings?.schoolDetails?.udise || "TEST_SCHOOL";
 
-try {
-    const raw = localStorage.getItem("pmPoshanData_v2");
-    const data = raw ? JSON.parse(raw) : {};
+        // ✅ Supabase sync
+        try {
+            const { error } = await supabase.from('receipts').insert([
+                {
+                    id: newReceipt.id,
+                    udise,
+                    date,
+                    rice: riceBalance,
+                    cash: cashBalance
+                }
+            ]);
 
-    udise = data?.settings?.schoolDetails?.udise;
+            if (error) {
+                console.error("Insert error:", error);
+            }
 
-} catch (e) {
-    console.error("Storage error", e);
-}
-
-if (!udise) {
-    alert("UDISE not found. Please save school settings again.");
-    return;
-}
-
-        // supabase sync
-        if (udise) {
-            try {
-                const { error } = await supabase.from('receipts').insert([
+            if (totalCash > 0) {
+                await supabase.from('cashbook').insert([
                     {
+                        id: Date.now(),
                         udise,
                         date,
-                        rice: riceBalance,
-                        cash: cashBalance
+                        totalcost: totalCash,
+                        description: "Cooking Cost Received through Receipt",
+                        type: "income",
+                        source: "receipt",
+                        receiptid: newReceipt.id
                     }
                 ]);
-
-                if (totalCash > 0) {
-                    await supabase.from('cashbook').upsert([
-                        {
-                            id: Date.now(),
-                            udise,
-                            date,
-                            totalcost: totalCash,
-                            description: "Cooking Cost Received through Receipt",
-                            type: "income",
-                            source: "receipt",
-                            receiptid: newReceipt.id
-                        }
-                    ]);
-                }
-
-            } catch (error) {
-                console.error("Supabase sync failed:", error);
             }
+
+        } catch (error) {
+            console.error("Supabase sync failed:", error);
         }
 
         showToast('Receipt saved successfully!', 'success');
@@ -171,7 +160,6 @@ if (!udise) {
 
             <div className="space-y-4">
 
-                {/* FORM */}
                 <Card title="Add New Receipt">
                     <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -207,7 +195,6 @@ if (!udise) {
                     </form>
                 </Card>
 
-                {/* HISTORY */}
                 <Card title="Receipt History">
                     {data.receipts.length === 0 ? (
                         <p className="text-sm text-gray-500">No receipts available</p>
