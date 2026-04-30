@@ -252,11 +252,22 @@ const SetupPage: React.FC = () => {
                                     Verify School Details
                                 </Button>
                                 
-                                <div className="mt-6 text-xs pt-4 border-t border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-center">
-                                    <p className="font-semibold mb-1 text-slate-700 dark:text-slate-300">Developer Contact for Registration Key:</p>
-                                    <p>Imran Gani Mugloo</p>
-                                    <p><a href="tel:+919149690096" className="text-indigo-600 dark:text-indigo-400 hover:underline">+91 9149690096</a></p>
-                                    <p><a href="mailto:emraanmugloo123@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">emraanmugloo123@gmail.com</a></p>
+                                <div className="mt-8 pt-6 border-t border-slate-200/60 dark:border-slate-800/60 text-center">
+                                    <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Official Integration Support</p>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Imran Gani Mugloo</p>
+                                        <div className="flex items-center gap-4 mt-1">
+                                            <a href="tel:+919149690096" className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
+                                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                                +91 9149690096
+                                            </a>
+                                            <div className="w-px h-3 bg-slate-200 dark:bg-slate-800"></div>
+                                            <a href="mailto:emraanmugloo123@gmail.com" className="flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
+                                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                                Email Support
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </Card>

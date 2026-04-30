@@ -286,32 +286,52 @@ const DataManagement: React.FC = () => {
                     <Button onClick={() => setResetModalOpen(true)} variant="danger" className="w-full">Reset All Data</Button>
                 </Card>
 
-                <Card title="Help & About">
-                    <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300">
-                         <div>
-                            <h3 className="font-semibold text-sky-700 dark:text-sky-400">App Guide</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                A quick guide to the app's main functions:
-                            </p>
-                            <ul className="list-disc list-inside space-y-1 mt-2 text-xs">
-                                <li><b>Dashboard:</b> Your daily hub. Add/edit today's meal entry and see a monthly overview.</li>
-                                <li><b>Summary:</b> View detailed monthly breakdowns of consumption and stock balances.</li>
-                                <li><b>Receipts:</b> Log all incoming rice and cash to keep your records accurate.</li>
-                                <li><b>Reports:</b> Generate PDF reports and manage your application data.</li>
-                                <li><b>Settings:</b> Crucial for accuracy! Configure your school details, enrollment, and food rates here.</li>
-                            </ul>
+                <Card title="Support & Application Intelligence">
+                    <div className="space-y-6 text-sm text-slate-600 dark:text-slate-300">
+                         <div className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                            <h3 className="font-bold text-sky-700 dark:text-sky-400 flex items-center gap-2 mb-3">
+                                <Info size={16} /> Operational Blueprint
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Record Management</h4>
+                                    <ul className="space-y-1 text-xs">
+                                        <li className="flex gap-2"><span>•</span> <b>Dashboard:</b> Real-time meal logging.</li>
+                                        <li className="flex gap-2"><span>•</span> <b>Receipts:</b> Comprehensive resource tracking.</li>
+                                        <li className="flex gap-2"><span>•</span> <b>Summary:</b> Analytical monthly insights.</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Compliance Tools</h4>
+                                    <ul className="space-y-1 text-xs">
+                                        <li className="flex gap-2"><span>•</span> <b>Reports:</b> Automated PDF generation.</li>
+                                        <li className="flex gap-2"><span>•</span> <b>Cloud Sync:</b> Multi-device continuity.</li>
+                                        <li className="flex gap-2"><span>•</span> <b>Validation:</b> Structural data integrity.</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="font-semibold text-sky-700 dark:text-sky-400">Feedback & Support</h3>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                Have questions or suggestions? Your feedback is valuable! Please get in touch.
+
+                        <div className="space-y-3 px-1">
+                            <h3 className="font-bold text-slate-800 dark:text-white">Technical Architecture</h3>
+                            <p className="text-xs leading-relaxed">
+                                PM POSHAN Tracker (v2.1.0) is built on a "Local-First" architecture. All critical calculations for rice consumption, conversion factors, and financial tallies are performed on-device to ensure privacy and speed. Cloud features are optional and designed for seamless disaster recovery.
                             </p>
                         </div>
-                        <div className="text-xs pt-2 border-t border-slate-200/50 dark:border-white/10">
-                            <p><strong>App Version:</strong> 2.1.0</p>
-                            <p><strong>Developer:</strong> Imran Gani Mugloo</p>
-                            <p><strong>Contact:</strong> <a href="tel:+919149690096" className="text-sky-600 dark:text-sky-400 hover:underline">+91 9149690096</a></p>
-                            <p><strong>Email:</strong> <a href="mailto:emraanmugloo123@gmail.com" className="text-sky-600 dark:text-sky-400 hover:underline">emraanmugloo123@gmail.com</a></p>
+
+                        <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">Developed & Maintained By</p>
+                                <p className="font-semibold text-slate-900 dark:text-white">Imran Gani Mugloo</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <a href="tel:+919149690096" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-sky-100 hover:text-sky-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 transition-all shadow-sm">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                </a>
+                                <a href="mailto:emraanmugloo123@gmail.com" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-sky-100 hover:text-sky-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 transition-all shadow-sm">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </Card>
