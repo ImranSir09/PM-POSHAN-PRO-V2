@@ -23,22 +23,38 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const sessionActive = sessionStorage.getItem('pm-poshan-auth') === 'true';
         if (sessionActive) {
             setIsAuthenticated(true);
+            
+            // Background validation check for already active session
+            const validateSession = async () => {
+                const udise = data.settings.schoolDetails.udise;
+                const password = data.auth?.password;
+                
+                if (udise && password) {
+                    try {
+                        const validation = await validateUserWithSheetDB(udise, password);
+                        if (!validation.success) {
+                            if (validation.error === 'DEACTIVATED' || validation.error === 'EXPIRED') {
+                                logout();
+                                window.location.reload(); // Force app refresh to show login
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Session validation skipped due to network/config error');
+                    }
+                }
+            };
+            
+            validateSession();
         }
-    }, []);
+    }, [data.settings.schoolDetails.udise, data.auth?.password]);
 
     const login = async (udise: string, password: string): Promise<boolean> => {
-        // First check local password if UDISE matches
-        if (data.settings.schoolDetails.udise === udise && data.auth?.password === password) {
-            setIsAuthenticated(true);
-            sessionStorage.setItem('pm-poshan-auth', 'true');
-            return true;
-        }
-
-        // Otherwise check SheetDB
+        // First check SheetDB for status/expiry (Cloud is target source of truth)
         const validation = await validateUserWithSheetDB(udise, password);
+        
         if (validation.success) {
-            // If local data is empty or mismatched, we should populate the basics
-            // This ensures a smooth move to a new device
+            // Local check vs Cloud - if UDISE matches, but user changed password in cloud
+            // we should update local password too
             if (data.settings.schoolDetails.udise !== udise) {
                 setupAccountData({
                     username: validation.schoolName || 'User',
@@ -47,8 +63,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     securityQuestion: 'Cloud Restored Account',
                     securityAnswer: 'N/A'
                 }, udise, validation.schoolName || 'Restored School');
+            } else if (data.auth?.password !== password) {
+                updateAuth({ ...data.auth!, password });
             }
 
+            setIsAuthenticated(true);
+            sessionStorage.setItem('pm-poshan-auth', 'true');
+            return true;
+        }
+
+        // Handle specific cloud errors
+        if (validation.error === 'DEACTIVATED') {
+            throw new Error('This account has been deactivated. Please contact support.');
+        }
+        if (validation.error === 'EXPIRED') {
+            throw new Error('This registration has expired. Please contact support.');
+        }
+
+        // Fallback to local login if cloud check fails (e.g. offline) but only if credentials match
+        if (data.settings.schoolDetails.udise === udise && data.auth?.password === password) {
             setIsAuthenticated(true);
             sessionStorage.setItem('pm-poshan-auth', 'true');
             return true;

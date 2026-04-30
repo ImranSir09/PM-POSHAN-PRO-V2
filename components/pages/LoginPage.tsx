@@ -37,8 +37,8 @@ const LoginPage: React.FC = () => {
             if (!success) {
                 showToast('Incorrect UDISE code or Password.', 'error');
             }
-        } catch (error) {
-            showToast('An error occurred during login.', 'error');
+        } catch (error: any) {
+            showToast(error.message || 'An error occurred during login.', 'error');
         } finally {
             setIsLoading(false);
         }

@@ -76,7 +76,7 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
                            activeVal === 'ACTIVE';
             
             if (!isActive) {
-                return { success: false, error: 'This account has been deactivated. Please contact support.' };
+                return { success: false, error: 'DEACTIVATED' };
             }
 
             // 2. Check Expiry Date
@@ -88,7 +88,7 @@ export const validateUserWithSheetDB = async (udise: string, registrationKey: st
                     today.setHours(0, 0, 0, 0);
                     
                     if (expiry < today) {
-                        return { success: false, error: 'This registration key has expired.' };
+                        return { success: false, error: 'EXPIRED' };
                     }
                 }
             }
