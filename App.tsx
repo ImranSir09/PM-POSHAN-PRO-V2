@@ -92,15 +92,6 @@ const AuthenticatedApp: React.FC = () => {
         return 'dashboard'; // Default for all other sessions
     });
 
-    const [showPaymentModal, setShowPaymentModal] = useState(() => {
-        return !sessionStorage.getItem('paymentModalShown');
-    });
-
-    const handleClosePaymentModal = () => {
-        sessionStorage.setItem('paymentModalShown', 'true');
-        setShowPaymentModal(false);
-    };
-
     const pages: Record<Page, React.ReactElement> = {
         dashboard: <Dashboard />,
         summary: <MonthlySummary />,
@@ -138,33 +129,6 @@ const AuthenticatedApp: React.FC = () => {
                 <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
             </div>
             
-            <Modal isOpen={showPaymentModal} onClose={handleClosePaymentModal} title="Service Subscription">
-                <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="bg-white dark:bg-slate-800 p-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <img src="icons/icon-192.png" alt="Logo" className="w-16 h-16 object-contain" />
-                    </div>
-                    <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Support PM Poshan Pro</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                            To support the continued development and maintenance of this application, we kindly request a nominal annual contribution. Your support ensures the service remains reliable and feature-rich for all schools.
-                        </p>
-                    </div>
-                    <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl w-full border border-slate-100 dark:border-slate-800 space-y-3">
-                        <div className="flex justify-between items-center text-sm">
-                            <span className="text-slate-500 dark:text-slate-400">Annual Contribution:</span>
-                            <span className="font-bold text-slate-900 dark:text-white">₹299</span>
-                        </div>
-                        <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider font-semibold text-center">Pay via UPI to</p>
-                            <p className="text-xl font-mono font-bold text-indigo-700 dark:text-indigo-400 text-center">+919596555467</p>
-                        </div>
-                    </div>
-                    <Button onClick={handleClosePaymentModal} className="w-full mt-2">
-                        I Understand
-                    </Button>
-                </div>
-            </Modal>
-
             <ToastContainer />
         </NotificationProvider>
     );

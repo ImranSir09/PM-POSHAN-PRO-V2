@@ -8,6 +8,7 @@ import Modal from '../ui/Modal';
 import TermsModal from '../ui/TermsModal';
 import PasswordInput from '../ui/PasswordInput';
 import Input from '../ui/Input';
+import PaymentReminder from '../ui/PaymentReminder';
 
 const LoginPage: React.FC = () => {
     const { login, resetPassword } = useAuth();
@@ -119,6 +120,9 @@ const LoginPage: React.FC = () => {
                         <h1 className="text-xl font-bold text-slate-900 dark:text-white">Welcome, {data.auth?.username}</h1>
                         <p className="text-sm text-slate-500 dark:text-slate-300">PM Poshan Pro</p>
                     </div>
+                    
+                    <PaymentReminder />
+                    
                     <Card>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <Input

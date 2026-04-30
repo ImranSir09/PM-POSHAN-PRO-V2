@@ -8,6 +8,7 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 import TermsModal from '../ui/TermsModal';
 import PasswordInput from '../ui/PasswordInput';
+import PaymentReminder from '../ui/PaymentReminder';
 
 const SECURITY_QUESTIONS = [
     "What was your first school's name?",
@@ -41,6 +42,7 @@ const SetupPage: React.FC = () => {
     const [securityQuestion, setSecurityQuestion] = useState(SECURITY_QUESTIONS[0]);
     const [securityAnswer, setSecurityAnswer] = useState('');
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [hasOpenedTerms, setHasOpenedTerms] = useState(false);
     
     // UI States
     const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -86,7 +88,11 @@ const SetupPage: React.FC = () => {
                 return '';
             },
             securityAnswer: () => !securityAnswer ? 'Security answer is required.' : '',
-            terms: () => !agreedToTerms ? 'You must agree to the Terms and Conditions to proceed.' : '',
+            terms: () => {
+                if (!hasOpenedTerms) return 'You must open and read the Terms and Conditions first.';
+                if (!agreedToTerms) return 'You must agree to the Terms and Conditions to proceed.';
+                return '';
+            },
         };
 
         let isValid = true;
@@ -188,7 +194,10 @@ const SetupPage: React.FC = () => {
 
     return (
         <>
-            <TermsModal isOpen={isTermsModalOpen} onClose={() => setIsTermsModalOpen(false)} />
+            <TermsModal isOpen={isTermsModalOpen} onClose={() => {
+                setIsTermsModalOpen(false);
+                setHasOpenedTerms(true);
+            }} />
             <div className="min-h-screen font-sans flex items-center justify-center p-4 relative z-10">
                 <div className="w-full max-w-md z-10">
                     <div className="text-center mb-6">
@@ -198,6 +207,8 @@ const SetupPage: React.FC = () => {
                         <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">PM Poshan Pro</h1>
                         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">New School Registration</p>
                     </div>
+
+                    <PaymentReminder />
 
                     {!isVerified ? (
                         <Card title="Step 1: School Activation">
@@ -272,24 +283,41 @@ const SetupPage: React.FC = () => {
                             </div>
                         </Card>
                     ) : (
-                        <Card title="Step 2: Account Details">
+                        <Card title="Step 2: Profile & School Setup">
                             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-                                <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800/50 rounded-xl mb-2">
-                                    <p className="text-[10px] uppercase tracking-wider font-bold text-green-600 dark:text-green-400">Verified School</p>
-                                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{verifiedSchoolName}</p>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400">UDISE: {udise}</p>
+                                <div className="space-y-4 p-4 bg-indigo-50/30 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100/50 dark:border-indigo-800/30">
+                                    <h3 className="text-xs font-bold text-indigo-600/60 dark:text-indigo-400/60 uppercase tracking-widest pl-1">Primary School Information</h3>
+                                    <Input
+                                        label="School Name (from records)"
+                                        id="setup-school-name"
+                                        value={verifiedSchoolName}
+                                        onChange={e => setVerifiedSchoolName(e.target.value)}
+                                        required
+                                        placeholder="Official school name"
+                                    />
+                                    <Input
+                                        label="Verified UDISE Code"
+                                        id="setup-udise"
+                                        value={udise}
+                                        disabled
+                                        className="bg-slate-100 dark:bg-slate-800/50 cursor-not-allowed opacity-75"
+                                    />
                                 </div>
 
-                                <Input
-                                    label="MDM Incharge Name"
-                                    id="username"
-                                    value={username}
-                                    onChange={e => setUsername(e.target.value)}
-                                    onBlur={() => validate('username')}
-                                    required
-                                    className={errors.username ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
-                                />
-                                {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username}</p>}
+                                <div className="pt-2">
+                                    <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-1 mb-4">Local Account Settings</h3>
+                                    <Input
+                                        label="MDM Incharge Name"
+                                        id="username"
+                                        value={username}
+                                        onChange={e => setUsername(e.target.value)}
+                                        onBlur={() => validate('username')}
+                                        required
+                                        placeholder="Name of the person incharge"
+                                        className={errors.username ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : ''}
+                                    />
+                                    {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username}</p>}
+                                </div>
                                 
                                 <Input
                                     label="Contact Number"
@@ -350,18 +378,22 @@ const SetupPage: React.FC = () => {
                                 </fieldset>
 
                                 <div className="pt-2">
-                                    <div className="flex items-center space-x-2">
+                                    <div className="flex items-start space-x-2">
                                         <input
                                             type="checkbox"
                                             id="terms-agree"
                                             checked={agreedToTerms}
                                             onChange={e => setAgreedToTerms(e.target.checked)}
                                             onBlur={() => validate('terms')}
-                                            className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                                            disabled={!hasOpenedTerms}
+                                            className={`h-4 w-4 mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 ${!hasOpenedTerms ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         />
-                                        <label htmlFor="terms-agree" className="text-xs text-slate-600 dark:text-slate-300">
-                                            I agree to the{' '}
-                                            <button type="button" onClick={() => setIsTermsModalOpen(true)} className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms and Conditions</button>
+                                        <label htmlFor="terms-agree" className={`text-xs leading-relaxed ${!hasOpenedTerms ? 'text-slate-400' : 'text-slate-600 dark:text-slate-300'}`}>
+                                            {!hasOpenedTerms ? (
+                                                <span>Please <button type="button" onClick={() => setIsTermsModalOpen(true)} className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">Read the Terms and Conditions</button> before you can agree to them.</span>
+                                            ) : (
+                                                <span>I have read and agree to the <button type="button" onClick={() => setIsTermsModalOpen(true)} className="text-indigo-600 dark:text-indigo-400 hover:underline">Terms and Conditions</button></span>
+                                            )}
                                         </label>
                                     </div>
                                      {errors.terms && <p className="mt-1 text-xs text-red-500">{errors.terms}</p>}
