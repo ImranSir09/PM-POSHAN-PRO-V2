@@ -115,7 +115,9 @@ const LoginPage: React.FC = () => {
                 <div className="w-full max-w-sm z-10">
                      <div className="text-center mb-6">
                         <div className="flex justify-center mb-4">
-                            <img src="icons/icon-192.png" alt="PM Poshan Pro Logo" className="w-16 h-16 rounded-xl shadow-md" />
+                            <div className="p-1 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden">
+                                <img src="icons/icon-192.png" alt="PM Poshan Pro Logo" className="w-16 h-16 rounded-full object-cover" />
+                            </div>
                         </div>
                         <h1 className="text-xl font-bold text-slate-900 dark:text-white">Welcome, {data.auth?.username}</h1>
                         <p className="text-sm text-slate-500 dark:text-slate-300">PM Poshan Pro</p>

@@ -6,8 +6,8 @@ const PaymentReminder: React.FC = () => {
     return (
         <Card className="bg-indigo-50/50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/50 mb-6 overflow-hidden">
             <div className="flex flex-col sm:flex-row items-center gap-4 p-1">
-                <div className="bg-white dark:bg-slate-800 p-2 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 shrink-0">
-                    <img src="icons/icon-192.png" alt="Logo" className="w-10 h-10 object-contain" />
+                    <div className="bg-white dark:bg-slate-800 p-0.5 rounded-full shadow-sm border border-slate-100 dark:border-slate-700 shrink-0 overflow-hidden">
+                    <img src="icons/icon-192.png" alt="Logo" className="w-10 h-10 rounded-full object-cover" />
                 </div>
                 <div className="flex-1 text-center sm:text-left">
                     <h3 className="text-xs font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider mb-1">Service Subscription Reminder</h3>
