@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const setupAccount = async (authData: AuthData, udise: string, schoolName: string) => {
         // Register/Update on Supabase
         try {
-            await registerSchoolWithSupabase(udise, authData.password, schoolName);
+            await registerSchoolWithSupabase(udise, authData.password!, schoolName);
         } catch (error) {
             console.error('Cloud registration warning:', error);
             // We continue even if cloud registration fails, so user can still use local app

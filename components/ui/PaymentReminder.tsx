@@ -1,26 +1,29 @@
 
 import React from 'react';
-import Card from './Card';
+import { CreditCard, Info } from 'lucide-react';
+import { motion } from 'motion/react';
 
 const PaymentReminder: React.FC = () => {
     return (
-        <Card className="bg-indigo-50/50 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/50 mb-6 overflow-hidden">
-            <div className="flex flex-col sm:flex-row items-center gap-4 p-1">
-                    <div className="bg-white dark:bg-slate-800 p-0.5 rounded-full shadow-sm border border-slate-100 dark:border-slate-700 shrink-0 overflow-hidden">
-                    <img src="icons/icon-192.png" alt="Logo" className="w-10 h-10 rounded-full object-cover" />
-                </div>
-                <div className="flex-1 text-center sm:text-left">
-                    <h3 className="text-xs font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider mb-1">Service Subscription Reminder</h3>
-                    <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                        To ensure improved service and official integration, please pay the nominal subscription fee.
-                    </p>
-                </div>
-                <div className="bg-white dark:bg-slate-900/60 px-3 py-2 rounded-xl border border-indigo-100 dark:border-indigo-800 shrink-0 text-center min-w-[120px]">
-                    <p className="text-[9px] text-slate-400 dark:text-slate-500 uppercase font-bold tracking-tighter mb-0.5">UPI Payment</p>
-                    <p className="text-sm font-mono font-bold text-indigo-700 dark:text-indigo-400">+919596555467</p>
-                </div>
+        <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 px-4 py-3 bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm border border-slate-200/50 dark:border-slate-800/50 rounded-2xl flex items-center gap-3 shadow-sm group"
+        >
+            <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center shrink-0 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+                <CreditCard size={14} />
             </div>
-        </Card>
+            
+            <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Subscription Support</span>
+                    <Info size={10} className="text-slate-300 dark:text-slate-600" />
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-tight">
+                    For enhanced features and cloud continuity, please support development via UPI <span className="font-bold text-indigo-600 dark:text-indigo-400">+91 9596555467</span>
+                </p>
+            </div>
+        </motion.div>
     );
 };
 

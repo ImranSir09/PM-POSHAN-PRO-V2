@@ -113,7 +113,7 @@ const LoginPage: React.FC = () => {
                     <div className="animated-blob blob-2 bg-teal-300 dark:bg-teal-900"></div>
                 </div>
                 <div className="w-full max-w-sm z-10">
-                     <div className="text-center mb-6">
+                    <div className="text-center mb-6">
                         <div className="flex justify-center mb-4">
                             <div className="p-1 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden">
                                 <img src="icons/icon-192.png" alt="PM Poshan Pro Logo" className="w-16 h-16 rounded-full object-cover" />
