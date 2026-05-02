@@ -1,7 +1,7 @@
 
 // sw.js
 
-const CACHE_NAME = 'pm-poshan-pro-cache-v3';
+const CACHE_NAME = 'pm-poshan-pro-cache-v4';
 const urlsToCache = [
   './', 
   './index.html',
