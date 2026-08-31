@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Set up JDK 21
@@ -37,6 +37,11 @@ jobs:
 
       - name: Build Web Assets
         run: npm run build
+        env:
+          VITE_SHEETDB_URL: ${{ secrets.VITE_SHEETDB_URL }}
+          VITE_SHEETDB_API_KEY: ${{ secrets.VITE_SHEETDB_API_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || vars.VITE_SUPABASE_ANON_KEY }}
 
       - name: Sync Capacitor Android
         run: npx cap sync android
