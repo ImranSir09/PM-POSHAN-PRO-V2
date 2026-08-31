@@ -5,19 +5,43 @@ import { DEFAULT_SETTINGS } from '../constants';
 // the key of the last saved month. This is crucial for correctly calculating receipts
 // over periods with no daily entries.
 export const getOpeningBalanceInfo = (data: AppData, selectedMonth: string): { balance: MonthlyBalanceData; lastBalanceMonth: string | null } => {
-    const allBalanceKeys = Object.keys(data.monthlyBalances).sort().reverse();
+    const allBalanceKeys = Object.keys(data.monthlyBalances || {}).sort().reverse();
     // Find the most recent month key that is strictly BEFORE the selected month.
     const previousBalanceKey = allBalanceKeys.find(key => key < selectedMonth);
 
-    if (previousBalanceKey) {
-        return { balance: data.monthlyBalances[previousBalanceKey], lastBalanceMonth: previousBalanceKey };
+    if (previousBalanceKey && data.monthlyBalances[previousBalanceKey]) {
+        const bal = data.monthlyBalances[previousBalanceKey];
+        return { 
+            balance: {
+                rice: {
+                    balvatika: parseFloat((bal.rice?.balvatika || 0).toFixed(3)),
+                    primary: parseFloat((bal.rice?.primary || 0).toFixed(3)),
+                    middle: parseFloat((bal.rice?.middle || 0).toFixed(3)),
+                },
+                cash: {
+                    balvatika: parseFloat((bal.cash?.balvatika || 0).toFixed(2)),
+                    primary: parseFloat((bal.cash?.primary || 0).toFixed(2)),
+                    middle: parseFloat((bal.cash?.middle || 0).toFixed(2)),
+                }
+            }, 
+            lastBalanceMonth: previousBalanceKey 
+        };
     }
     
     // If no previous balance is found, use the initial opening balance from settings.
+    const initial = data.settings?.initialOpeningBalance;
     return { 
-        balance: data.settings.initialOpeningBalance || { 
-            rice: { balvatika: 0, primary: 0, middle: 0 },
-            cash: { balvatika: 0, primary: 0, middle: 0 },
+        balance: { 
+            rice: { 
+                balvatika: parseFloat((initial?.rice?.balvatika || 0).toFixed(3)), 
+                primary: parseFloat((initial?.rice?.primary || 0).toFixed(3)), 
+                middle: parseFloat((initial?.rice?.middle || 0).toFixed(3)) 
+            },
+            cash: { 
+                balvatika: parseFloat((initial?.cash?.balvatika || 0).toFixed(2)), 
+                primary: parseFloat((initial?.cash?.primary || 0).toFixed(2)), 
+                middle: parseFloat((initial?.cash?.middle || 0).toFixed(2)) 
+            },
         }, 
         lastBalanceMonth: null 
     };

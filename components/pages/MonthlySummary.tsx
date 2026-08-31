@@ -270,30 +270,9 @@ const MonthlySummary: React.FC = () => {
     const [isDetailsVisible, setIsDetailsVisible] = useState(false);
     const { settings } = data;
 
-    // Optimize summaryData calculation to avoid unnecessary recalculations when unrelated monthly balances change
-    const openingBalanceInfo = useMemo(() => {
-        const allBalanceKeys = Object.keys(data.monthlyBalances).sort().reverse();
-        const previousBalanceKey = allBalanceKeys.find(key => key < selectedMonth);
-        
-        if (previousBalanceKey) {
-            return { balance: data.monthlyBalances[previousBalanceKey], lastBalanceMonth: previousBalanceKey };
-        }
-        
-        return { 
-            balance: data.settings.initialOpeningBalance || { 
-                rice: { balvatika: 0, primary: 0, middle: 0 },
-                cash: { balvatika: 0, primary: 0, middle: 0 },
-            }, 
-            lastBalanceMonth: null 
-        };
-    // Only depend on the specific previous balance that matters for this month
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.monthlyBalances, selectedMonth, data.settings.initialOpeningBalance]);
-
     const summaryData = useMemo(
         () => calculateMonthlySummary(data, selectedMonth),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [data.entries, data.receipts, openingBalanceInfo, data.settings.rates, selectedMonth]
+        [data.entries, data.receipts, data.monthlyBalances, data.settings, selectedMonth]
     );
     
     const { monthEntries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance } = summaryData;
@@ -325,15 +304,11 @@ const MonthlySummary: React.FC = () => {
             const isDifferentBalance = !lastSavedBalanceRef.current || lastSavedBalanceRef.current.balance !== closingBalanceString;
 
             if (isDifferentMonth || isDifferentBalance) {
-                // Use a small timeout to break the render cycle and prevent "Maximum update depth exceeded"
-                const timer = setTimeout(() => {
-                    saveMonthlyBalance(selectedMonth, closingBalance);
-                    lastSavedBalanceRef.current = { month: selectedMonth, balance: closingBalanceString };
-                }, 0);
-                return () => clearTimeout(timer);
+                lastSavedBalanceRef.current = { month: selectedMonth, balance: closingBalanceString };
+                saveMonthlyBalance(selectedMonth, closingBalance);
             }
         }
-    }, [selectedMonth, closingBalanceString, saveMonthlyBalance, closingBalance, monthEntries.length]);
+    }, [selectedMonth, closingBalanceString, saveMonthlyBalance, monthEntries.length]);
 
     useEffect(() => {
         setIsDetailsVisible(false);

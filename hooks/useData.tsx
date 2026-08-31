@@ -236,11 +236,31 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const saveMonthlyBalance = useCallback((monthKey: string, balance: MonthlyBalanceData) => {
         setData(prevData => {
             const existing = prevData.monthlyBalances[monthKey];
-            // Deep comparison to avoid infinite loops and redundant renders
-            if (existing && 
-                JSON.stringify(existing.rice) === JSON.stringify(balance.rice) && 
-                JSON.stringify(existing.cash) === JSON.stringify(balance.cash)) {
-                return prevData;
+            if (existing) {
+                const exRiceBal = existing.rice?.balvatika || 0;
+                const exRicePri = existing.rice?.primary || 0;
+                const exRiceMid = existing.rice?.middle || 0;
+                const curRiceBal = balance.rice?.balvatika || 0;
+                const curRicePri = balance.rice?.primary || 0;
+                const curRiceMid = balance.rice?.middle || 0;
+
+                const exCashBal = existing.cash?.balvatika || 0;
+                const exCashPri = existing.cash?.primary || 0;
+                const exCashMid = existing.cash?.middle || 0;
+                const curCashBal = balance.cash?.balvatika || 0;
+                const curCashPri = balance.cash?.primary || 0;
+                const curCashMid = balance.cash?.middle || 0;
+
+                if (
+                    Math.abs(exRiceBal - curRiceBal) < 0.0001 &&
+                    Math.abs(exRicePri - curRicePri) < 0.0001 &&
+                    Math.abs(exRiceMid - curRiceMid) < 0.0001 &&
+                    Math.abs(exCashBal - curCashBal) < 0.001 &&
+                    Math.abs(exCashPri - curCashPri) < 0.001 &&
+                    Math.abs(exCashMid - curCashMid) < 0.001
+                ) {
+                    return prevData;
+                }
             }
             return {
                 ...prevData,
