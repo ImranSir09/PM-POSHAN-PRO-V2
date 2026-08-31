@@ -43,6 +43,9 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || vars.VITE_SUPABASE_ANON_KEY }}
 
+      - name: Generate Native App Icons
+        run: npm run generate:icons
+
       - name: Sync Capacitor Android
         run: npx cap sync android
 
