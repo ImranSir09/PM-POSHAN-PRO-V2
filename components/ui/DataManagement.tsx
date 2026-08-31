@@ -1,14 +1,16 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
 import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
+import UpdateModal from './UpdateModal';
 import { AppData } from '../../types';
 import { validateImportData } from '../../services/dataValidator';
 import { uploadBackup, downloadBackup } from '../../services/supabaseService';
-import { Cloud, CloudDownload, CloudUpload, Info, Loader2 } from 'lucide-react';
+import { checkForAppUpdates, getCurrentAppVersion, UpdateInfo } from '../../services/updateService';
+import { Cloud, CloudDownload, CloudUpload, Info, Loader2, RefreshCw } from 'lucide-react';
 
 const DataManagement: React.FC = () => {
     const { data, importData, resetData, updateLastBackupDate } = useData();
@@ -24,6 +26,34 @@ const DataManagement: React.FC = () => {
     const [lastSyncedUdise, setLastSyncedUdise] = useState('');
     const [inputUdiseCode, setInputUdiseCode] = useState('');
     const [showCloudInfo, setShowCloudInfo] = useState(false);
+
+    // Update Checker State
+    const [appVersion, setAppVersion] = useState<string>('2.1.0');
+    const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+    const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+    useEffect(() => {
+        getCurrentAppVersion().then(v => setAppVersion(v));
+    }, []);
+
+    const handleManualUpdateCheck = async () => {
+        setIsCheckingUpdate(true);
+        try {
+            const info = await checkForAppUpdates();
+            setUpdateInfo(info);
+            if (info.hasUpdate) {
+                setIsUpdateModalOpen(true);
+            } else {
+                showToast(`PM POSHAN PRO is up to date (v${info.currentVersion}).`, 'info');
+            }
+        } catch (error: any) {
+            showToast('Unable to check for updates. Please verify your connection.', 'error');
+            console.error('Manual update check failed:', error);
+        } finally {
+            setIsCheckingUpdate(false);
+        }
+    };
 
     const handleExport = () => {
         try {
@@ -155,6 +185,12 @@ const DataManagement: React.FC = () => {
 
     return (
         <>
+            <UpdateModal 
+                isOpen={isUpdateModalOpen} 
+                onClose={() => setIsUpdateModalOpen(false)} 
+                updateInfo={updateInfo} 
+            />
+
             <Modal isOpen={isResetModalOpen} onClose={() => setResetModalOpen(false)} title="Confirm Reset">
                 <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">Are you sure you want to delete ALL data? This action cannot be undone. It is highly recommended to export your data first.</p>
                 <div className="flex justify-end space-x-2">
@@ -317,6 +353,28 @@ const DataManagement: React.FC = () => {
                             <p className="text-xs leading-relaxed">
                                 PM POSHAN Tracker (v2.1.0) is built on a "Local-First" architecture. All critical calculations for rice consumption, conversion factors, and financial tallies are performed on-device to ensure privacy and speed. Cloud features are optional and designed for seamless disaster recovery.
                             </p>
+                        </div>
+
+                        <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">App Version & Updates</p>
+                                <p className="font-semibold text-slate-900 dark:text-white text-xs">
+                                    PM POSHAN PRO v{appVersion}
+                                </p>
+                            </div>
+                            <Button 
+                                onClick={handleManualUpdateCheck} 
+                                disabled={isCheckingUpdate} 
+                                variant="secondary" 
+                                className="text-xs py-1.5 px-3 flex items-center gap-1.5"
+                            >
+                                {isCheckingUpdate ? (
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                    <RefreshCw className="w-3.5 h-3.5" />
+                                )}
+                                {isCheckingUpdate ? 'Checking...' : 'Check for Updates'}
+                            </Button>
                         </div>
 
                         <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

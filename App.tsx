@@ -17,6 +17,8 @@ import SetupPage from './components/pages/SetupPage';
 import WelcomePage from './components/pages/WelcomePage';
 import Modal from './components/ui/Modal';
 import Button from './components/ui/Button';
+import UpdateModal from './components/ui/UpdateModal';
+import { checkForAppUpdates, UpdateInfo } from './services/updateService';
 import { Page } from './types';
 
 const App: React.FC = () => {
@@ -92,6 +94,23 @@ const AuthenticatedApp: React.FC = () => {
         return 'dashboard'; // Default for all other sessions
     });
 
+    const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+    useEffect(() => {
+        // Automatically check for updates on startup
+        checkForAppUpdates()
+            .then(info => {
+                if (info.hasUpdate) {
+                    setUpdateInfo(info);
+                    setIsUpdateModalOpen(true);
+                }
+            })
+            .catch(err => {
+                console.log('Automatic update check skipped:', err);
+            });
+    }, []);
+
     const pages: Record<Page, React.ReactElement> = {
         dashboard: <Dashboard />,
         summary: <MonthlySummary />,
@@ -104,6 +123,12 @@ const AuthenticatedApp: React.FC = () => {
 
     return (
         <NotificationProvider setCurrentPage={setCurrentPage}>
+            <UpdateModal 
+                isOpen={isUpdateModalOpen} 
+                onClose={() => setIsUpdateModalOpen(false)} 
+                updateInfo={updateInfo} 
+            />
+
             <div className="min-h-screen text-slate-800 dark:text-slate-200 font-sans">
                 {/* Clean Background Layer */}
                 <div className="fixed inset-0 z-0 bg-slate-50 dark:bg-slate-950">

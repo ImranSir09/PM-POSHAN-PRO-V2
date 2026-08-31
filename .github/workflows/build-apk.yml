@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -52,9 +54,31 @@ jobs:
       - name: Build Android Debug APK
         working-directory: android
         run: ./gradlew assembleDebug --stacktrace
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: 2.1.${{ github.run_number }}
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: v2.1.${{ github.run_number }}
+          name: PM POSHAN PRO v2.1.${{ github.run_number }}
+          body: |
+            ### PM POSHAN PRO V2 Automated APK Release
+
+            - **Version Name:** 2.1.${{ github.run_number }}
+            - **Version Code:** ${{ github.run_number }}
+            - **Build Date:** ${{ github.event.head_commit.timestamp || 'Latest' }}
+
+            Download `app-debug.apk` below to install or update the app on your Android device.
+          files: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
