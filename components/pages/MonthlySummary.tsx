@@ -1,20 +1,21 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Card from '../ui/Card';
 import { useData } from '../../hooks/useData';
-import { Category, AbstractData, DailyEntry, Rates } from '../../types';
+import { Category, AbstractData, DailyEntry, Rates, MonthlyBalanceData } from '../../types';
 import { calculateMonthlySummary } from '../../services/summaryCalculator';
 import Button from '../ui/Button';
 
-const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractData>; unit: string; decimals: number; }> = ({ title, data, unit, decimals }) => {
-    const total = {
+const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractData>; unit: string; decimals: number; }> = React.memo(({ title, data, unit, decimals }) => {
+    const total = useMemo(() => ({
         opening: data.balvatika.opening + data.primary.opening + data.middle.opening,
         received: data.balvatika.received + data.primary.received + data.middle.received,
         total: data.balvatika.total + data.primary.total + data.middle.total,
         consumed: (data.balvatika.consumed || 0) + (data.primary.consumed || 0) + (data.middle.consumed || 0),
         expenditure: (data.balvatika.expenditure || 0) + (data.primary.expenditure || 0) + (data.middle.expenditure || 0),
         balance: data.balvatika.balance + data.primary.balance + data.middle.balance,
-    };
+    }), [data]);
+
     const isCash = unit === '₹';
     const key = isCash ? 'expenditure' : 'consumed';
     const categories: Category[] = ['balvatika', 'primary', 'middle'];
@@ -51,7 +52,7 @@ const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractDa
                     </tbody>
                     <tfoot className="font-semibold bg-slate-100 dark:bg-slate-900">
                         <tr>
-                            <td className={tdClasses}>Total</td>
+                            <td className={thClasses}>Total</td>
                             <td className={`${tdClasses} text-right`}>{total.opening.toFixed(decimals)}</td>
                             <td className={`${tdClasses} text-right`}>{total.received.toFixed(decimals)}</td>
                             <td className={`${tdClasses} text-right`}>{total.total.toFixed(decimals)}</td>
@@ -63,9 +64,10 @@ const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractDa
             </div>
         </div>
     );
-};
+});
+AbstractTable.displayName = 'AbstractTable';
 
-const CategoryAbstractTable: React.FC<{ title: string; data: AbstractData; unit: string; decimals: number; }> = ({ title, data, unit, decimals }) => {
+const CategoryAbstractTable: React.FC<{ title: string; data: AbstractData; unit: string; decimals: number; }> = React.memo(({ title, data, unit, decimals }) => {
     const isCash = unit === '₹';
     const key = isCash ? 'expenditure' : 'consumed';
     const thClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap text-left";
@@ -98,10 +100,10 @@ const CategoryAbstractTable: React.FC<{ title: string; data: AbstractData; unit:
             </div>
         </div>
     );
-};
+});
+CategoryAbstractTable.displayName = 'CategoryAbstractTable';
 
-
-const SimpleDailyEntriesTable: React.FC<{ entries: any[] }> = ({ entries }) => (
+const SimpleDailyEntriesTable: React.FC<{ entries: any[] }> = React.memo(({ entries }) => (
     <div className="overflow-x-auto max-h-72 rounded-xl border border-slate-200 dark:border-slate-800">
         <table className="w-full text-xs text-left">
             <thead className="bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm">
@@ -144,14 +146,15 @@ const SimpleDailyEntriesTable: React.FC<{ entries: any[] }> = ({ entries }) => (
             </tbody>
         </table>
     </div>
-);
+));
+SimpleDailyEntriesTable.displayName = 'SimpleDailyEntriesTable';
 
 const DetailedConsumptionTable: React.FC<{
     entries: DailyEntry[];
     category: Category;
     rates: Rates;
     onRoll: number;
-}> = ({ entries, category, rates, onRoll }) => {
+}> = React.memo(({ entries, category, rates, onRoll }) => {
     
     const { dailyData, totals } = useMemo(() => {
         const data = entries.map((entry, index) => {
@@ -261,9 +264,26 @@ const DetailedConsumptionTable: React.FC<{
             </table>
         </div>
     );
+});
+DetailedConsumptionTable.displayName = 'DetailedConsumptionTable';
+
+const isBalanceEqual = (b1?: MonthlyBalanceData, b2?: MonthlyBalanceData): boolean => {
+    if (!b1 || !b2) return false;
+    const r1 = b1.rice || {};
+    const r2 = b2.rice || {};
+    const c1 = b1.cash || {};
+    const c2 = b2.cash || {};
+    return (
+        Math.abs((r1.balvatika || 0) - (r2.balvatika || 0)) < 0.001 &&
+        Math.abs((r1.primary || 0) - (r2.primary || 0)) < 0.001 &&
+        Math.abs((r1.middle || 0) - (r2.middle || 0)) < 0.001 &&
+        Math.abs((c1.balvatika || 0) - (c2.balvatika || 0)) < 0.01 &&
+        Math.abs((c1.primary || 0) - (c2.primary || 0)) < 0.01 &&
+        Math.abs((c1.middle || 0) - (c2.middle || 0)) < 0.01
+    );
 };
 
-const MonthlySummary: React.FC = () => {
+const MonthlySummary: React.FC = React.memo(() => {
     const { data, saveMonthlyBalance } = useData();
     const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
     const [view, setView] = useState<'overall' | Category>('overall');
@@ -294,29 +314,30 @@ const MonthlySummary: React.FC = () => {
         return totals;
     }, [settings.classRolls]);
 
-    const lastSavedBalanceRef = React.useRef<{ month: string, balance: string } | null>(null);
-
-    const closingBalanceString = useMemo(() => JSON.stringify(closingBalance), [closingBalance]);
+    const savedBalance = data.monthlyBalances[selectedMonth];
     
     useEffect(() => {
         if (closingBalance && monthEntries.length > 0) {
-            const isDifferentMonth = !lastSavedBalanceRef.current || lastSavedBalanceRef.current.month !== selectedMonth;
-            const isDifferentBalance = !lastSavedBalanceRef.current || lastSavedBalanceRef.current.balance !== closingBalanceString;
-
-            if (isDifferentMonth || isDifferentBalance) {
-                lastSavedBalanceRef.current = { month: selectedMonth, balance: closingBalanceString };
+            if (!isBalanceEqual(savedBalance, closingBalance)) {
                 saveMonthlyBalance(selectedMonth, closingBalance);
             }
         }
-    }, [selectedMonth, closingBalanceString, saveMonthlyBalance, monthEntries.length]);
+    }, [selectedMonth, closingBalance, savedBalance, saveMonthlyBalance, monthEntries.length]);
 
     useEffect(() => {
         setIsDetailsVisible(false);
     }, [view, selectedMonth]);
 
-    const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMonthChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedMonth(e.target.value);
-    };
+    }, []);
+
+    const handleViewChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        setView(e.target.value as any);
+    }, []);
+
+    const showDetails = useCallback(() => setIsDetailsVisible(true), []);
+    const hideDetails = useCallback(() => setIsDetailsVisible(false), []);
 
     const displayedTotals = useMemo(() => {
         if (view === 'overall') {
@@ -366,7 +387,7 @@ const MonthlySummary: React.FC = () => {
                         <select
                             id="view-select"
                             value={view}
-                            onChange={(e) => setView(e.target.value as any)}
+                            onChange={handleViewChange}
                              className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
                         >
                             <option value="overall">Overall</option>
@@ -434,7 +455,7 @@ const MonthlySummary: React.FC = () => {
                                         onRoll={onRoll[view]}
                                     />
                                 )}
-                                <Button onClick={() => setIsDetailsVisible(false)} className="w-full mt-4" variant="secondary">
+                                <Button onClick={hideDetails} className="w-full mt-4" variant="secondary">
                                     Hide Details
                                 </Button>
                             </>
@@ -446,7 +467,7 @@ const MonthlySummary: React.FC = () => {
                                         : "A detailed day-by-day consumption register is available."
                                     }
                                 </p>
-                                <Button onClick={() => setIsDetailsVisible(true)}>
+                                <Button onClick={showDetails}>
                                     {view === 'overall' ? 'Show Daily Breakdown' : 'Show Detailed Register'}
                                 </Button>
                             </div>
@@ -456,6 +477,8 @@ const MonthlySummary: React.FC = () => {
             )}
         </div>
     );
-};
+});
+
+MonthlySummary.displayName = 'MonthlySummary';
 
 export default MonthlySummary;

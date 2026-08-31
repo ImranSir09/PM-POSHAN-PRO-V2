@@ -44,7 +44,7 @@ const NO_MEAL_REASONS_STRUCTURED = {
 type MainReason = keyof typeof NO_MEAL_REASONS_STRUCTURED;
 const MAIN_REASONS = Object.keys(NO_MEAL_REASONS_STRUCTURED) as MainReason[];
 
-const DailyEntryPage: React.FC = () => {
+const DailyEntryPage: React.FC = React.memo(() => {
     const { data, addEntry } = useData();
     const { showToast } = useToast();
     const { settings } = data;
@@ -370,6 +370,8 @@ const DailyEntryPage: React.FC = () => {
             </Card>
         </>
     );
-};
+});
+
+DailyEntryPage.displayName = 'DailyEntryPage';
 
 export default DailyEntryPage;

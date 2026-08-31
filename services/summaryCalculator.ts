@@ -168,8 +168,16 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
     });
 
     const closingBalance: MonthlyBalanceData = {
-        rice: { balvatika: riceAbstracts.balvatika.balance, primary: riceAbstracts.primary.balance, middle: riceAbstracts.middle.balance },
-        cash: { balvatika: cashAbstracts.balvatika.balance, primary: cashAbstracts.primary.balance, middle: cashAbstracts.middle.balance },
+        rice: {
+            balvatika: parseFloat((riceAbstracts.balvatika.balance || 0).toFixed(3)),
+            primary: parseFloat((riceAbstracts.primary.balance || 0).toFixed(3)),
+            middle: parseFloat((riceAbstracts.middle.balance || 0).toFixed(3)),
+        },
+        cash: {
+            balvatika: parseFloat((cashAbstracts.balvatika.balance || 0).toFixed(2)),
+            primary: parseFloat((cashAbstracts.primary.balance || 0).toFixed(2)),
+            middle: parseFloat((cashAbstracts.middle.balance || 0).toFixed(2)),
+        },
     };
     
     return { monthEntries: entries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance, expenditureBreakdown };

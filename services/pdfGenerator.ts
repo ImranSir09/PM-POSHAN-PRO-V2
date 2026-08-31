@@ -259,10 +259,10 @@ const generateMDCF = (
 
     // 3. Fund Details (in Rs.)
     doc.setFontSize(9).setFont(undefined, 'bold');
-    doc.text('3. Cooking Cost & Fund Details (in ₹)', 14, doc.lastAutoTable.finalY + 6);
+    doc.text('3. Cooking Cost & Fund Details (in Rs.)', 14, doc.lastAutoTable.finalY + 6);
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + 8,
-        head: [['Component', 'Opening Balance (₹)', 'Received (₹)', 'Expenditure (₹)', 'Closing Balance (₹)']],
+        head: [['Component', 'Opening Balance (Rs.)', 'Received (Rs.)', 'Expenditure (Rs.)', 'Closing Balance (Rs.)']],
         body: [
             ['Cooking Cost - Bal Vatika', cashAbstracts.balvatika.opening.toFixed(2), cashAbstracts.balvatika.received.toFixed(2), (cashAbstracts.balvatika.expenditure || 0).toFixed(2), cashAbstracts.balvatika.balance.toFixed(2)],
             ['Cooking Cost - Primary', cashAbstracts.primary.opening.toFixed(2), cashAbstracts.primary.received.toFixed(2), (cashAbstracts.primary.expenditure || 0).toFixed(2), cashAbstracts.primary.balance.toFixed(2)],
@@ -279,7 +279,7 @@ const generateMDCF = (
     doc.text('4. Cook Cum Helper Payment Details', 14, doc.lastAutoTable.finalY + 6);
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + 8,
-        head: [['S.No', 'Name', 'Gender', 'Category', 'Mode of Payment', 'Amount Paid (₹)']],
+        head: [['S.No', 'Name', 'Gender', 'Category', 'Mode of Payment', 'Amount Paid (Rs.)']],
         body: settings.cooks.length > 0 ? settings.cooks.map((cook, index) => [
             index + 1,
             cook.name,
@@ -324,7 +324,7 @@ const generateMDCF = (
             ['Was MDM Inspected during Month?', settings.inspectionReport?.inspected ? 'Yes' : 'No'],
             ['If Inspected, by Whom', settings.inspectionReport?.inspected ? (settings.inspectionReport?.inspectedBy || 'Official') : 'N/A'],
             ['Untoward Incidents Reported', settings.inspectionReport?.incidentsCount || 0],
-            ['MME Expenditure (in ₹)', (settings.mmeExpenditure || 0).toFixed(2)]
+            ['MME Expenditure (in Rs.)', (settings.mmeExpenditure || 0).toFixed(2)]
         ],
         theme: 'grid',
         styles: { fontSize: 8, cellPadding: 2, textColor: [15, 23, 42] }
@@ -475,7 +475,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
         doc.setFontSize(9).setFont(undefined, 'normal');
         doc.text(`Daily Consumption Register (${categoryName}) - ${monthName} ${year}`, doc.internal.pageSize.getWidth() / 2, 21, { align: 'center' });
 
-        const head = [['S.No', 'Date', 'Roll', 'Present', 'Rice (kg)', 'Dal/Veg (₹)', 'Oil/Cond (₹)', 'Salt (₹)', 'Fuel (₹)', 'Total (₹)', 'Remarks']];
+        const head = [['S.No', 'Date', 'Roll', 'Present', 'Rice (kg)', 'Dal/Veg (Rs.)', 'Oil/Cond (Rs.)', 'Salt (Rs.)', 'Fuel (Rs.)', 'Total (Rs.)', 'Remarks']];
         const body: any[][] = [];
         const totals = { present: 0, riceUsed: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, totalCost: 0 };
 
@@ -573,7 +573,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
         // Cash Abstract
         doc.autoTable({
             startY: abstractStartY,
-            head: [[`Cash Abstract - ${categoryName} (₹)`, 'Amount']],
+            head: [[`Cash Abstract - ${categoryName} (Rs.)`, 'Amount']],
             body: [
                 ['Opening Balance', cashCatAbstract.opening.toFixed(2)],
                 ['Received in Month', cashCatAbstract.received.toFixed(2)],
@@ -694,7 +694,7 @@ const generateYearlyConsumptionDetailedPDF = (data: AppData, financialYear: stri
             { content: 'On Roll', rowSpan: 2, styles: { valign: 'middle' } } as any,
             { content: 'Meals Served', rowSpan: 2, styles: { valign: 'middle' } } as any,
             { content: 'Rice Stock (in kg)', colSpan: 4, styles: { halign: 'center' } } as any,
-            { content: 'Cooking Cost Funds (in ₹)', colSpan: 4, styles: { halign: 'center' } } as any,
+            { content: 'Cooking Cost Funds (in Rs.)', colSpan: 4, styles: { halign: 'center' } } as any,
         ],
         [
             'Opening', 'Received', 'Consumed', 'Closing',

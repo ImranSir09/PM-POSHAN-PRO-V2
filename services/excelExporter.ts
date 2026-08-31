@@ -81,8 +81,8 @@ export const exportMDCFToExcel = (data: AppData, selectedMonth: string, override
             categoryTotals.present.middle,
         ],
         [''],
-        ['3. FUND DETAILS (in ₹)'],
-        ['Component', 'Opening Balance (₹)', 'Received (₹)', 'Expenditure (₹)', 'Closing Balance (₹)'],
+        ['3. FUND DETAILS (in Rs.)'],
+        ['Component', 'Opening Balance (Rs.)', 'Received (Rs.)', 'Expenditure (Rs.)', 'Closing Balance (Rs.)'],
         [
             'Cooking Cost - Bal Vatika',
             cashAbstracts.balvatika.opening.toFixed(2),
@@ -106,7 +106,7 @@ export const exportMDCFToExcel = (data: AppData, selectedMonth: string, override
         ],
         [''],
         ['4. COOK CUM HELPER PAYMENT DETAILS'],
-        ['S.No', 'Name', 'Gender', 'Category', 'Mode of Payment', 'Amount Paid (₹)'],
+        ['S.No', 'Name', 'Gender', 'Category', 'Mode of Payment', 'Amount Paid (Rs.)'],
         ...settings.cooks.map((cook: CookCumHelper, idx: number) => [
             idx + 1,
             cook.name,
@@ -148,7 +148,7 @@ export const exportMDCFToExcel = (data: AppData, selectedMonth: string, override
         ['Inspected', settings.inspectionReport?.inspected ? 'Yes' : 'No'],
         ['Inspected By', settings.inspectionReport?.inspected ? settings.inspectionReport?.inspectedBy : 'N/A'],
         ['Untoward Incidents', settings.inspectionReport?.incidentsCount || 0],
-        ['MME Expenditure (₹)', (settings.mmeExpenditure || 0).toFixed(2)],
+        ['MME Expenditure (Rs.)', (settings.mmeExpenditure || 0).toFixed(2)],
         [''],
         ['MDM Incharge', settings.mdmIncharge?.name || '-'],
         ['Head of Institution', settings.headOfInstitution?.name || '-'],
@@ -187,11 +187,11 @@ export const exportDailyConsumptionToExcel = (data: AppData, selectedMonth: stri
             'Date',
             'Present Students',
             'Rice Consumed (kg)',
-            'Dal/Veg (₹)',
-            'Oil/Cond (₹)',
-            'Salt (₹)',
-            'Fuel (₹)',
-            'Total Cost (₹)',
+            'Dal/Veg (Rs.)',
+            'Oil/Cond (Rs.)',
+            'Salt (Rs.)',
+            'Fuel (Rs.)',
+            'Total Cost (Rs.)',
             'Status / Remarks',
         ]);
 
@@ -345,7 +345,7 @@ export const exportReceiptsToExcel = (data: AppData) => {
         ['UDISE Code', settings.schoolDetails.udise],
         ['Total Receipts Recorded', receipts.length],
         [''],
-        ['Date', 'Rice - Balvatika (kg)', 'Rice - Primary (kg)', 'Rice - Middle (kg)', 'Total Rice (kg)', 'Cash - Balvatika (₹)', 'Cash - Primary (₹)', 'Cash - Middle (₹)', 'Total Cash (₹)'],
+        ['Date', 'Rice - Balvatika (kg)', 'Rice - Primary (kg)', 'Rice - Middle (kg)', 'Total Rice (kg)', 'Cash - Balvatika (Rs.)', 'Cash - Primary (Rs.)', 'Cash - Middle (Rs.)', 'Total Cash (Rs.)'],
     ];
 
     receipts.forEach(r => {

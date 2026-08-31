@@ -7,7 +7,7 @@ interface IllustrationCardProps {
     inchargeContact?: string;
 }
 
-const IllustrationCard: React.FC<IllustrationCardProps> = ({ inchargeName, inchargeContact }) => {
+const IllustrationCard: React.FC<IllustrationCardProps> = React.memo(({ inchargeName, inchargeContact }) => {
     const showInchargeDetails = inchargeName && inchargeName.trim() !== '';
 
     return (
@@ -76,6 +76,8 @@ const IllustrationCard: React.FC<IllustrationCardProps> = ({ inchargeName, incha
             </div>
         </Card>
     );
-};
+});
+
+IllustrationCard.displayName = 'IllustrationCard';
 
 export default IllustrationCard;

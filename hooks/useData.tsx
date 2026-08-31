@@ -252,12 +252,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 const curCashMid = balance.cash?.middle || 0;
 
                 if (
-                    Math.abs(exRiceBal - curRiceBal) < 0.0001 &&
-                    Math.abs(exRicePri - curRicePri) < 0.0001 &&
-                    Math.abs(exRiceMid - curRiceMid) < 0.0001 &&
-                    Math.abs(exCashBal - curCashBal) < 0.001 &&
-                    Math.abs(exCashPri - curCashPri) < 0.001 &&
-                    Math.abs(exCashMid - curCashMid) < 0.001
+                    Math.abs(exRiceBal - curRiceBal) < 0.001 &&
+                    Math.abs(exRicePri - curRicePri) < 0.001 &&
+                    Math.abs(exRiceMid - curRiceMid) < 0.001 &&
+                    Math.abs(exCashBal - curCashBal) < 0.01 &&
+                    Math.abs(exCashPri - curCashPri) < 0.01 &&
+                    Math.abs(exCashMid - curCashMid) < 0.01
                 ) {
                     return prevData;
                 }

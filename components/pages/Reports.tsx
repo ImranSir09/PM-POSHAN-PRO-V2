@@ -111,7 +111,7 @@ const Reports: React.FC = () => {
                     'For Month': monthName,
                     'Total Meal Days': monthEntries.filter(e => e.totalPresent > 0).length,
                     'Rice Consumed': `${totals.rice.toFixed(3)} kg`,
-                    'Total Expenditure': `₹${totals.expenditure.toFixed(2)}`,
+                    'Total Expenditure': `Rs. ${totals.expenditure.toFixed(2)}`,
                 };
                 break;
             case 'roll_statement':

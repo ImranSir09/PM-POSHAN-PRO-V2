@@ -11,7 +11,29 @@ import Skeleton from '../ui/Skeleton';
 import DailyEntryPage from './DailyEntry';
 import { calculateMonthlySummary } from '../../services/summaryCalculator';
 
-const Dashboard: React.FC = () => {
+const CustomTooltip = React.memo(({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        // FIX: Check if payload and its properties exist to prevent runtime errors.
+        const isSunday = payload[0]?.payload?.date?.getDay() === 0;
+        return (
+            <div className="bg-white/80 dark:bg-slate-800/80 p-2 border border-slate-200/50 dark:border-slate-600 rounded text-xs shadow-lg backdrop-blur-sm">
+                <p className="label text-slate-700 dark:text-slate-300 font-semibold">
+                    {`Date: ${label}`}
+                    {isSunday && <span className="text-red-500 ml-1">(Sunday)</span>}
+                </p>
+                <p style={{ color: '#94a3b8' }}>{`Balvatika: ${payload[0].value}`}</p>
+                <p style={{ color: '#0ea5e9' }}>{`Primary: ${payload[1].value}`}</p>
+                <p style={{ color: '#2dd4bf' }}>{`Middle: ${payload[2].value}`}</p>
+                <p className="font-bold text-slate-800 dark:text-white">{`Total: ${payload[0].payload.total}`}</p>
+            </div>
+        );
+    }
+    return null;
+});
+
+CustomTooltip.displayName = 'CustomTooltip';
+
+const Dashboard: React.FC = React.memo(() => {
     const { data } = useData();
     const { showToast } = useToast();
     const { settings } = data;
@@ -80,26 +102,6 @@ const Dashboard: React.FC = () => {
             setIsLoading(false);
         }
     }, [dashboardData]);
-
-    const CustomTooltip = ({ active, payload, label }: any) => {
-        if (active && payload && payload.length) {
-            // FIX: Check if payload and its properties exist to prevent runtime errors.
-            const isSunday = payload[0]?.payload?.date?.getDay() === 0;
-            return (
-                <div className="bg-white/80 dark:bg-slate-800/80 p-2 border border-slate-200/50 dark:border-slate-600 rounded text-xs shadow-lg backdrop-blur-sm">
-                    <p className="label text-slate-700 dark:text-slate-300 font-semibold">
-                        {`Date: ${label}`}
-                        {isSunday && <span className="text-red-500 ml-1">(Sunday)</span>}
-                    </p>
-                    <p style={{ color: '#94a3b8' }}>{`Balvatika: ${payload[0].value}`}</p>
-                    <p style={{ color: '#0ea5e9' }}>{`Primary: ${payload[1].value}`}</p>
-                    <p style={{ color: '#2dd4bf' }}>{`Middle: ${payload[2].value}`}</p>
-                    <p className="font-bold text-slate-800 dark:text-white">{`Total: ${payload[0].payload.total}`}</p>
-                </div>
-            );
-        }
-        return null;
-    };
 
     if (isLoading) {
         return (
@@ -198,6 +200,8 @@ const Dashboard: React.FC = () => {
             </Card>
         </div>
     );
-};
+});
+
+Dashboard.displayName = 'Dashboard';
 
 export default Dashboard;

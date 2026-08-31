@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PM POSHAN PRO</string>
+    <string name="title_activity_main">PM POSHAN PRO</string>
+    <string name="package_name">com.imransir09.pmposhanpro</string>
+    <string name="custom_url_scheme">com.imransir09.pmposhanpro</string>
+</resources>
