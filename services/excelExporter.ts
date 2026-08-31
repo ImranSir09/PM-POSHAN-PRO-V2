@@ -21,21 +21,16 @@ function arrayToCsv(data: (string | number | boolean | null | undefined)[][]): s
     return '\uFEFF' + csvContent;
 }
 
+import { saveOrDownloadFile } from './fileDownloadService';
+
 /**
- * Triggers a client-side file download for a CSV string
+ * Triggers a file download / native share for a CSV string
  */
 function downloadCsv(csvString: string, filename: string) {
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }, 100);
+    saveOrDownloadFile(blob, filename, 'text/csv;charset=utf-8;').catch(err => {
+        console.error('CSV export failed:', err);
+    });
 }
 
 export const exportMDCFToExcel = (data: AppData, selectedMonth: string, overrideData?: any) => {

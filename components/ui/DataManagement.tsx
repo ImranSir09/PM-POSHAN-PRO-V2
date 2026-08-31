@@ -10,6 +10,7 @@ import { AppData } from '../../types';
 import { validateImportData } from '../../services/dataValidator';
 import { uploadBackup, downloadBackup } from '../../services/supabaseService';
 import { checkForAppUpdates, getCurrentAppVersion, UpdateInfo } from '../../services/updateService';
+import { saveOrDownloadFile } from '../../services/fileDownloadService';
 import { Cloud, CloudDownload, CloudUpload, Info, Loader2, RefreshCw } from 'lucide-react';
 
 const DataManagement: React.FC = () => {
@@ -55,17 +56,9 @@ const DataManagement: React.FC = () => {
         }
     };
 
-    const handleExport = () => {
+    const handleExport = async () => {
         try {
             const jsonString = JSON.stringify(data, null, 2);
-            // Use text/plain with charset to ensure mobile devices treat it as readable text.
-            // The 'download' attribute below forces it to save as a file with the .json extension,
-            // preventing the browser from just opening it in a tab.
-            const blob = new Blob([jsonString], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            
             const schoolName = (data.settings.schoolDetails.name || 'School').replace(/[\\/:"*?<>|.\s]+/g, '_');
             
             const today = new Date();
@@ -74,19 +67,14 @@ const DataManagement: React.FC = () => {
             const dd = String(today.getDate()).padStart(2, '0');
             const dateString = `${yyyy}-${mm}-${dd}`;
             
-            a.download = `PM_POSHAN_Backup_${schoolName}_${dateString}.json`;
-            document.body.appendChild(a);
-            a.click();
+            const filename = `PM_POSHAN_Backup_${schoolName}_${dateString}.json`;
             
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 100);
+            await saveOrDownloadFile(jsonString, filename, 'application/json');
 
             showToast('Data exported successfully!', 'success');
             updateLastBackupDate();
         } catch (error) {
-            showToast('Error exporting data. Check browser permissions or try again.', 'error');
+            showToast('Error exporting data. Check permissions or try again.', 'error');
             console.error("Data export failed:", error);
         }
     };

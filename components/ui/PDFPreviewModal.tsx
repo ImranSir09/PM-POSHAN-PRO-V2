@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Button from './Button';
+import { saveOrDownloadFile } from '../../services/fileDownloadService';
 
 interface PDFPreviewModalProps {
     isOpen: boolean;
@@ -14,34 +15,11 @@ interface PDFPreviewModalProps {
 const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({ isOpen, onClose, pdfUrl, pdfBlob, filename, onRegenerate }) => {
     if (!isOpen) return null;
 
-    const handleDownload = () => {
-        // Prioritize using the raw blob for downloading as it's more direct and reliable.
-        if (pdfBlob) {
-            const downloadUrl = URL.createObjectURL(pdfBlob);
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-    
-            // Use a timeout to ensure the browser has initiated the download
-            // before the link is removed and the object URL is revoked.
-            setTimeout(() => {
-                document.body.removeChild(link);
-                URL.revokeObjectURL(downloadUrl);
-            }, 100);
-        } else {
-            // Fallback to the provided URL if the blob isn't available.
-            // This will work for data URIs but is less efficient.
-            console.warn("PDF blob not available for download, falling back to URL.");
-            const link = document.createElement('a');
-            link.href = pdfUrl;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            setTimeout(() => {
-                document.body.removeChild(link);
-            }, 100);
+    const handleDownload = async () => {
+        try {
+            await saveOrDownloadFile(pdfBlob || pdfUrl, filename, 'application/pdf');
+        } catch (err) {
+            console.error('Failed to download PDF:', err);
         }
     };
 
