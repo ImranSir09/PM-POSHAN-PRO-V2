@@ -6,8 +6,6 @@ import Modal from '../ui/Modal';
 import { useData } from '../../hooks/useData';
 import { useToast } from '../../hooks/useToast';
 import { CategoryBalance, Category } from '../../types';
-import { exportReceiptsToExcel } from '../../services/excelExporter';
-import { FileSpreadsheet } from 'lucide-react';
 
 const Receipts: React.FC = () => {
     const { addReceipt, deleteReceipt, data } = useData();
@@ -73,15 +71,6 @@ const Receipts: React.FC = () => {
         }
     };
 
-    const handleExportLedger = () => {
-        try {
-            exportReceiptsToExcel(data);
-            showToast('Receipts ledger exported to Excel!', 'success');
-        } catch (e) {
-            showToast('Failed to export receipts ledger.', 'error');
-        }
-    };
-
     return (
         <>
             <Modal isOpen={!!receiptToDelete} onClose={() => setReceiptToDelete(null)} title="Confirm Deletion">
@@ -123,12 +112,6 @@ const Receipts: React.FC = () => {
                 <Card>
                     <div className="flex items-center justify-between mb-3">
                         <h3 className="text-base font-semibold text-slate-800 dark:text-slate-100">Recent Receipts</h3>
-                        {data.receipts.length > 0 && (
-                            <Button variant="secondary" onClick={handleExportLedger} className="flex items-center gap-1.5 text-xs py-1.5 px-3">
-                                <FileSpreadsheet size={14} className="text-emerald-600" />
-                                <span>Export Excel</span>
-                            </Button>
-                        )}
                     </div>
                     <div className="overflow-x-auto max-h-60 rounded-xl border border-slate-200 dark:border-slate-800">
                         <table className="w-full text-xs text-left">

@@ -7,16 +7,10 @@ import Modal from '../ui/Modal';
 import { Category, CookCumHelper, InspectionAuthority, Settings } from '../../types';
 import PDFPreviewModal from '../ui/PDFPreviewModal';
 import { generatePDFReport, PdfExportOptions } from '../../services/pdfGenerator';
-import {
-    exportMDCFToExcel,
-    exportDailyConsumptionToExcel,
-    exportRollStatementToExcel,
-    exportReceiptsToExcel,
-} from '../../services/excelExporter';
 import { calculateMonthlySummary } from '../../services/summaryCalculator';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import NumberInput from '../ui/NumberInput';
-import { FileText, FileSpreadsheet, Sparkles, ShieldCheck } from 'lucide-react';
+import { FileText, Sparkles, ShieldCheck } from 'lucide-react';
 
 const reportDescriptions: Record<string, string> = {
     mdcf: "Generates the official Monthly Data Collection Format (MDCF) required for government reporting.",
@@ -34,7 +28,6 @@ const Reports: React.FC = () => {
     const { showToast } = useToast();
 
     const [reportType, setReportType] = useState('mdcf');
-    const [exportFormat, setExportFormat] = useState<'pdf' | 'excel'>('pdf');
     const [themeColor, setThemeColor] = useState<'navy' | 'indigo' | 'slate' | 'classic'>('navy');
     const [watermarkText, setWatermarkText] = useState('');
 
@@ -81,11 +74,6 @@ const Reports: React.FC = () => {
     }, [reportType, selectedMonth, selectedFinancialYear, themeColor, watermarkText]);
 
     const initiateReportGeneration = () => {
-        if (exportFormat === 'excel') {
-            handleExcelExport();
-            return;
-        }
-
         if (reportType === 'mdcf') {
             setMdcfData({
                 healthStatus: JSON.parse(JSON.stringify(data.settings.healthStatus)),
@@ -163,30 +151,6 @@ const Reports: React.FC = () => {
 
         setReportSummary(newSummary);
         setIsConfirmModalOpen(true);
-    };
-
-    const handleExcelExport = () => {
-        try {
-            switch (reportType) {
-                case 'mdcf':
-                    exportMDCFToExcel(data, selectedMonth, mdcfData);
-                    break;
-                case 'daily_consumption':
-                    exportDailyConsumptionToExcel(data, selectedMonth);
-                    break;
-                case 'roll_statement':
-                    exportRollStatementToExcel(data);
-                    break;
-                case 'receipts_ledger':
-                default:
-                    exportReceiptsToExcel(data);
-                    break;
-            }
-            showToast('Excel report generated and downloaded!', 'success');
-        } catch (err) {
-            console.error('Excel export error:', err);
-            showToast('Failed to export Excel file.', 'error');
-        }
     };
 
     const handleReportExport = (overrideData?: MdcfDataType) => {
@@ -447,11 +411,7 @@ const Reports: React.FC = () => {
                         <Button
                             onClick={() => {
                                 setIsMdcfModalOpen(false);
-                                if (exportFormat === 'excel') {
-                                    handleExcelExport();
-                                } else {
-                                    handleReportExport(mdcfData || undefined);
-                                }
+                                handleReportExport(mdcfData || undefined);
                             }}
                         >
                             Export Document
@@ -463,39 +423,6 @@ const Reports: React.FC = () => {
             <div className="space-y-4">
                 <Card title="Document & Report Center">
                     <div className="space-y-4">
-                        {/* Format Selection Cards */}
-                        <div>
-                            <label className="block text-xs font-medium mb-1.5 text-slate-600 dark:text-slate-300">
-                                Export Format
-                            </label>
-                            <div className="grid grid-cols-2 gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setExportFormat('pdf')}
-                                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${
-                                        exportFormat === 'pdf'
-                                            ? 'bg-indigo-50 border-indigo-500 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-500 dark:text-indigo-300 shadow-sm'
-                                            : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900'
-                                    }`}
-                                >
-                                    <FileText size={18} className={exportFormat === 'pdf' ? 'text-indigo-600 dark:text-indigo-400' : ''} />
-                                    <span>Pixel-Perfect PDF</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setExportFormat('excel')}
-                                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${
-                                        exportFormat === 'excel'
-                                            ? 'bg-emerald-50 border-emerald-500 text-emerald-700 dark:bg-emerald-900/30 dark:border-emerald-500 dark:text-emerald-300 shadow-sm'
-                                            : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900'
-                                    }`}
-                                >
-                                    <FileSpreadsheet size={18} className={exportFormat === 'excel' ? 'text-emerald-600 dark:text-emerald-400' : ''} />
-                                    <span>Excel CSV Spreadsheet</span>
-                                </button>
-                            </div>
-                        </div>
-
                         {/* Report Type Selector */}
                         <div>
                             <label htmlFor="report-type" className="block text-xs font-medium mb-1 text-slate-600 dark:text-slate-300">
@@ -554,50 +481,48 @@ const Reports: React.FC = () => {
                         )}
 
                         {/* PDF Options */}
-                        {exportFormat === 'pdf' && (
-                            <div className="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
-                                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                                    <Sparkles size={14} className="text-indigo-500" /> PDF Style & Customization Options
-                                </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <div>
-                                        <label htmlFor="theme-color" className="block text-xs text-slate-500 dark:text-slate-400 mb-1">
-                                            Header Theme Accent
-                                        </label>
-                                        <select
-                                            id="theme-color"
-                                            value={themeColor}
-                                            onChange={e => setThemeColor(e.target.value as any)}
-                                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-500/20"
-                                        >
-                                            <option value="navy">Government Official Navy</option>
-                                            <option value="indigo">Executive Indigo</option>
-                                            <option value="slate">Minimalist Slate</option>
-                                            <option value="classic">Classic Grayscale</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="watermark-text" className="block text-xs text-slate-500 dark:text-slate-400 mb-1">
-                                            Watermark (Optional)
-                                        </label>
-                                        <input
-                                            id="watermark-text"
-                                            type="text"
-                                            placeholder="e.g. OFFICIAL COPY, DUPLICATE"
-                                            value={watermarkText}
-                                            onChange={e => setWatermarkText(e.target.value)}
-                                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-500/20"
-                                        />
-                                    </div>
+                        <div className="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
+                            <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                <Sparkles size={14} className="text-indigo-500" /> PDF Style & Customization Options
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label htmlFor="theme-color" className="block text-xs text-slate-500 dark:text-slate-400 mb-1">
+                                        Header Theme Accent
+                                    </label>
+                                    <select
+                                        id="theme-color"
+                                        value={themeColor}
+                                        onChange={e => setThemeColor(e.target.value as any)}
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-500/20"
+                                    >
+                                        <option value="navy">Government Official Navy</option>
+                                        <option value="indigo">Executive Indigo</option>
+                                        <option value="slate">Minimalist Slate</option>
+                                        <option value="classic">Classic Grayscale</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label htmlFor="watermark-text" className="block text-xs text-slate-500 dark:text-slate-400 mb-1">
+                                        Watermark (Optional)
+                                    </label>
+                                    <input
+                                        id="watermark-text"
+                                        type="text"
+                                        placeholder="e.g. OFFICIAL COPY, DUPLICATE"
+                                        value={watermarkText}
+                                        onChange={e => setWatermarkText(e.target.value)}
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-500/20"
+                                    />
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         <Button onClick={initiateReportGeneration} className="w-full" disabled={isGenerating}>
-                            {exportFormat === 'pdf' ? 'Generate & Preview Pixel-Perfect PDF' : 'Download Excel CSV Spreadsheet'}
+                            Generate & Preview Pixel-Perfect PDF
                         </Button>
 
-                        {pdfPreviewData && exportFormat === 'pdf' && (
+                        {pdfPreviewData && (
                             <Button variant="secondary" onClick={() => setIsPreviewOpen(true)} className="w-full">
                                 Re-Open Last Generated Report ({pdfPreviewData.filename})
                             </Button>
