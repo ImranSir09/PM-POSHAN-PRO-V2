@@ -1,7 +1,11 @@
-
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import * as pdfjsLib from 'pdfjs-dist';
 import Button from './Button';
 import { saveOrDownloadFile } from '../../services/fileDownloadService';
+import { Loader2, ZoomIn, ZoomOut, RotateCw, Download, Printer, RefreshCw, X, ChevronLeft, ChevronRight } from 'lucide-react';
+
+// Configure worker for PDF.js
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 interface PDFPreviewModalProps {
     isOpen: boolean;
@@ -12,7 +16,119 @@ interface PDFPreviewModalProps {
     onRegenerate: () => void;
 }
 
-const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({ isOpen, onClose, pdfUrl, pdfBlob, filename, onRegenerate }) => {
+const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({
+    isOpen,
+    onClose,
+    pdfUrl,
+    pdfBlob,
+    filename,
+    onRegenerate
+}) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [numPages, setNumPages] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [scale, setScale] = useState<number>(1.0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
+    const pageCanvasRefs = useRef<Map<number, HTMLCanvasElement>>(new Map());
+
+    // Reset state when modal opens or document changes
+    useEffect(() => {
+        if (!isOpen) return;
+
+        let isMounted = true;
+        setLoading(true);
+        setError(null);
+        setPdfDoc(null);
+        setCurrentPage(1);
+
+        const loadPdf = async () => {
+            try {
+                let arrayBuffer: ArrayBuffer;
+
+                if (pdfBlob) {
+                    arrayBuffer = await pdfBlob.arrayBuffer();
+                } else if (pdfUrl) {
+                    const response = await fetch(pdfUrl);
+                    arrayBuffer = await response.arrayBuffer();
+                } else {
+                    throw new Error("No PDF source available.");
+                }
+
+                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                const doc = await loadingTask.promise;
+
+                if (isMounted) {
+                    setPdfDoc(doc);
+                    setNumPages(doc.numPages);
+                    setLoading(false);
+                }
+            } catch (err: any) {
+                console.error("PDF.js loading error:", err);
+                if (isMounted) {
+                    setError("Could not render PDF preview directly. You can still download or print the document.");
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadPdf();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [isOpen, pdfUrl, pdfBlob]);
+
+    // Render page canvases when document or scale changes
+    useEffect(() => {
+        if (!pdfDoc || !isOpen) return;
+
+        let cancelled = false;
+
+        const renderAllPages = async () => {
+            for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                if (cancelled) break;
+                const canvas = pageCanvasRefs.current.get(pageNum);
+                if (!canvas) continue;
+
+                try {
+                    const page = await pdfDoc.getPage(pageNum);
+                    const context = canvas.getContext('2d');
+                    if (!context) continue;
+
+                    // Calculate viewport based on device pixel ratio and container width
+                    const viewport = page.getViewport({ scale: scale });
+                    
+                    // High-DPI support
+                    const dpr = window.devicePixelRatio || 1;
+                    canvas.width = Math.floor(viewport.width * dpr);
+                    canvas.height = Math.floor(viewport.height * dpr);
+                    canvas.style.width = `${Math.floor(viewport.width)}px`;
+                    canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+                    context.scale(dpr, dpr);
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport,
+                        canvas: canvas,
+                    };
+
+                    await page.render(renderContext as any).promise;
+                } catch (e) {
+                    console.warn(`Error rendering PDF page ${pageNum}:`, e);
+                }
+            }
+        };
+
+        renderAllPages();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [pdfDoc, scale, isOpen]);
+
     if (!isOpen) return null;
 
     const handleDownload = async () => {
@@ -23,55 +139,143 @@ const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({ isOpen, onClose, pdfU
         }
     };
 
+    const handleZoomIn = () => setScale(prev => Math.min(prev + 0.2, 2.5));
+    const handleZoomOut = () => setScale(prev => Math.max(prev - 0.2, 0.5));
+    const handleResetZoom = () => setScale(1.0);
+
     return (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-slate-900/90 backdrop-blur-sm p-2 sm:p-4 pdf-preview-container" role="dialog" aria-modal="true" aria-labelledby="pdf-preview-title">
-            <div className="flex-shrink-0 flex items-center justify-between pb-2 sm:pb-4 pdf-preview-header">
-                <h3 id="pdf-preview-title" className="text-md sm:text-lg font-semibold text-slate-200 truncate pr-2">{filename}</h3>
-                <div className="flex items-center space-x-2">
-                    <Button variant="secondary" onClick={onRegenerate} className="!px-3 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm bg-slate-800 text-slate-200 hover:bg-slate-700 border-slate-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 hidden sm:inline-block" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm10 8a1 1 0 011-1h5a1 1 0 011 1v5a1 1 0 01-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 111.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 01-1-1z" clipRule="evenodd" />
-                        </svg>
-                        Regen.
+        <div 
+            className="fixed inset-0 z-[100] flex flex-col bg-slate-950/90 backdrop-blur-md p-2 sm:p-4 text-slate-100 animate-fadeIn"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pdf-preview-title"
+        >
+            {/* Header Controls */}
+            <div className="flex-shrink-0 flex flex-wrap items-center justify-between pb-3 border-b border-slate-800 gap-2">
+                <div className="flex items-center space-x-2 truncate">
+                    <h3 id="pdf-preview-title" className="text-sm sm:text-base font-semibold text-slate-100 truncate max-w-[200px] sm:max-w-xs">
+                        {filename}
+                    </h3>
+                    {numPages > 0 && (
+                        <span className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
+                            {numPages} {numPages === 1 ? 'Page' : 'Pages'}
+                        </span>
+                    )}
+                </div>
+
+                {/* Toolbar Controls */}
+                <div className="flex items-center space-x-1 sm:space-x-2">
+                    {/* Zoom controls */}
+                    <div className="hidden sm:flex items-center bg-slate-800 rounded-lg border border-slate-700 p-0.5">
+                        <button
+                            onClick={handleZoomOut}
+                            disabled={scale <= 0.5}
+                            className="p-1.5 hover:bg-slate-700 rounded text-slate-300 hover:text-white disabled:opacity-40"
+                            title="Zoom Out"
+                        >
+                            <ZoomOut size={16} />
+                        </button>
+                        <span className="text-xs px-2 font-mono text-slate-300">{Math.round(scale * 100)}%</span>
+                        <button
+                            onClick={handleZoomIn}
+                            disabled={scale >= 2.5}
+                            className="p-1.5 hover:bg-slate-700 rounded text-slate-300 hover:text-white disabled:opacity-40"
+                            title="Zoom In"
+                        >
+                            <ZoomIn size={16} />
+                        </button>
+                        <button
+                            onClick={handleResetZoom}
+                            className="p-1.5 hover:bg-slate-700 rounded text-slate-400 hover:text-white text-xs border-l border-slate-700 ml-0.5 pl-1.5"
+                            title="Reset Zoom"
+                        >
+                            Reset
+                        </button>
+                    </div>
+
+                    <Button 
+                        variant="secondary" 
+                        onClick={onRegenerate} 
+                        className="!py-1.5 !px-2.5 text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 border-slate-700"
+                    >
+                        <RefreshCw size={14} className="sm:mr-1.5" />
+                        <span className="hidden sm:inline">Regenerate</span>
                     </Button>
-                    <Button variant="secondary" onClick={() => window.print()} className="!px-3 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm bg-slate-800 text-slate-200 hover:bg-slate-700 border-slate-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 hidden sm:inline-block" viewBox="0 0 20 20" fill="currentColor">
-                           <path fillRule="evenodd" d="M5 4v3h10V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm-1 5a1 1 0 00-1 1v4a1 1 0 001 1h12a1 1 0 001-1v-4a1 1 0 00-1-1H4z" clipRule="evenodd" />
-                           <path d="M3 9a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" />
-                        </svg>
-                        Print
+
+                    <Button 
+                        variant="secondary" 
+                        onClick={() => window.print()} 
+                        className="!py-1.5 !px-2.5 text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 border-slate-700"
+                    >
+                        <Printer size={14} className="sm:mr-1.5" />
+                        <span className="hidden sm:inline">Print</span>
                     </Button>
-                    <Button onClick={handleDownload} className="!px-3 !py-1.5 text-xs sm:!px-4 sm:!py-2 sm:text-sm bg-indigo-600 hover:bg-indigo-700 text-white border-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 hidden sm:inline-block" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                        Download
+
+                    <Button 
+                        onClick={handleDownload} 
+                        className="!py-1.5 !px-3 text-xs bg-indigo-600 hover:bg-indigo-500 text-white border-none shadow-sm"
+                    >
+                        <Download size={14} className="mr-1.5" />
+                        <span>Download</span>
                     </Button>
-                    <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-800 transition-colors text-slate-400 hover:text-slate-200" aria-label="Close PDF Preview">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+
+                    <button 
+                        onClick={onClose} 
+                        className="p-1.5 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-slate-100 ml-1" 
+                        aria-label="Close PDF Preview"
+                    >
+                        <X size={20} />
                     </button>
                 </div>
             </div>
-            <div className="flex-grow bg-slate-800/50 rounded-xl overflow-hidden pdf-preview-content-area border border-slate-700/50 shadow-inner">
-                <object
-                    data={pdfUrl}
-                    type="application/pdf"
-                    className="w-full h-full"
-                    aria-label="PDF Preview"
-                >
-                    <div className="flex flex-col items-center justify-center h-full text-white p-4 text-center">
-                        <p className="mb-4 text-lg">PDF preview is not available in your browser.</p>
-                        <p className="text-sm mb-4">You can download the file to view it.</p>
-                        <Button onClick={handleDownload}>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                            Download PDF
+
+            {/* Document Render Area */}
+            <div 
+                ref={containerRef}
+                className="flex-grow overflow-auto p-4 flex flex-col items-center justify-start bg-slate-900/60 rounded-xl mt-3 border border-slate-800/80 shadow-inner custom-scrollbar"
+            >
+                {loading && (
+                    <div className="flex flex-col items-center justify-center my-auto py-12 text-slate-400 space-y-3">
+                        <Loader2 size={36} className="animate-spin text-indigo-400" />
+                        <p className="text-sm font-medium">Rendering PDF preview...</p>
+                    </div>
+                )}
+
+                {error && (
+                    <div className="flex flex-col items-center justify-center my-auto py-12 px-4 text-center max-w-md bg-slate-850 rounded-2xl border border-slate-800">
+                        <p className="text-sm text-amber-300 mb-4">{error}</p>
+                        <Button onClick={handleDownload} className="bg-indigo-600 hover:bg-indigo-500">
+                            <Download size={16} className="mr-2" />
+                            Download & Open Document
                         </Button>
                     </div>
-                </object>
+                )}
+
+                {!loading && !error && numPages > 0 && (
+                    <div className="space-y-6 flex flex-col items-center py-2 w-full">
+                        {Array.from({ length: numPages }, (_, index) => {
+                            const pageNum = index + 1;
+                            return (
+                                <div key={pageNum} className="flex flex-col items-center">
+                                    <div className="bg-white rounded shadow-2xl overflow-hidden border border-slate-700">
+                                        <canvas
+                                            ref={(el) => {
+                                                if (el) pageCanvasRefs.current.set(pageNum, el);
+                                                else pageCanvasRefs.current.delete(pageNum);
+                                            }}
+                                            className="block max-w-full h-auto"
+                                        />
+                                    </div>
+                                    {numPages > 1 && (
+                                        <span className="text-[11px] text-slate-400 mt-2 font-mono">
+                                            Page {pageNum} of {numPages}
+                                        </span>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     );
