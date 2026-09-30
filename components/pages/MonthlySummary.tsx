@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Card from '../ui/Card';
 import { useData } from '../../hooks/useData';
 import { Category, AbstractData, DailyEntry, Rates, MonthlyBalanceData } from '../../types';
-import { calculateMonthlySummary } from '../../services/summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay } from '../../services/summaryCalculator';
 import Button from '../ui/Button';
 
 const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractData>; unit: string; decimals: number; }> = React.memo(({ title, data, unit, decimals }) => {
@@ -295,7 +295,7 @@ const MonthlySummary: React.FC = React.memo(() => {
         [data.entries, data.receipts, data.monthlyBalances, data.settings, selectedMonth]
     );
     
-    const { monthEntries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance } = summaryData;
+    const { monthEntries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance, workingDays } = summaryData;
     
     const onRoll = useMemo(() => {
         const totals = { balvatika: 0, primary: 0, middle: 0 };
@@ -340,8 +340,13 @@ const MonthlySummary: React.FC = React.memo(() => {
     const hideDetails = useCallback(() => setIsDetailsVisible(false), []);
 
     const displayedTotals = useMemo(() => {
+        const workingDaysCount = workingDays !== undefined
+            ? workingDays
+            : monthEntries.filter(isSchoolWorkingDay).length;
+
         if (view === 'overall') {
             return {
+                workingDays: workingDaysCount,
                 mealDays: monthEntries.filter(e => e.totalPresent > 0).length,
                 present: totals.present,
                 expenditure: totals.expenditure,
@@ -349,12 +354,13 @@ const MonthlySummary: React.FC = React.memo(() => {
             };
         }
         return {
+            workingDays: workingDaysCount,
             mealDays: monthEntries.filter(e => e.present[view] > 0).length,
             present: categoryTotals.present[view] || 0,
             expenditure: categoryTotals.expenditure[view] || 0,
             rice: categoryTotals.rice[view] || 0,
         };
-    }, [view, monthEntries, totals, categoryTotals]);
+    }, [view, monthEntries, totals, categoryTotals, workingDays]);
 
     const simpleDisplayedEntries = useMemo(() => {
         if (view !== 'overall') return []; // Only needed for overall view
@@ -422,10 +428,14 @@ const MonthlySummary: React.FC = React.memo(() => {
                     )}
 
                     <Card title="Meal & Attendance Totals">
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-center">
+                            <div>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Working Days</p>
+                                <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">{displayedTotals.workingDays}</p>
+                            </div>
                             <div>
                                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Meal Days</p>
-                                <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">{displayedTotals.mealDays}</p>
+                                <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">{displayedTotals.mealDays}</p>
                             </div>
                             <div>
                                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Students Fed</p>

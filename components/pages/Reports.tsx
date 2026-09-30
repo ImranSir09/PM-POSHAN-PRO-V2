@@ -7,7 +7,7 @@ import Modal from '../ui/Modal';
 import { Category, CookCumHelper, InspectionAuthority, Settings } from '../../types';
 import PDFPreviewModal from '../ui/PDFPreviewModal';
 import { generatePDFReport, PdfExportOptions } from '../../services/pdfGenerator';
-import { calculateMonthlySummary } from '../../services/summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay } from '../../services/summaryCalculator';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import NumberInput from '../ui/NumberInput';
 import { FileText, Sparkles, ShieldCheck } from 'lucide-react';
@@ -21,7 +21,9 @@ const reportDescriptions: Record<string, string> = {
     receipts_ledger: "Exports a complete audit ledger of all rice allotments and fund receipts received.",
 };
 
-type MdcfDataType = Partial<Pick<Settings, 'healthStatus' | 'inspectionReport' | 'cooks' | 'mmeExpenditure'>>;
+type MdcfDataType = Partial<Pick<Settings, 'healthStatus' | 'inspectionReport' | 'cooks' | 'mmeExpenditure'>> & {
+    workingDays?: number;
+};
 
 const Reports: React.FC = () => {
     const { data } = useData();
@@ -75,11 +77,17 @@ const Reports: React.FC = () => {
 
     const initiateReportGeneration = () => {
         if (reportType === 'mdcf') {
+            const summary = calculateMonthlySummary(data, selectedMonth);
+            const defaultWorkingDays = summary.workingDays !== undefined
+                ? summary.workingDays
+                : summary.monthEntries.filter(isSchoolWorkingDay).length;
+
             setMdcfData({
                 healthStatus: JSON.parse(JSON.stringify(data.settings.healthStatus)),
                 inspectionReport: JSON.parse(JSON.stringify(data.settings.inspectionReport)),
                 cooks: JSON.parse(JSON.stringify(data.settings.cooks)),
                 mmeExpenditure: data.settings.mmeExpenditure,
+                workingDays: defaultWorkingDays,
             });
             setIsMdcfModalOpen(true);
             return;
@@ -110,7 +118,9 @@ const Reports: React.FC = () => {
                 newSummary = { Report: 'Roll Statement', 'Total Enrollment': totalEnrollment };
                 break;
             case 'rice_requirement':
-                const workingDays = monthEntries.filter(e => e.totalPresent > 0).length;
+                const workingDays = summary.workingDays !== undefined
+                    ? summary.workingDays
+                    : monthEntries.filter(isSchoolWorkingDay).length;
                 const enrollment = data.settings.classRolls.reduce(
                     (sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls,
                     0
@@ -390,6 +400,21 @@ const Reports: React.FC = () => {
                                                 />
                                             </div>
                                         ))}
+                                    </div>
+                                </AccordionItem>
+                                <AccordionItem id="workingDays" title="School Working Days">
+                                    <div className="space-y-2">
+                                        <NumberInput
+                                            label="School Working Days in Month"
+                                            id="m-working-days"
+                                            min={0}
+                                            max={31}
+                                            value={mdcfData.workingDays !== undefined ? mdcfData.workingDays : 0}
+                                            onChange={v => setMdcfData(p => (p ? { ...p, workingDays: v } : null))}
+                                        />
+                                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                                            Auto-calculated by excluding Sundays and marked holidays. You can adjust this value to match your official departmental notification for this month if required.
+                                        </p>
                                     </div>
                                 </AccordionItem>
                                 <AccordionItem id="mme" title="MME Expenditure">

@@ -1,5 +1,5 @@
 import { AppData, Category, ClassRoll, Settings } from '../types';
-import { calculateMonthlySummary } from './summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay } from './summaryCalculator';
 
 interface jsPDF {
     autoTable: (options: any) => jsPDF;
@@ -166,7 +166,9 @@ const drawCheckbox = (doc: jsPDF, x: number, y: number, text: string, checked: b
     }
 };
 
-type MdcfOverrideData = Partial<Pick<Settings, 'healthStatus' | 'inspectionReport' | 'cooks' | 'mmeExpenditure'>>;
+export type MdcfOverrideData = Partial<Pick<Settings, 'healthStatus' | 'inspectionReport' | 'cooks' | 'mmeExpenditure'>> & {
+    workingDays?: number;
+};
 
 const generateMDCF = (
     data: AppData,
@@ -241,13 +243,20 @@ const generateMDCF = (
         primary: monthEntries.filter(e => e.present.primary > 0).length,
         middle: monthEntries.filter(e => e.present.middle > 0).length,
     };
+    const calculatedWorkingDays = summaryData.workingDays !== undefined
+        ? summaryData.workingDays
+        : monthEntries.filter(isSchoolWorkingDay).length;
+    const workingDaysCount = overrideData?.workingDays !== undefined
+        ? overrideData.workingDays
+        : calculatedWorkingDays;
+
     doc.setFontSize(9).setFont(undefined, 'bold');
     doc.text('2. Meals Availed Status', 14, doc.lastAutoTable.finalY + 6);
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + 8,
         head: [['Metric', 'Bal Vatika', 'Primary', 'Upper Primary']],
         body: [
-            ['School Working Days in Month', monthEntries.length, monthEntries.length, monthEntries.length],
+            ['School Working Days in Month', workingDaysCount, workingDaysCount, workingDaysCount],
             ['Actual Days MDM Served', actualDaysServed.balvatika, actualDaysServed.primary, actualDaysServed.middle],
             ['Total Meals Served in Month', categoryTotals.present.balvatika, categoryTotals.present.primary, categoryTotals.present.middle],
         ],
@@ -513,8 +522,10 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
                     'Served'
                 ]);
             } else {
+                const isSunday = new Date(entry.date + 'T00:00:00').getDay() === 0;
+                const reasonText = entry.reasonForNoMeal || (isSunday ? 'Sunday' : 'No Meal Served');
                 body.push([
-                    { content: `${new Date(entry.date + 'T00:00:00').toLocaleDateString('en-IN')} - ${entry.reasonForNoMeal || 'No Meal Served'}`, colSpan: 11, styles: { halign: 'center', fontStyle: 'italic', textColor: [220, 38, 38] } } as any
+                    { content: `${new Date(entry.date + 'T00:00:00').toLocaleDateString('en-IN')} - ${reasonText}`, colSpan: 11, styles: { halign: 'center', fontStyle: 'italic', textColor: [220, 38, 38] } } as any
                 ]);
             }
         });
@@ -604,7 +615,7 @@ const generateRiceRequirementPDF = (data: AppData, selectedMonth: string, option
     const { settings } = data;
     const { schoolDetails } = settings;
     const summary = calculateMonthlySummary(data, selectedMonth);
-    const workingDays = summary.monthEntries.filter(e => e.totalPresent > 0).length;
+    const workingDays = summary.workingDays !== undefined ? summary.workingDays : summary.monthEntries.filter(isSchoolWorkingDay).length;
 
     const monthDate = new Date(`${selectedMonth}-02`);
     const monthName = monthDate.toLocaleString('default', { month: 'long' });

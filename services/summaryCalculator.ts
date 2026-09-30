@@ -1,5 +1,42 @@
-import { AppData, MonthlyBalanceData, Category, AbstractData } from '../types';
+import { AppData, MonthlyBalanceData, Category, AbstractData, DailyEntry } from '../types';
 import { DEFAULT_SETTINGS } from '../constants';
+
+/**
+ * Checks if a daily entry represents a calendar Sunday or was marked as Sunday.
+ */
+export const isSundayEntry = (entry: { date: string; reasonForNoMeal?: string }): boolean => {
+    // Check calendar day of week (0 is Sunday in JS Date)
+    const isCalendarSunday = new Date(entry.date + 'T00:00:00').getDay() === 0;
+    const isReasonSunday = (entry.reasonForNoMeal || '').trim().toLowerCase() === 'sunday';
+    return isCalendarSunday || isReasonSunday;
+};
+
+/**
+ * Checks if a daily entry was marked as an official school holiday or vacation break.
+ */
+export const isHolidayEntry = (entry: { reasonForNoMeal?: string }): boolean => {
+    if (!entry.reasonForNoMeal) return false;
+    const r = entry.reasonForNoMeal.trim().toLowerCase();
+    return (
+        r.startsWith('holiday in school') ||
+        r.includes('gazetted holiday') ||
+        r.includes('local holiday') ||
+        r.includes('vacation') ||
+        r.includes('festival break') ||
+        r.includes('closed (natural calamity)') ||
+        r.includes('holiday')
+    );
+};
+
+/**
+ * Determines whether a daily entry counts as an official school working day.
+ * Sundays and days marked as holidays or vacations are excluded.
+ */
+export const isSchoolWorkingDay = (entry: DailyEntry): boolean => {
+    if (isSundayEntry(entry)) return false;
+    if (isHolidayEntry(entry)) return false;
+    return true;
+};
 
 // FIX: Replaced getOpeningBalanceForMonth with a more robust function that also returns
 // the key of the last saved month. This is crucial for correctly calculating receipts
@@ -180,7 +217,18 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
         },
     };
     
-    return { monthEntries: entries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance, expenditureBreakdown };
+    const workingDaysCount = entries.filter(isSchoolWorkingDay).length;
+    
+    return { 
+        monthEntries: entries, 
+        riceAbstracts, 
+        cashAbstracts, 
+        totals, 
+        categoryTotals, 
+        closingBalance, 
+        expenditureBreakdown,
+        workingDays: workingDaysCount
+    };
 };
 
 export const calculateOverallBalance = (data: AppData) => {
