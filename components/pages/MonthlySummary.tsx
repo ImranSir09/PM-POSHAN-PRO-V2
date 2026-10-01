@@ -5,6 +5,8 @@ import { useData } from '../../hooks/useData';
 import { Category, AbstractData, DailyEntry, Rates, MonthlyBalanceData } from '../../types';
 import { calculateMonthlySummary, isSchoolWorkingDay } from '../../services/summaryCalculator';
 import Button from '../ui/Button';
+import Select from '../ui/Select';
+import MonthPicker from '../ui/MonthPicker';
 
 const AbstractTable: React.FC<{ title: string; data: Record<Category, AbstractData>; unit: string; decimals: number; }> = React.memo(({ title, data, unit, decimals }) => {
     const total = useMemo(() => ({
@@ -328,14 +330,6 @@ const MonthlySummary: React.FC = React.memo(() => {
         setIsDetailsVisible(false);
     }, [view, selectedMonth]);
 
-    const handleMonthChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedMonth(e.target.value);
-    }, []);
-
-    const handleViewChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-        setView(e.target.value as any);
-    }, []);
-
     const showDetails = useCallback(() => setIsDetailsVisible(true), []);
     const hideDetails = useCallback(() => setIsDetailsVisible(false), []);
 
@@ -379,28 +373,26 @@ const MonthlySummary: React.FC = React.memo(() => {
             <Card title="Monthly Summary">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
-                        <label htmlFor="month-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Select Month</label>
-                        <input
+                        <MonthPicker
                             id="month-select"
-                            type="month"
+                            label="Select Month"
                             value={selectedMonth}
-                            onChange={handleMonthChange}
-                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
+                            onChange={setSelectedMonth}
                         />
                     </div>
-                     <div className="flex-1">
-                        <label htmlFor="view-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">View</label>
-                        <select
+                    <div className="flex-1">
+                        <Select
                             id="view-select"
+                            label="View"
                             value={view}
-                            onChange={handleViewChange}
-                             className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                        >
-                            <option value="overall">Overall</option>
-                            <option value="balvatika">Balvatika</option>
-                            <option value="primary">Primary</option>
-                            <option value="middle">Middle</option>
-                        </select>
+                            onChange={v => setView(v as any)}
+                            options={[
+                                { value: 'overall', label: 'Overall' },
+                                { value: 'balvatika', label: 'Balvatika' },
+                                { value: 'primary', label: 'Primary' },
+                                { value: 'middle', label: 'Middle' },
+                            ]}
+                        />
                     </div>
                 </div>
             </Card>

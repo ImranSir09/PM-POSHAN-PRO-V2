@@ -10,6 +10,8 @@ import { generatePDFReport, PdfExportOptions } from '../../services/pdfGenerator
 import { calculateMonthlySummary, isSchoolWorkingDay } from '../../services/summaryCalculator';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import NumberInput from '../ui/NumberInput';
+import Select from '../ui/Select';
+import MonthPicker from '../ui/MonthPicker';
 import { FileText, Sparkles, ShieldCheck } from 'lucide-react';
 
 const reportDescriptions: Record<string, string> = {
@@ -357,23 +359,19 @@ const Reports: React.FC = () => {
                                             </label>
                                         </div>
                                         {mdcfData.inspectionReport?.inspected && (
-                                            <div>
-                                                <label htmlFor="m-inspected-by" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
-                                                    Inspected by:
-                                                </label>
-                                                <select
-                                                    id="m-inspected-by"
-                                                    value={mdcfData.inspectionReport.inspectedBy}
-                                                    onChange={e => handleMdcfChange('inspectionReport', 'inspectedBy', e.target.value as InspectionAuthority)}
-                                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-indigo-500/20"
-                                                >
-                                                    <option value="">Select Inspector</option>
-                                                    <option value="Task Force">Task Force</option>
-                                                    <option value="District Officials">District Officials</option>
-                                                    <option value="Block Officials">Block Officials</option>
-                                                    <option value="SMC Members">SMC Members</option>
-                                                </select>
-                                            </div>
+                                            <Select
+                                                id="m-inspected-by"
+                                                label="Inspected by:"
+                                                value={mdcfData.inspectionReport.inspectedBy || ''}
+                                                onChange={v => handleMdcfChange('inspectionReport', 'inspectedBy', v as InspectionAuthority)}
+                                                placeholder="Select Inspector"
+                                                options={[
+                                                    { value: 'Task Force', label: 'Task Force' },
+                                                    { value: 'District Officials', label: 'District Officials' },
+                                                    { value: 'Block Officials', label: 'Block Officials' },
+                                                    { value: 'SMC Members', label: 'SMC Members' },
+                                                ]}
+                                            />
                                         )}
                                         <NumberInput
                                             label="Untoward Incidents"
@@ -450,59 +448,44 @@ const Reports: React.FC = () => {
                     <div className="space-y-4">
                         {/* Report Type Selector */}
                         <div>
-                            <label htmlFor="report-type" className="block text-xs font-medium mb-1 text-slate-600 dark:text-slate-300">
-                                Report Document
-                            </label>
-                            <select
+                            <Select
                                 id="report-type"
+                                label="Report Document"
                                 value={reportType}
-                                onChange={e => setReportType(e.target.value)}
-                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                            >
-                                <option value="mdcf">Monthly Data Collection Format (MDCF)</option>
-                                <option value="roll_statement">Roll Statement (Student Enrollment)</option>
-                                <option value="daily_consumption">Daily Consumption Register</option>
-                                <option value="rice_requirement">Rice Requirement Certificate</option>
-                                <option value="yearly_consumption_detailed">Yearly Detailed Consumption Register</option>
-                                <option value="receipts_ledger">Allotment & Receipts Register</option>
-                            </select>
+                                onChange={setReportType}
+                                options={[
+                                    { value: 'mdcf', label: 'Monthly Data Collection Format (MDCF)' },
+                                    { value: 'roll_statement', label: 'Roll Statement (Student Enrollment)' },
+                                    { value: 'daily_consumption', label: 'Daily Consumption Register' },
+                                    { value: 'rice_requirement', label: 'Rice Requirement Certificate' },
+                                    { value: 'yearly_consumption_detailed', label: 'Yearly Detailed Consumption Register' },
+                                    { value: 'receipts_ledger', label: 'Allotment & Receipts Register' },
+                                ]}
+                            />
                             <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{reportDescriptions[reportType]}</p>
                         </div>
 
                         {/* Date Filters */}
                         {needsMonth && (
-                            <div>
-                                <label htmlFor="month-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
-                                    Select Month
-                                </label>
-                                <input
-                                    id="month-select"
-                                    type="month"
-                                    value={selectedMonth}
-                                    onChange={e => setSelectedMonth(e.target.value)}
-                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                                />
-                            </div>
+                            <MonthPicker
+                                id="month-select"
+                                label="Select Month"
+                                value={selectedMonth}
+                                onChange={setSelectedMonth}
+                            />
                         )}
 
                         {needsYear && (
-                            <div>
-                                <label htmlFor="year-select" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
-                                    Select Financial Year
-                                </label>
-                                <select
-                                    id="year-select"
-                                    value={selectedFinancialYear}
-                                    onChange={e => setSelectedFinancialYear(e.target.value)}
-                                    className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                                >
-                                    {financialYearOptions.map(year => (
-                                        <option key={year} value={year}>
-                                            {year}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                            <Select
+                                id="year-select"
+                                label="Select Financial Year"
+                                value={selectedFinancialYear}
+                                onChange={setSelectedFinancialYear}
+                                options={financialYearOptions.map(year => ({
+                                    value: year,
+                                    label: year,
+                                }))}
+                            />
                         )}
 
                         {/* PDF Options */}
@@ -512,23 +495,21 @@ const Reports: React.FC = () => {
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
-                                    <label htmlFor="theme-color" className="block text-xs text-slate-500 dark:text-slate-400 mb-1">
-                                        Header Theme Accent
-                                    </label>
-                                    <select
+                                    <Select
                                         id="theme-color"
+                                        label="Header Theme Accent"
                                         value={themeColor}
-                                        onChange={e => setThemeColor(e.target.value as any)}
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-500/20"
-                                    >
-                                        <option value="navy">Government Official Navy</option>
-                                        <option value="indigo">Executive Indigo</option>
-                                        <option value="slate">Minimalist Slate</option>
-                                        <option value="classic">Classic Grayscale</option>
-                                    </select>
+                                        onChange={v => setThemeColor(v as any)}
+                                        options={[
+                                            { value: 'navy', label: 'Government Official Navy' },
+                                            { value: 'indigo', label: 'Executive Indigo' },
+                                            { value: 'slate', label: 'Minimalist Slate' },
+                                            { value: 'classic', label: 'Classic Grayscale' },
+                                        ]}
+                                    />
                                 </div>
                                 <div>
-                                    <label htmlFor="watermark-text" className="block text-xs text-slate-500 dark:text-slate-400 mb-1">
+                                    <label htmlFor="watermark-text" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 ml-0.5">
                                         Watermark (Optional)
                                     </label>
                                     <input
@@ -537,7 +518,7 @@ const Reports: React.FC = () => {
                                         placeholder="e.g. OFFICIAL COPY, DUPLICATE"
                                         value={watermarkText}
                                         onChange={e => setWatermarkText(e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs rounded-lg p-2 focus:ring-2 focus:ring-indigo-500/20"
+                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm placeholder-slate-400 dark:placeholder-slate-500"
                                     />
                                 </div>
                             </div>
