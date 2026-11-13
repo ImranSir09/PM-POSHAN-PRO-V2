@@ -2,8 +2,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Card from '../ui/Card';
 import { useData } from '../../hooks/useData';
-import { Category, AbstractData, DailyEntry, Rates, MonthlyBalanceData } from '../../types';
-import { calculateMonthlySummary, isSchoolWorkingDay } from '../../services/summaryCalculator';
+import { Category, AbstractData, DailyEntry, Rates, RateRevision, MonthlyBalanceData } from '../../types';
+import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate } from '../../services/summaryCalculator';
 import Button from '../ui/Button';
 import Select from '../ui/Select';
 import MonthPicker from '../ui/MonthPicker';
@@ -155,19 +155,21 @@ const DetailedConsumptionTable: React.FC<{
     entries: DailyEntry[];
     category: Category;
     rates: Rates;
+    rateHistory?: RateRevision[];
     onRoll: number;
-}> = React.memo(({ entries, category, rates, onRoll }) => {
+}> = React.memo(({ entries, category, rates, rateHistory, onRoll }) => {
     
     const { dailyData, totals } = useMemo(() => {
         const data = entries.map((entry, index) => {
             const present = entry.present[category];
             const mealServed = present > 0;
+            const entryRates = getRatesForDate({ rates, rateHistory }, entry.date);
             
-            const riceUsed = mealServed ? (present * rates.rice[category]) / 1000 : 0;
-            const dalVeg = mealServed ? present * rates.dalVeg[category] : 0;
-            const oilCond = mealServed ? present * rates.oilCond[category] : 0;
-            const salt = mealServed ? present * rates.salt[category] : 0;
-            const fuel = mealServed ? present * rates.fuel[category] : 0;
+            const riceUsed = mealServed ? (present * entryRates.rice[category]) / 1000 : 0;
+            const dalVeg = mealServed ? present * entryRates.dalVeg[category] : 0;
+            const oilCond = mealServed ? present * entryRates.oilCond[category] : 0;
+            const salt = mealServed ? present * entryRates.salt[category] : 0;
+            const fuel = mealServed ? present * entryRates.fuel[category] : 0;
             const totalCost = mealServed ? dalVeg + oilCond + salt + fuel : 0;
             
             return {
@@ -197,7 +199,7 @@ const DetailedConsumptionTable: React.FC<{
         }, { present: 0, riceUsed: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, totalCost: 0 });
 
         return { dailyData: data, totals };
-    }, [entries, category, rates]);
+    }, [entries, category, rates, rateHistory]);
 
     const thClasses = "p-2 whitespace-nowrap";
     const tdClasses = "p-2 whitespace-nowrap";
@@ -454,6 +456,7 @@ const MonthlySummary: React.FC = React.memo(() => {
                                         entries={monthEntries}
                                         category={view}
                                         rates={settings.rates}
+                                        rateHistory={settings.rateHistory}
                                         onRoll={onRoll[view]}
                                     />
                                 )}

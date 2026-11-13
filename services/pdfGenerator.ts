@@ -1,5 +1,5 @@
 import { AppData, Category, ClassRoll, Settings } from '../types';
-import { calculateMonthlySummary, isSchoolWorkingDay } from './summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate } from './summaryCalculator';
 
 interface jsPDF {
     autoTable: (options: any) => jsPDF;
@@ -444,7 +444,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
     const doc = new jspdf.jsPDF('p', 'mm', 'a4');
     const colors = getThemeColors(options?.themeColor);
     const { settings } = data;
-    const { schoolDetails, rates } = settings;
+    const { schoolDetails } = settings;
     const summaryData = calculateMonthlySummary(data, selectedMonth);
     const { monthEntries, riceAbstracts, cashAbstracts } = summaryData;
 
@@ -493,11 +493,12 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
             const mealServed = present > 0;
 
             if (mealServed) {
-                const riceUsed = (present * rates.rice[category]) / 1000;
-                const dalVeg = present * rates.dalVeg[category];
-                const oilCond = present * rates.oilCond[category];
-                const salt = present * rates.salt[category];
-                const fuel = present * rates.fuel[category];
+                const entryRates = getRatesForDate(settings, entry.date);
+                const riceUsed = (present * entryRates.rice[category]) / 1000;
+                const dalVeg = present * entryRates.dalVeg[category];
+                const oilCond = present * entryRates.oilCond[category];
+                const salt = present * entryRates.salt[category];
+                const fuel = present * entryRates.fuel[category];
                 const totalCost = dalVeg + oilCond + salt + fuel;
 
                 totals.present += present;
@@ -631,6 +632,7 @@ const generateRiceRequirementPDF = (data: AppData, selectedMonth: string, option
     doc.text('OFFICIAL RICE REQUIREMENT CERTIFICATE', doc.internal.pageSize.getWidth() / 2, 21, { align: 'center' });
 
     const enrollment = settings.classRolls.reduce((sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0);
+    const monthRates = getRatesForDate(settings, `${selectedMonth}-31`);
 
     const riceByCategory = { balvatika: 0, primary: 0, middle: 0 };
     settings.classRolls.forEach(c => {
@@ -640,7 +642,7 @@ const generateRiceRequirementPDF = (data: AppData, selectedMonth: string, option
         else if (['c6', 'c7', 'c8'].includes(c.id)) cat = 'middle';
         if (cat) {
             const classRoll = c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls;
-            riceByCategory[cat] += (classRoll * workingDays * settings.rates.rice[cat]) / 1000;
+            riceByCategory[cat] += (classRoll * workingDays * monthRates.rice[cat]) / 1000;
         }
     });
     const totalRiceKg = Object.values(riceByCategory).reduce((sum, val) => sum + val, 0);
@@ -654,9 +656,9 @@ const generateRiceRequirementPDF = (data: AppData, selectedMonth: string, option
         startY: 50,
         head: [['Category', 'Enrollment', 'Working Days', 'Norm (g/student/day)', 'Total Requirement (kg)']],
         body: [
-            ['Balvatika', settings.classRolls.filter(c => ['bal', 'pp1', 'pp2'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, settings.rates.rice.balvatika, riceByCategory.balvatika.toFixed(3)],
-            ['Primary (I-V)', settings.classRolls.filter(c => ['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, settings.rates.rice.primary, riceByCategory.primary.toFixed(3)],
-            ['Upper Primary (VI-VIII)', settings.classRolls.filter(c => ['c6', 'c7', 'c8'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, settings.rates.rice.middle, riceByCategory.middle.toFixed(3)],
+            ['Balvatika', settings.classRolls.filter(c => ['bal', 'pp1', 'pp2'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, monthRates.rice.balvatika, riceByCategory.balvatika.toFixed(3)],
+            ['Primary (I-V)', settings.classRolls.filter(c => ['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, monthRates.rice.primary, riceByCategory.primary.toFixed(3)],
+            ['Upper Primary (VI-VIII)', settings.classRolls.filter(c => ['c6', 'c7', 'c8'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, monthRates.rice.middle, riceByCategory.middle.toFixed(3)],
         ],
         foot: [['Total', enrollment, '', '', totalRiceKg.toFixed(3)]],
         theme: 'grid',

@@ -63,6 +63,9 @@ const getInitialData = (): AppData => {
             if (dataToProcess.settings) {
                 dataToProcess.settings.classRolls = Array.isArray(dataToProcess.settings.classRolls) ? dataToProcess.settings.classRolls : DEFAULT_SETTINGS.classRolls;
                 dataToProcess.settings.cooks = Array.isArray(dataToProcess.settings.cooks) ? dataToProcess.settings.cooks : DEFAULT_SETTINGS.cooks;
+                if (dataToProcess.settings.rateHistory !== undefined && !Array.isArray(dataToProcess.settings.rateHistory)) {
+                    delete dataToProcess.settings.rateHistory;
+                }
             } else {
                 dataToProcess.settings = DEFAULT_SETTINGS;
             }

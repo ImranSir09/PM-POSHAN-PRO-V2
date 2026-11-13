@@ -1,5 +1,41 @@
-import { AppData, MonthlyBalanceData, Category, AbstractData, DailyEntry } from '../types';
+import { AppData, MonthlyBalanceData, Category, AbstractData, DailyEntry, Rates, Settings } from '../types';
 import { DEFAULT_SETTINGS } from '../constants';
+
+/**
+ * Resolves the consumption rates effective on a given date ('YYYY-MM-DD' or 'YYYY-MM').
+ * Uses settings.rateHistory when present, falling back to settings.rates for full
+ * backward compatibility with older records and backups.
+ */
+export const getRatesForDate = (
+    settings: Pick<Settings, 'rates' | 'rateHistory'> | undefined,
+    dateStr: string
+): Rates => {
+    const fallbackRates = settings?.rates || DEFAULT_SETTINGS.rates;
+    const history = settings?.rateHistory;
+
+    if (!Array.isArray(history) || history.length === 0 || !dateStr) {
+        return fallbackRates;
+    }
+
+    // Support 'YYYY-MM' month keys by resolving as of the end of that month
+    const normalizedDate = dateStr.length === 7 ? `${dateStr}-31` : dateStr;
+
+    let matchedRevision: { effectiveFrom: string; rates: Rates } | null = null;
+    for (const rev of history) {
+        if (
+            rev &&
+            typeof rev.effectiveFrom === 'string' &&
+            rev.rates &&
+            rev.effectiveFrom <= normalizedDate
+        ) {
+            if (!matchedRevision || rev.effectiveFrom > matchedRevision.effectiveFrom) {
+                matchedRevision = rev;
+            }
+        }
+    }
+
+    return matchedRevision ? matchedRevision.rates : fallbackRates;
+};
 
 /**
  * Checks if a daily entry represents a calendar Sunday or was marked as Sunday.
@@ -97,8 +133,6 @@ const getNextMonthKey = (monthKey: string): string => {
 
 export const calculateMonthlySummary = (data: AppData, selectedMonth: string) => {
     const entries = data.entries.filter(e => e.date.startsWith(selectedMonth));
-    // FIX: Add a fallback to default rates to prevent calculation errors if settings are corrupted or missing.
-    const rates = data.settings.rates || DEFAULT_SETTINGS.rates;
     const categories: Category[] = ['balvatika', 'primary', 'middle'];
     
     // FIX: Use the new helper to get both the opening balance and the month it corresponds to.
@@ -138,6 +172,7 @@ export const calculateMonthlySummary = (data: AppData, selectedMonth: string) =>
     };
 
     entries.forEach(entry => {
+        const rates = getRatesForDate(data.settings, entry.date);
         categories.forEach(cat => {
             const present = entry.present[cat] || 0;
             categoryTotals.present[cat] += present;

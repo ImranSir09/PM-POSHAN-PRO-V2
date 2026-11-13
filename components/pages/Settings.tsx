@@ -1,14 +1,16 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { nanoid } from 'nanoid';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
-import { Settings, SchoolDetails, Rates, Category, CookCumHelper, ClassRoll, MonthlyBalanceData, MDMIncharge, NotificationSettings, InspectionReport, InspectionAuthority } from '../../types';
+import { Settings, SchoolDetails, Rates, RateRevision, Category, CookCumHelper, ClassRoll, MonthlyBalanceData, MDMIncharge, NotificationSettings, InspectionReport, InspectionAuthority } from '../../types';
 import { CLASS_STRUCTURE } from '../../constants';
 import { indianStates, jkDistrictsWithZones } from '../../data/locations';
 import NumberInput from '../ui/NumberInput';
 import DataManagement from '../ui/DataManagement';
+import { getRatesForDate } from '../../services/summaryCalculator';
+import { useToast } from '../../hooks/useToast';
 
 
 const calculateSectionTotals = (classes: ClassRoll[]) => {
@@ -41,11 +43,26 @@ const SectionTotalRow: React.FC<{ label: string, totals: ReturnType<typeof calcu
     </tr>
 );
 
+const cloneRates = (r: Rates): Rates => JSON.parse(JSON.stringify(r));
+
 const SettingsPage: React.FC = () => {
     const { data, updateSettings } = useData();
+    const { showToast } = useToast();
     const [settings, setSettings] = useState<Settings>(data.settings);
     const [isUdiseValid, setIsUdiseValid] = useState(settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0);
     const [isRatesEditable, setIsRatesEditable] = useState(false);
+
+    const todayStr = useMemo(() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }, []);
+    const [rateEffectiveDate, setRateEffectiveDate] = useState<string>(todayStr);
+    const [hasRateSessionEdits, setHasRateSessionEdits] = useState(false);
+    const rateSessionRef = useRef<{
+        baseRates: Rates;
+        baseHistory: RateRevision[];
+        edited: boolean;
+    } | null>(null);
 
     const availableDistricts = useMemo(() => {
         const selectedStateData = indianStates.find(s => s.name === settings.schoolDetails.state);
@@ -114,8 +131,142 @@ const SettingsPage: React.FC = () => {
         }));
     };
 
+    const displayedRates = useMemo(() => {
+        if (!isRatesEditable) {
+            return getRatesForDate(settings, todayStr);
+        }
+        return getRatesForDate(settings, rateEffectiveDate);
+    }, [isRatesEditable, settings, todayStr, rateEffectiveDate]);
+
+    const applyRevisionToHistory = (
+        baseRates: Rates,
+        baseHistory: RateRevision[],
+        effectiveFrom: string,
+        revisedRates: Rates
+    ): { rates: Rates; rateHistory: RateRevision[] } => {
+        const history: RateRevision[] = baseHistory.length > 0
+            ? baseHistory.map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) }))
+            : [{ effectiveFrom: '1970-01-01', rates: cloneRates(baseRates) }];
+
+        const existingIdx = history.findIndex(r => r.effectiveFrom === effectiveFrom);
+        if (existingIdx !== -1) {
+            history[existingIdx] = { effectiveFrom, rates: cloneRates(revisedRates) };
+        } else {
+            history.push({ effectiveFrom, rates: cloneRates(revisedRates) });
+        }
+
+        history.sort((a, b) => a.effectiveFrom.localeCompare(b.effectiveFrom));
+        const activeTodayRates = getRatesForDate({ rates: baseRates, rateHistory: history }, todayStr);
+        return { rates: activeTodayRates, rateHistory: history };
+    };
+
+    const handleToggleRatesEditable = (enabled: boolean) => {
+        if (enabled) {
+            rateSessionRef.current = {
+                baseRates: cloneRates(settings.rates),
+                baseHistory: (settings.rateHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) })),
+                edited: false,
+            };
+            setHasRateSessionEdits(false);
+            setRateEffectiveDate(todayStr);
+            setIsRatesEditable(true);
+        } else {
+            rateSessionRef.current = null;
+            setHasRateSessionEdits(false);
+            setIsRatesEditable(false);
+        }
+    };
+
+    const handleEffectiveDateChange = (newDate: string) => {
+        if (!newDate) return;
+        if (rateSessionRef.current?.edited) {
+            const currentEditedRates = getRatesForDate(settings, rateEffectiveDate);
+            const { rates: activeTodayRates, rateHistory } = applyRevisionToHistory(
+                rateSessionRef.current.baseRates,
+                rateSessionRef.current.baseHistory,
+                newDate,
+                currentEditedRates
+            );
+            setSettings(prev => ({ ...prev, rates: activeTodayRates, rateHistory }));
+        }
+        setRateEffectiveDate(newDate);
+    };
+
+    const handleCommitAndAddAnotherDate = () => {
+        rateSessionRef.current = {
+            baseRates: cloneRates(settings.rates),
+            baseHistory: (settings.rateHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) })),
+            edited: false,
+        };
+        setHasRateSessionEdits(false);
+        showToast(`Rates saved for ${new Date(rateEffectiveDate + 'T00:00:00').toLocaleDateString('en-IN')}. Select another date to add a new revision.`, 'success');
+    };
+
+    const handleEditHistoryRevision = (effectiveFrom: string) => {
+        rateSessionRef.current = {
+            baseRates: cloneRates(settings.rates),
+            baseHistory: (settings.rateHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) })),
+            edited: false,
+        };
+        setHasRateSessionEdits(false);
+        setRateEffectiveDate(effectiveFrom);
+        setIsRatesEditable(true);
+    };
+
+    const handleDeleteHistoryRevision = (effectiveFrom: string) => {
+        const remaining = (settings.rateHistory || []).filter(r => r.effectiveFrom !== effectiveFrom);
+        let nextActiveRates: Rates;
+        let nextHistory: RateRevision[] = [];
+
+        if (remaining.length <= 1) {
+            nextActiveRates = remaining.length === 1 ? cloneRates(remaining[0].rates) : cloneRates(settings.rates);
+            setSettings(prev => {
+                const { rateHistory: _removed, ...rest } = prev;
+                return { ...rest, rates: nextActiveRates };
+            });
+        } else {
+            nextActiveRates = getRatesForDate({ rates: settings.rates, rateHistory: remaining }, todayStr);
+            nextHistory = remaining.map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) }));
+            setSettings(prev => ({ ...prev, rates: nextActiveRates, rateHistory: nextHistory }));
+        }
+
+        if (rateSessionRef.current) {
+            rateSessionRef.current = {
+                baseRates: cloneRates(nextActiveRates),
+                baseHistory: nextHistory.map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) })),
+                edited: false,
+            };
+        }
+        setHasRateSessionEdits(false);
+        showToast('Rate revision removed.', 'info');
+    };
+
     const handleRateChange = (rateType: keyof Rates, category: Category, value: number) => {
-        setSettings(prev => ({ ...prev, rates: { ...prev.rates, [rateType]: { ...prev.rates[rateType], [category]: value || 0 }}}));
+        const updatedRates: Rates = {
+            ...cloneRates(displayedRates),
+            [rateType]: {
+                ...displayedRates[rateType],
+                [category]: value || 0,
+            },
+        };
+
+        if (!rateSessionRef.current) {
+            rateSessionRef.current = {
+                baseRates: cloneRates(settings.rates),
+                baseHistory: (settings.rateHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, rates: cloneRates(r.rates) })),
+                edited: false,
+            };
+        }
+
+        rateSessionRef.current.edited = true;
+        setHasRateSessionEdits(true);
+        const { rates: activeTodayRates, rateHistory } = applyRevisionToHistory(
+            rateSessionRef.current.baseRates,
+            rateSessionRef.current.baseHistory,
+            rateEffectiveDate,
+            updatedRates
+        );
+        setSettings(prev => ({ ...prev, rates: activeTodayRates, rateHistory }));
     };
     
      const handleOpeningBalanceChange = (
@@ -210,7 +361,7 @@ const SettingsPage: React.FC = () => {
     const prePrimaryTotals = useMemo(() => calculateSectionTotals(prePrimaryClasses), [prePrimaryClasses]);
 
     const foodRateTotals = useMemo(() => {
-        const { rates } = settings;
+        const rates = displayedRates;
         const dalVeg = rates.dalVeg || { balvatika: 0, primary: 0, middle: 0 };
         const oilCond = rates.oilCond || { balvatika: 0, primary: 0, middle: 0 };
         const salt = rates.salt || { balvatika: 0, primary: 0, middle: 0 };
@@ -225,7 +376,7 @@ const SettingsPage: React.FC = () => {
             primary: parseFloat(primary.toPrecision(15)),
             middle: parseFloat(middle.toPrecision(15)),
         };
-    }, [settings.rates]);
+    }, [displayedRates]);
 
     return (
         <div className="pb-8">
@@ -533,15 +684,57 @@ const SettingsPage: React.FC = () => {
                                 <div className="flex items-center justify-between p-4 mb-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
                                     <div>
                                         <label htmlFor="edit-rates" className="font-medium text-slate-700 dark:text-slate-300">Edit Food Rates</label>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400">Enable to adjust per-student rates as per official guidelines.</p>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400">Enable to adjust per-student rates from a specific date.</p>
                                     </div>
                                     <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="edit-rates" className="sr-only peer" checked={isRatesEditable} onChange={e => setIsRatesEditable(e.target.checked)} />
+                                        <input type="checkbox" id="edit-rates" className="sr-only peer" checked={isRatesEditable} onChange={e => handleToggleRatesEditable(e.target.checked)} />
                                         <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-indigo-500/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                                     </label>
                                 </div>
+
+                                {isRatesEditable && (
+                                    <div className="p-3.5 mb-4 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5">
+                                        <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+                                            <div className="flex-1">
+                                                <label htmlFor="rate-effective-date" className="block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1">
+                                                    Effective From Date
+                                                </label>
+                                                <input
+                                                    id="rate-effective-date"
+                                                    type="date"
+                                                    value={rateEffectiveDate}
+                                                    onChange={e => handleEffectiveDateChange(e.target.value)}
+                                                    className="w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
+                                                />
+                                            </div>
+                                            {hasRateSessionEdits && (
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        type="button"
+                                                        variant="secondary"
+                                                        className="text-xs px-3 py-2"
+                                                        onClick={handleCommitAndAddAnotherDate}
+                                                    >
+                                                        + Add Another Date
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        className="text-xs px-3 py-2"
+                                                        onClick={() => handleToggleRatesEditable(false)}
+                                                    >
+                                                        Done
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400">
+                                            Changes apply to entries on or after this date. All earlier months and entries keep their previous rates.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="space-y-4 text-xs">
-                                    {(Object.keys(settings.rates) as Array<keyof Rates>).map(rateKey => {
+                                    {(Object.keys(displayedRates) as Array<keyof Rates>).map(rateKey => {
                                         const isRice = rateKey === 'rice';
                                         const currentStep = isRice ? 1 : 0.01;
                                         const currentMax = isRice ? 1000 : 999;
@@ -552,9 +745,9 @@ const SettingsPage: React.FC = () => {
                                                 {isRice && <span className="font-normal text-slate-500"> (in grams)</span>}
                                             </p>
                                             <div className="grid grid-cols-3 gap-2">
-                                                <NumberInput label="Balvatika" id={`${rateKey}-bal`} step={currentStep} value={settings.rates[rateKey].balvatika} onChange={val => handleRateChange(rateKey, 'balvatika', val)} min={0} max={currentMax} disabled={!isRatesEditable} />
-                                                <NumberInput label="Primary" id={`${rateKey}-pri`} step={currentStep} value={settings.rates[rateKey].primary} onChange={val => handleRateChange(rateKey, 'primary', val)} min={0} max={currentMax} disabled={!isRatesEditable} />
-                                                <NumberInput label="Middle" id={`${rateKey}-mid`} step={currentStep} value={settings.rates[rateKey].middle} onChange={val => handleRateChange(rateKey, 'middle', val)} min={0} max={currentMax} disabled={!isRatesEditable} />
+                                                <NumberInput label="Balvatika" id={`${rateKey}-bal`} step={currentStep} value={displayedRates[rateKey].balvatika} onChange={val => handleRateChange(rateKey, 'balvatika', val)} min={0} max={currentMax} disabled={!isRatesEditable} />
+                                                <NumberInput label="Primary" id={`${rateKey}-pri`} step={currentStep} value={displayedRates[rateKey].primary} onChange={val => handleRateChange(rateKey, 'primary', val)} min={0} max={currentMax} disabled={!isRatesEditable} />
+                                                <NumberInput label="Middle" id={`${rateKey}-mid`} step={currentStep} value={displayedRates[rateKey].middle} onChange={val => handleRateChange(rateKey, 'middle', val)} min={0} max={currentMax} disabled={!isRatesEditable} />
                                             </div>
                                         </div>
                                         )
@@ -579,6 +772,57 @@ const SettingsPage: React.FC = () => {
                                         </div>
                                         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Auto-calculated sum of Dal/Veg, Oil/Cond, Salt, and Fuel rates.</p>
                                     </div>
+
+                                    {settings.rateHistory && settings.rateHistory.length > 0 && (
+                                        <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                                            <p className="font-semibold text-slate-800 dark:text-slate-300 text-sm">
+                                                Rate Revision History
+                                            </p>
+                                            <div className="space-y-2">
+                                                {[...settings.rateHistory]
+                                                    .sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom))
+                                                    .map(rev => {
+                                                        const balCost = (rev.rates.dalVeg?.balvatika || 0) + (rev.rates.oilCond?.balvatika || 0) + (rev.rates.salt?.balvatika || 0) + (rev.rates.fuel?.balvatika || 0);
+                                                        const priCost = (rev.rates.dalVeg?.primary || 0) + (rev.rates.oilCond?.primary || 0) + (rev.rates.salt?.primary || 0) + (rev.rates.fuel?.primary || 0);
+                                                        const midCost = (rev.rates.dalVeg?.middle || 0) + (rev.rates.oilCond?.middle || 0) + (rev.rates.salt?.middle || 0) + (rev.rates.fuel?.middle || 0);
+                                                        const isBase = rev.effectiveFrom === '1970-01-01';
+                                                        const dateLabel = isBase
+                                                            ? 'Base Rate (Prior Records)'
+                                                            : `Effective from ${new Date(rev.effectiveFrom + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
+                                                        return (
+                                                            <div key={rev.effectiveFrom} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                                                <div>
+                                                                    <p className="font-semibold text-slate-800 dark:text-slate-200 text-xs">{dateLabel}</p>
+                                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                                                        Cost/Student — Bal: ₹{balCost.toFixed(2)} • Pri: ₹{priCost.toFixed(2)} • Mid: ₹{midCost.toFixed(2)} | Rice: {rev.rates.rice?.primary || 0}g/{rev.rates.rice?.middle || 0}g
+                                                                    </p>
+                                                                </div>
+                                                                <div className="flex items-center gap-2 shrink-0">
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="secondary"
+                                                                        className="px-2.5 py-1 text-xs"
+                                                                        onClick={() => handleEditHistoryRevision(rev.effectiveFrom)}
+                                                                    >
+                                                                        Edit
+                                                                    </Button>
+                                                                    {!isBase && (
+                                                                        <Button
+                                                                            type="button"
+                                                                            variant="danger"
+                                                                            className="px-2.5 py-1 text-xs"
+                                                                            onClick={() => handleDeleteHistoryRevision(rev.effectiveFrom)}
+                                                                        >
+                                                                            Remove
+                                                                        </Button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

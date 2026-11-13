@@ -7,7 +7,7 @@ import Modal from '../ui/Modal';
 import { Category, CookCumHelper, InspectionAuthority, Settings } from '../../types';
 import PDFPreviewModal from '../ui/PDFPreviewModal';
 import { generatePDFReport, PdfExportOptions } from '../../services/pdfGenerator';
-import { calculateMonthlySummary, isSchoolWorkingDay } from '../../services/summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate } from '../../services/summaryCalculator';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import NumberInput from '../ui/NumberInput';
 import Select from '../ui/Select';
@@ -127,6 +127,7 @@ const Reports: React.FC = () => {
                     (sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls,
                     0
                 );
+                const monthRates = getRatesForDate(data.settings, `${selectedMonth}-31`);
                 const totalRiceKg = data.settings.classRolls.reduce((total, c) => {
                     let cat: Category | null = null;
                     if (['bal', 'pp1', 'pp2'].includes(c.id)) cat = 'balvatika';
@@ -134,7 +135,7 @@ const Reports: React.FC = () => {
                     else if (['c6', 'c7', 'c8'].includes(c.id)) cat = 'middle';
                     if (cat) {
                         const classRoll = c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls;
-                        total += (classRoll * workingDays * data.settings.rates.rice[cat]) / 1000;
+                        total += (classRoll * workingDays * monthRates.rice[cat]) / 1000;
                     }
                     return total;
                 }, 0);

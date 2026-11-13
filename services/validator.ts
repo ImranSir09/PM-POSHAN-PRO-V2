@@ -33,6 +33,19 @@ export const validateSettings = (settings: Settings): string[] => {
             errors.push(`Rates for ${key} cannot be negative.`);
         }
     }
+    if (Array.isArray(settings.rateHistory)) {
+        settings.rateHistory.forEach((rev, index) => {
+            if (!rev.effectiveFrom) {
+                errors.push(`Rate revision #${index + 1} requires an effective date.`);
+            }
+            for (const key in rev.rates) {
+                const rc = rev.rates[key as keyof typeof rev.rates];
+                if (rc && (rc.balvatika < 0 || rc.primary < 0 || rc.middle < 0)) {
+                    errors.push(`Rate revision (${rev.effectiveFrom}) for ${key} cannot be negative.`);
+                }
+            }
+        });
+    }
 
     // 5. MME Expenditure
     if (mmeExpenditure < 0) errors.push('MME Expenditure cannot be negative.');

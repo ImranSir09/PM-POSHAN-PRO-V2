@@ -8,6 +8,7 @@ import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
 import NumberInput from '../ui/NumberInput';
 import Input from '../ui/Input';
+import { getRatesForDate } from '../../services/summaryCalculator';
 
 const NO_MEAL_REASONS_STRUCTURED = {
   "Foodgrains not Available": [
@@ -48,7 +49,6 @@ const DailyEntryPage: React.FC = React.memo(() => {
     const { data, addEntry } = useData();
     const { showToast } = useToast();
     const { settings } = data;
-    const { rates } = settings;
 
     const onRoll = useMemo(() => {
         const totals = { balvatika: 0, primary: 0, middle: 0 };
@@ -72,6 +72,7 @@ const DailyEntryPage: React.FC = React.memo(() => {
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }, []);
     const [selectedDate, setSelectedDate] = useState(today);
+    const rates = useMemo(() => getRatesForDate(settings, selectedDate), [settings, selectedDate]);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [present, setPresent] = useState({ balvatika: 0, primary: 0, middle: 0 });
     const [consumption, setConsumption] = useState({ rice: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, total: 0 });
