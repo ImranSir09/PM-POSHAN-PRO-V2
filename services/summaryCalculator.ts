@@ -1,4 +1,4 @@
-import { AppData, MonthlyBalanceData, Category, AbstractData, DailyEntry, Rates, Settings } from '../types';
+import { AppData, MonthlyBalanceData, Category, AbstractData, DailyEntry, Rates, Settings, ClassRoll } from '../types';
 import { DEFAULT_SETTINGS } from '../constants';
 
 /**
@@ -35,6 +35,59 @@ export const getRatesForDate = (
     }
 
     return matchedRevision ? matchedRevision.rates : fallbackRates;
+};
+
+/**
+ * Resolves the student enrollment (classRolls) effective on a given date ('YYYY-MM-DD' or 'YYYY-MM').
+ * Uses settings.enrollmentHistory when present, falling back to settings.classRolls for full
+ * backward compatibility with older records and backups.
+ */
+export const getClassRollsForDate = (
+    settings: Pick<Settings, 'classRolls' | 'enrollmentHistory'> | undefined,
+    dateStr: string
+): ClassRoll[] => {
+    const fallbackRolls = Array.isArray(settings?.classRolls) ? settings.classRolls : DEFAULT_SETTINGS.classRolls;
+    const history = settings?.enrollmentHistory;
+
+    if (!Array.isArray(history) || history.length === 0 || !dateStr) {
+        return fallbackRolls;
+    }
+
+    // Support 'YYYY-MM' month keys by resolving as of the end of that month
+    const normalizedDate = dateStr.length === 7 ? `${dateStr}-31` : dateStr;
+
+    let matchedRevision: { effectiveFrom: string; classRolls: ClassRoll[] } | null = null;
+    for (const rev of history) {
+        if (
+            rev &&
+            typeof rev.effectiveFrom === 'string' &&
+            Array.isArray(rev.classRolls) &&
+            rev.effectiveFrom <= normalizedDate
+        ) {
+            if (!matchedRevision || rev.effectiveFrom > matchedRevision.effectiveFrom) {
+                matchedRevision = rev;
+            }
+        }
+    }
+
+    return matchedRevision ? matchedRevision.classRolls : fallbackRolls;
+};
+
+/**
+ * Aggregates category-wise on-roll totals from a ClassRoll list.
+ */
+export const getOnRollTotalsFromClassRolls = (classRolls: ClassRoll[] | undefined): Record<Category, number> => {
+    const totals: Record<Category, number> = { balvatika: 0, primary: 0, middle: 0 };
+    if (!Array.isArray(classRolls)) return totals;
+
+    classRolls.forEach(c => {
+        const classTotal = (c.general?.boys || 0) + (c.general?.girls || 0) + (c.stsc?.boys || 0) + (c.stsc?.girls || 0);
+        if (['bal', 'pp1', 'pp2'].includes(c.id)) totals.balvatika += classTotal;
+        else if (['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)) totals.primary += classTotal;
+        else if (['c6', 'c7', 'c8'].includes(c.id)) totals.middle += classTotal;
+    });
+
+    return totals;
 };
 
 /**

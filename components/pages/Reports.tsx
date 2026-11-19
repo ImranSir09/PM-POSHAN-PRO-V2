@@ -7,7 +7,7 @@ import Modal from '../ui/Modal';
 import { Category, CookCumHelper, InspectionAuthority, Settings } from '../../types';
 import PDFPreviewModal from '../ui/PDFPreviewModal';
 import { generatePDFReport, PdfExportOptions } from '../../services/pdfGenerator';
-import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate } from '../../services/summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate, getClassRollsForDate } from '../../services/summaryCalculator';
 import { Accordion, AccordionItem } from '../ui/Accordion';
 import NumberInput from '../ui/NumberInput';
 import Select from '../ui/Select';
@@ -112,23 +112,28 @@ const Reports: React.FC = () => {
                     'Total Expenditure': `Rs. ${totals.expenditure.toFixed(2)}`,
                 };
                 break;
-            case 'roll_statement':
-                const totalEnrollment = data.settings.classRolls.reduce(
+            case 'roll_statement': {
+                const now = new Date();
+                const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                const activeClassRolls = getClassRollsForDate(data.settings, todayKey);
+                const totalEnrollment = activeClassRolls.reduce(
                     (sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls,
                     0
                 );
                 newSummary = { Report: 'Roll Statement', 'Total Enrollment': totalEnrollment };
                 break;
-            case 'rice_requirement':
+            }
+            case 'rice_requirement': {
                 const workingDays = summary.workingDays !== undefined
                     ? summary.workingDays
                     : monthEntries.filter(isSchoolWorkingDay).length;
-                const enrollment = data.settings.classRolls.reduce(
+                const monthClassRolls = getClassRollsForDate(data.settings, `${selectedMonth}-31`);
+                const enrollment = monthClassRolls.reduce(
                     (sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls,
                     0
                 );
                 const monthRates = getRatesForDate(data.settings, `${selectedMonth}-31`);
-                const totalRiceKg = data.settings.classRolls.reduce((total, c) => {
+                const totalRiceKg = monthClassRolls.reduce((total, c) => {
                     let cat: Category | null = null;
                     if (['bal', 'pp1', 'pp2'].includes(c.id)) cat = 'balvatika';
                     else if (['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)) cat = 'primary';
@@ -147,6 +152,7 @@ const Reports: React.FC = () => {
                     'Total Rice Required': `${totalRiceKg.toFixed(3)} kg`,
                 };
                 break;
+            }
             case 'yearly_consumption_detailed':
                 newSummary = {
                     Report: 'Detailed Yearly Consumption Report',

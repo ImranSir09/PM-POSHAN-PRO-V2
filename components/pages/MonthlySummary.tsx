@@ -2,8 +2,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Card from '../ui/Card';
 import { useData } from '../../hooks/useData';
-import { Category, AbstractData, DailyEntry, Rates, RateRevision, MonthlyBalanceData } from '../../types';
-import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate } from '../../services/summaryCalculator';
+import { Category, AbstractData, DailyEntry, Rates, RateRevision, ClassRoll, EnrollmentRevision, MonthlyBalanceData } from '../../types';
+import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate, getClassRollsForDate, getOnRollTotalsFromClassRolls } from '../../services/summaryCalculator';
 import Button from '../ui/Button';
 import Select from '../ui/Select';
 import MonthPicker from '../ui/MonthPicker';
@@ -156,14 +156,17 @@ const DetailedConsumptionTable: React.FC<{
     category: Category;
     rates: Rates;
     rateHistory?: RateRevision[];
-    onRoll: number;
-}> = React.memo(({ entries, category, rates, rateHistory, onRoll }) => {
+    classRolls: ClassRoll[];
+    enrollmentHistory?: EnrollmentRevision[];
+}> = React.memo(({ entries, category, rates, rateHistory, classRolls, enrollmentHistory }) => {
     
     const { dailyData, totals } = useMemo(() => {
         const data = entries.map((entry, index) => {
             const present = entry.present[category];
             const mealServed = present > 0;
             const entryRates = getRatesForDate({ rates, rateHistory }, entry.date);
+            const entryRolls = getClassRollsForDate({ classRolls, enrollmentHistory }, entry.date);
+            const dayOnRoll = getOnRollTotalsFromClassRolls(entryRolls)[category];
             
             const riceUsed = mealServed ? (present * entryRates.rice[category]) / 1000 : 0;
             const dalVeg = mealServed ? present * entryRates.dalVeg[category] : 0;
@@ -175,6 +178,7 @@ const DetailedConsumptionTable: React.FC<{
             return {
                 sNo: index + 1,
                 date: entry.date,
+                onRoll: dayOnRoll,
                 present: present,
                 riceUsed,
                 dalVeg,
@@ -199,7 +203,7 @@ const DetailedConsumptionTable: React.FC<{
         }, { present: 0, riceUsed: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, totalCost: 0 });
 
         return { dailyData: data, totals };
-    }, [entries, category, rates, rateHistory]);
+    }, [entries, category, rates, rateHistory, classRolls, enrollmentHistory]);
 
     const thClasses = "p-2 whitespace-nowrap";
     const tdClasses = "p-2 whitespace-nowrap";
@@ -237,7 +241,7 @@ const DetailedConsumptionTable: React.FC<{
                                     <>
                                         <td className={tdClasses}>{day.sNo}</td>
                                         <td className={tdClasses}>{new Date(day.date + 'T00:00:00').toLocaleDateString('en-IN')}</td>
-                                        <td className={`${tdClasses} text-right`}>{onRoll}</td>
+                                        <td className={`${tdClasses} text-right`}>{day.onRoll}</td>
                                         <td className={`${tdClasses} text-right`}>{day.present}</td>
                                         <td className={`${tdClasses} text-right`}>{day.riceUsed.toFixed(3)}</td>
                                         <td className={`${tdClasses} text-right`}>{day.dalVeg.toFixed(2)}</td>
@@ -301,23 +305,6 @@ const MonthlySummary: React.FC = React.memo(() => {
     
     const { monthEntries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance, workingDays } = summaryData;
     
-    const onRoll = useMemo(() => {
-        const totals = { balvatika: 0, primary: 0, middle: 0 };
-        if (!settings.classRolls) return totals;
-
-        settings.classRolls.forEach(c => {
-            const classTotal = c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls;
-            if (['bal', 'pp1', 'pp2'].includes(c.id)) {
-                totals.balvatika += classTotal;
-            } else if (['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)) {
-                totals.primary += classTotal;
-            } else if (['c6', 'c7', 'c8'].includes(c.id)) {
-                totals.middle += classTotal;
-            }
-        });
-        return totals;
-    }, [settings.classRolls]);
-
     const savedBalance = data.monthlyBalances[selectedMonth];
     
     useEffect(() => {
@@ -457,7 +444,8 @@ const MonthlySummary: React.FC = React.memo(() => {
                                         category={view}
                                         rates={settings.rates}
                                         rateHistory={settings.rateHistory}
-                                        onRoll={onRoll[view]}
+                                        classRolls={settings.classRolls}
+                                        enrollmentHistory={settings.enrollmentHistory}
                                     />
                                 )}
                                 <Button onClick={hideDetails} className="w-full mt-4" variant="secondary">

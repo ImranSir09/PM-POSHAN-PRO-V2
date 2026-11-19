@@ -25,6 +25,20 @@ export const validateSettings = (settings: Settings): string[] => {
             errors.push(`Enrollment numbers for ${cr.name} cannot be negative.`);
         }
     });
+    if (Array.isArray(settings.enrollmentHistory)) {
+        settings.enrollmentHistory.forEach((rev, index) => {
+            if (!rev.effectiveFrom) {
+                errors.push(`Enrollment revision #${index + 1} requires an effective date.`);
+            }
+            if (Array.isArray(rev.classRolls)) {
+                rev.classRolls.forEach(cr => {
+                    if (cr.general.boys < 0 || cr.general.girls < 0 || cr.stsc.boys < 0 || cr.stsc.girls < 0) {
+                        errors.push(`Enrollment revision (${rev.effectiveFrom}) for ${cr.name} cannot be negative.`);
+                    }
+                });
+            }
+        });
+    }
 
     // 4. Rates (check for negative numbers)
     for (const key in rates) {

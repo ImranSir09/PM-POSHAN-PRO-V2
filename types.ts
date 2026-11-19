@@ -47,6 +47,11 @@ export interface ClassRoll {
     };
 }
 
+export interface EnrollmentRevision {
+    effectiveFrom: string; // YYYY-MM-DD
+    classRolls: ClassRoll[];
+}
+
 export interface SchoolDetails {
     name: string;
     udise: string;
@@ -101,6 +106,7 @@ export interface NotificationSettings {
 export interface Settings {
     schoolDetails: SchoolDetails;
     classRolls: ClassRoll[];
+    enrollmentHistory?: EnrollmentRevision[];
     rates: Rates;
     rateHistory?: RateRevision[];
     autoOverwrite: boolean;

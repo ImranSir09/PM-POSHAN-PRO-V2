@@ -4,12 +4,12 @@ import { Accordion, AccordionItem } from '../ui/Accordion';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
-import { Settings, SchoolDetails, Rates, RateRevision, Category, CookCumHelper, ClassRoll, MonthlyBalanceData, MDMIncharge, NotificationSettings, InspectionReport, InspectionAuthority } from '../../types';
+import { Settings, SchoolDetails, Rates, RateRevision, EnrollmentRevision, Category, CookCumHelper, ClassRoll, MonthlyBalanceData, MDMIncharge, NotificationSettings, InspectionReport, InspectionAuthority } from '../../types';
 import { CLASS_STRUCTURE } from '../../constants';
 import { indianStates, jkDistrictsWithZones } from '../../data/locations';
 import NumberInput from '../ui/NumberInput';
 import DataManagement from '../ui/DataManagement';
-import { getRatesForDate } from '../../services/summaryCalculator';
+import { getRatesForDate, getClassRollsForDate, getOnRollTotalsFromClassRolls } from '../../services/summaryCalculator';
 import { useToast } from '../../hooks/useToast';
 
 
@@ -44,6 +44,7 @@ const SectionTotalRow: React.FC<{ label: string, totals: ReturnType<typeof calcu
 );
 
 const cloneRates = (r: Rates): Rates => JSON.parse(JSON.stringify(r));
+const cloneClassRolls = (rolls: ClassRoll[]): ClassRoll[] => JSON.parse(JSON.stringify(rolls));
 
 const SettingsPage: React.FC = () => {
     const { data, updateSettings } = useData();
@@ -51,6 +52,7 @@ const SettingsPage: React.FC = () => {
     const [settings, setSettings] = useState<Settings>(data.settings);
     const [isUdiseValid, setIsUdiseValid] = useState(settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0);
     const [isRatesEditable, setIsRatesEditable] = useState(false);
+    const [isEnrollmentEditable, setIsEnrollmentEditable] = useState(false);
 
     const todayStr = useMemo(() => {
         const d = new Date();
@@ -61,6 +63,14 @@ const SettingsPage: React.FC = () => {
     const rateSessionRef = useRef<{
         baseRates: Rates;
         baseHistory: RateRevision[];
+        edited: boolean;
+    } | null>(null);
+
+    const [enrollmentEffectiveDate, setEnrollmentEffectiveDate] = useState<string>(todayStr);
+    const [hasEnrollmentSessionEdits, setHasEnrollmentSessionEdits] = useState(false);
+    const enrollmentSessionRef = useRef<{
+        baseClassRolls: ClassRoll[];
+        baseHistory: EnrollmentRevision[];
         edited: boolean;
     } | null>(null);
 
@@ -119,16 +129,141 @@ const SettingsPage: React.FC = () => {
         }));
     };
     
+    const displayedClassRolls = useMemo(() => {
+        if (!isEnrollmentEditable) {
+            return getClassRollsForDate(settings, todayStr);
+        }
+        return getClassRollsForDate(settings, enrollmentEffectiveDate);
+    }, [isEnrollmentEditable, settings, todayStr, enrollmentEffectiveDate]);
+
+    const applyEnrollmentRevisionToHistory = (
+        baseClassRolls: ClassRoll[],
+        baseHistory: EnrollmentRevision[],
+        effectiveFrom: string,
+        revisedClassRolls: ClassRoll[]
+    ): { classRolls: ClassRoll[]; enrollmentHistory: EnrollmentRevision[] } => {
+        const history: EnrollmentRevision[] = baseHistory.length > 0
+            ? baseHistory.map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) }))
+            : [{ effectiveFrom: '1970-01-01', classRolls: cloneClassRolls(baseClassRolls) }];
+
+        const existingIdx = history.findIndex(r => r.effectiveFrom === effectiveFrom);
+        if (existingIdx !== -1) {
+            history[existingIdx] = { effectiveFrom, classRolls: cloneClassRolls(revisedClassRolls) };
+        } else {
+            history.push({ effectiveFrom, classRolls: cloneClassRolls(revisedClassRolls) });
+        }
+
+        history.sort((a, b) => a.effectiveFrom.localeCompare(b.effectiveFrom));
+        const activeTodayRolls = getClassRollsForDate({ classRolls: baseClassRolls, enrollmentHistory: history }, todayStr);
+        return { classRolls: cloneClassRolls(activeTodayRolls), enrollmentHistory: history };
+    };
+
+    const handleToggleEnrollmentEditable = (enabled: boolean) => {
+        if (enabled) {
+            enrollmentSessionRef.current = {
+                baseClassRolls: cloneClassRolls(settings.classRolls),
+                baseHistory: (settings.enrollmentHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) })),
+                edited: false,
+            };
+            setHasEnrollmentSessionEdits(false);
+            setEnrollmentEffectiveDate(todayStr);
+            setIsEnrollmentEditable(true);
+        } else {
+            enrollmentSessionRef.current = null;
+            setHasEnrollmentSessionEdits(false);
+            setIsEnrollmentEditable(false);
+        }
+    };
+
+    const handleEnrollmentEffectiveDateChange = (newDate: string) => {
+        if (!newDate) return;
+        if (enrollmentSessionRef.current?.edited) {
+            const currentEditedRolls = getClassRollsForDate(settings, enrollmentEffectiveDate);
+            const { classRolls: activeTodayRolls, enrollmentHistory } = applyEnrollmentRevisionToHistory(
+                enrollmentSessionRef.current.baseClassRolls,
+                enrollmentSessionRef.current.baseHistory,
+                newDate,
+                currentEditedRolls
+            );
+            setSettings(prev => ({ ...prev, classRolls: activeTodayRolls, enrollmentHistory }));
+        }
+        setEnrollmentEffectiveDate(newDate);
+    };
+
+    const handleCommitAndAddAnotherEnrollmentDate = () => {
+        enrollmentSessionRef.current = {
+            baseClassRolls: cloneClassRolls(settings.classRolls),
+            baseHistory: (settings.enrollmentHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) })),
+            edited: false,
+        };
+        setHasEnrollmentSessionEdits(false);
+        showToast(`Enrollment saved for ${new Date(enrollmentEffectiveDate + 'T00:00:00').toLocaleDateString('en-IN')}. Select another date to add a new revision.`, 'success');
+    };
+
+    const handleEditEnrollmentRevision = (effectiveFrom: string) => {
+        enrollmentSessionRef.current = {
+            baseClassRolls: cloneClassRolls(settings.classRolls),
+            baseHistory: (settings.enrollmentHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) })),
+            edited: false,
+        };
+        setHasEnrollmentSessionEdits(false);
+        setEnrollmentEffectiveDate(effectiveFrom);
+        setIsEnrollmentEditable(true);
+    };
+
+    const handleDeleteEnrollmentRevision = (effectiveFrom: string) => {
+        const remaining = (settings.enrollmentHistory || []).filter(r => r.effectiveFrom !== effectiveFrom);
+        let nextActiveRolls: ClassRoll[];
+        let nextHistory: EnrollmentRevision[] = [];
+
+        if (remaining.length <= 1) {
+            nextActiveRolls = remaining.length === 1 ? cloneClassRolls(remaining[0].classRolls) : cloneClassRolls(settings.classRolls);
+            setSettings(prev => {
+                const { enrollmentHistory: _removed, ...rest } = prev;
+                return { ...rest, classRolls: nextActiveRolls };
+            });
+        } else {
+            nextActiveRolls = cloneClassRolls(getClassRollsForDate({ classRolls: settings.classRolls, enrollmentHistory: remaining }, todayStr));
+            nextHistory = remaining.map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) }));
+            setSettings(prev => ({ ...prev, classRolls: nextActiveRolls, enrollmentHistory: nextHistory }));
+        }
+
+        if (enrollmentSessionRef.current) {
+            enrollmentSessionRef.current = {
+                baseClassRolls: cloneClassRolls(nextActiveRolls),
+                baseHistory: nextHistory.map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) })),
+                edited: false,
+            };
+        }
+        setHasEnrollmentSessionEdits(false);
+        showToast('Enrollment revision removed.', 'info');
+    };
+
     const handleClassRollChange = (classId: string, category: 'general' | 'stsc', gender: 'boys' | 'girls', value: string) => {
-        const numValue = parseInt(value) || 0;
-        setSettings(prev => ({
-            ...prev,
-            classRolls: prev.classRolls.map(cr => 
-                cr.id === classId 
+        const numValue = Math.max(0, parseInt(value) || 0);
+        const updatedRolls = cloneClassRolls(displayedClassRolls).map(cr =>
+            cr.id === classId
                 ? { ...cr, [category]: { ...cr[category], [gender]: numValue } }
                 : cr
-            )
-        }));
+        );
+
+        if (!enrollmentSessionRef.current) {
+            enrollmentSessionRef.current = {
+                baseClassRolls: cloneClassRolls(settings.classRolls),
+                baseHistory: (settings.enrollmentHistory || []).map(r => ({ effectiveFrom: r.effectiveFrom, classRolls: cloneClassRolls(r.classRolls) })),
+                edited: false,
+            };
+        }
+
+        enrollmentSessionRef.current.edited = true;
+        setHasEnrollmentSessionEdits(true);
+        const { classRolls: activeTodayRolls, enrollmentHistory } = applyEnrollmentRevisionToHistory(
+            enrollmentSessionRef.current.baseClassRolls,
+            enrollmentSessionRef.current.baseHistory,
+            enrollmentEffectiveDate,
+            updatedRolls
+        );
+        setSettings(prev => ({ ...prev, classRolls: activeTodayRolls, enrollmentHistory }));
     };
 
     const displayedRates = useMemo(() => {
@@ -346,7 +481,7 @@ const SettingsPage: React.FC = () => {
 
         const sortFunction = (a: ClassRoll, b: ClassRoll) => (classOrder[a.id] ?? 99) - (classOrder[b.id] ?? 99);
         
-        const allRolls = settings.classRolls || [];
+        const allRolls = displayedClassRolls || [];
         
         const middle = allRolls.filter(c => ['c6', 'c7', 'c8'].includes(c.id)).sort(sortFunction);
         const primary = allRolls.filter(c => ['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)).sort(sortFunction);
@@ -354,7 +489,7 @@ const SettingsPage: React.FC = () => {
 
         const total = calculateSectionTotals(allRolls);
         return { middleClasses: middle, primaryClasses: primary, prePrimaryClasses: prePrimary, grandTotal: total };
-    }, [settings.classRolls]);
+    }, [displayedClassRolls]);
 
     const middleTotals = useMemo(() => calculateSectionTotals(middleClasses), [middleClasses]);
     const primaryTotals = useMemo(() => calculateSectionTotals(primaryClasses), [primaryClasses]);
@@ -583,61 +718,166 @@ const SettingsPage: React.FC = () => {
                                 </div>
                             )}
                         </div>
-                    </AccordionItem>                    <AccordionItem id="enrollment" title="Student Enrollment (Roll Statement)">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-xs text-center border-collapse">
-                                <thead className="bg-slate-50 dark:bg-slate-900/50">
-                                    <tr>
-                                        <th rowSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Class</th>
-                                        <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">General</th>
-                                        <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">ST/SC</th>
-                                        <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Total</th>
-                                        <th rowSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">On Roll</th>
-                                    </tr>
-                                    <tr>
-                                        <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
-                                        <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
-                                        <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
-                                        <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
-                                        <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
-                                        <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {[
-                                        { title: 'Middle (VI-VIII)', classes: middleClasses, totals: middleTotals },
-                                        { title: 'Primary (I-V)', classes: primaryClasses, totals: primaryTotals },
-                                        { title: 'Pre-Primary', classes: prePrimaryClasses, totals: prePrimaryTotals }
-                                    ].map(section => section.classes.length > 0 && (
-                                        <React.Fragment key={section.title}>
-                                            <tr className="bg-slate-50 dark:bg-slate-900/30">
-                                                <td colSpan={8} className="p-2 font-semibold text-indigo-600 dark:text-indigo-400 text-left pl-3">{section.title}</td>
-                                            </tr>
-                                            {section.classes.map(cr => {
-                                                const totalBoys = cr.general.boys + cr.stsc.boys;
-                                                const totalGirls = cr.general.girls + cr.stsc.girls;
-                                                const onRoll = totalBoys + totalGirls;
+                    </AccordionItem>
+                    <AccordionItem id="enrollment" title="Student Enrollment (Roll Statement)">
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                <div>
+                                    <label htmlFor="edit-enrollment" className="font-medium text-slate-700 dark:text-slate-300">Edit Enrollment</label>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">Enable to update class-wise student enrollment from a specific date.</p>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="edit-enrollment" className="sr-only peer" checked={isEnrollmentEditable} onChange={e => handleToggleEnrollmentEditable(e.target.checked)} />
+                                    <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-indigo-500/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                </label>
+                            </div>
+
+                            {isEnrollmentEditable && (
+                                <div className="p-3.5 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5">
+                                    <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+                                        <div className="flex-1">
+                                            <label htmlFor="enrollment-effective-date" className="block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1">
+                                                Effective From Date
+                                            </label>
+                                            <input
+                                                id="enrollment-effective-date"
+                                                type="date"
+                                                value={enrollmentEffectiveDate}
+                                                onChange={e => handleEnrollmentEffectiveDateChange(e.target.value)}
+                                                className="w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
+                                            />
+                                        </div>
+                                        {hasEnrollmentSessionEdits && (
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    type="button"
+                                                    variant="secondary"
+                                                    className="text-xs px-3 py-2"
+                                                    onClick={handleCommitAndAddAnotherEnrollmentDate}
+                                                >
+                                                    + Add Another Date
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    className="text-xs px-3 py-2"
+                                                    onClick={() => handleToggleEnrollmentEditable(false)}
+                                                >
+                                                    Done
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                                        Changes apply to entries and reports on or after this date. Earlier months and sessions retain their previous roll statement.
+                                    </p>
+                                </div>
+                            )}
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-xs text-center border-collapse">
+                                    <thead className="bg-slate-50 dark:bg-slate-900/50">
+                                        <tr>
+                                            <th rowSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Class</th>
+                                            <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">General</th>
+                                            <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">ST/SC</th>
+                                            <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Total</th>
+                                            <th rowSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">On Roll</th>
+                                        </tr>
+                                        <tr>
+                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
+                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
+                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
+                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
+                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
+                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {[
+                                            { title: 'Middle (VI-VIII)', classes: middleClasses, totals: middleTotals },
+                                            { title: 'Primary (I-V)', classes: primaryClasses, totals: primaryTotals },
+                                            { title: 'Pre-Primary', classes: prePrimaryClasses, totals: prePrimaryTotals }
+                                        ].map(section => section.classes.length > 0 && (
+                                            <React.Fragment key={section.title}>
+                                                <tr className="bg-slate-50 dark:bg-slate-900/30">
+                                                    <td colSpan={8} className="p-2 font-semibold text-indigo-600 dark:text-indigo-400 text-left pl-3">{section.title}</td>
+                                                </tr>
+                                                {section.classes.map(cr => {
+                                                    const totalBoys = cr.general.boys + cr.stsc.boys;
+                                                    const totalGirls = cr.general.girls + cr.stsc.girls;
+                                                    const onRoll = totalBoys + totalGirls;
+                                                    return (
+                                                        <tr key={cr.id} className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-700 dark:text-slate-300">{cr.name}</td>
+                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.general.boys} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'general', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.general.girls} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'general', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.stsc.boys} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'stsc', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.stsc.girls} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'stsc', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">{totalBoys}</td>
+                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">{totalGirls}</td>
+                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-indigo-600 dark:text-indigo-400">{onRoll}</td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                                <SectionTotalRow label={`${section.title.split(' ')[0]} Total`} totals={section.totals} />
+                                            </React.Fragment>
+                                        ))}
+                                    </tbody>
+                                    <tfoot className="font-semibold bg-slate-100 dark:bg-slate-900">
+                                    <SectionTotalRow label="Grand Total" totals={grandTotal} />
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            {settings.enrollmentHistory && settings.enrollmentHistory.length > 0 && (
+                                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                                    <p className="font-semibold text-slate-800 dark:text-slate-300 text-sm">
+                                        Enrollment Revision History
+                                    </p>
+                                    <div className="space-y-2">
+                                        {[...settings.enrollmentHistory]
+                                            .sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom))
+                                            .map(rev => {
+                                                const catTotals = getOnRollTotalsFromClassRolls(rev.classRolls);
+                                                const totalRoll = catTotals.balvatika + catTotals.primary + catTotals.middle;
+                                                const isBase = rev.effectiveFrom === '1970-01-01';
+                                                const dateLabel = isBase
+                                                    ? 'Base Enrollment (Prior Records)'
+                                                    : `Effective from ${new Date(rev.effectiveFrom + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
                                                 return (
-                                                    <tr key={cr.id} className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
-                                                        <td className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-700 dark:text-slate-300">{cr.name}</td>
-                                                        <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.general.boys} onChange={e => handleClassRollChange(cr.id, 'general', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"/></td>
-                                                        <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.general.girls} onChange={e => handleClassRollChange(cr.id, 'general', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"/></td>
-                                                        <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.stsc.boys} onChange={e => handleClassRollChange(cr.id, 'stsc', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"/></td>
-                                                        <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.stsc.girls} onChange={e => handleClassRollChange(cr.id, 'stsc', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"/></td>
-                                                        <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">{totalBoys}</td>
-                                                        <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">{totalGirls}</td>
-                                                        <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-indigo-600 dark:text-indigo-400">{onRoll}</td>
-                                                    </tr>
+                                                    <div key={rev.effectiveFrom} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                                        <div>
+                                                            <p className="font-semibold text-slate-800 dark:text-slate-200 text-xs">{dateLabel}</p>
+                                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                                                On Roll — Bal: {catTotals.balvatika} • Pri: {catTotals.primary} • Mid: {catTotals.middle} | Total: {totalRoll}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 shrink-0">
+                                                            <Button
+                                                                type="button"
+                                                                variant="secondary"
+                                                                className="px-2.5 py-1 text-xs"
+                                                                onClick={() => handleEditEnrollmentRevision(rev.effectiveFrom)}
+                                                            >
+                                                                Edit
+                                                            </Button>
+                                                            {!isBase && (
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="danger"
+                                                                    className="px-2.5 py-1 text-xs"
+                                                                    onClick={() => handleDeleteEnrollmentRevision(rev.effectiveFrom)}
+                                                                >
+                                                                    Remove
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 );
                                             })}
-                                            <SectionTotalRow label={`${section.title.split(' ')[0]} Total`} totals={section.totals} />
-                                        </React.Fragment>
-                                    ))}
-                                </tbody>
-                                <tfoot className="font-semibold bg-slate-100 dark:bg-slate-900">
-                                <SectionTotalRow label="Grand Total" totals={grandTotal} />
-                                </tfoot>
-                            </table>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </AccordionItem>
                     

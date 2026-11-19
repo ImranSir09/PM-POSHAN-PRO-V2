@@ -7175,6 +7175,9 @@ const getInitialData = () => {
         if (dataToProcess.settings.rateHistory !== void 0 && !Array.isArray(dataToProcess.settings.rateHistory)) {
           delete dataToProcess.settings.rateHistory;
         }
+        if (dataToProcess.settings.enrollmentHistory !== void 0 && !Array.isArray(dataToProcess.settings.enrollmentHistory)) {
+          delete dataToProcess.settings.enrollmentHistory;
+        }
       } else {
         dataToProcess.settings = DEFAULT_SETTINGS;
       }
@@ -7454,6 +7457,35 @@ const getRatesForDate = (settings, dateStr) => {
     }
   }
   return matchedRevision ? matchedRevision.rates : fallbackRates;
+};
+const getClassRollsForDate = (settings, dateStr) => {
+  const fallbackRolls = Array.isArray(settings == null ? void 0 : settings.classRolls) ? settings.classRolls : DEFAULT_SETTINGS.classRolls;
+  const history = settings == null ? void 0 : settings.enrollmentHistory;
+  if (!Array.isArray(history) || history.length === 0 || !dateStr) {
+    return fallbackRolls;
+  }
+  const normalizedDate = dateStr.length === 7 ? `${dateStr}-31` : dateStr;
+  let matchedRevision = null;
+  for (const rev of history) {
+    if (rev && typeof rev.effectiveFrom === "string" && Array.isArray(rev.classRolls) && rev.effectiveFrom <= normalizedDate) {
+      if (!matchedRevision || rev.effectiveFrom > matchedRevision.effectiveFrom) {
+        matchedRevision = rev;
+      }
+    }
+  }
+  return matchedRevision ? matchedRevision.classRolls : fallbackRolls;
+};
+const getOnRollTotalsFromClassRolls = (classRolls) => {
+  const totals = { balvatika: 0, primary: 0, middle: 0 };
+  if (!Array.isArray(classRolls)) return totals;
+  classRolls.forEach((c2) => {
+    var _a2, _b, _c, _d;
+    const classTotal = (((_a2 = c2.general) == null ? void 0 : _a2.boys) || 0) + (((_b = c2.general) == null ? void 0 : _b.girls) || 0) + (((_c = c2.stsc) == null ? void 0 : _c.boys) || 0) + (((_d = c2.stsc) == null ? void 0 : _d.girls) || 0);
+    if (["bal", "pp1", "pp2"].includes(c2.id)) totals.balvatika += classTotal;
+    else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) totals.primary += classTotal;
+    else if (["c6", "c7", "c8"].includes(c2.id)) totals.middle += classTotal;
+  });
+  return totals;
 };
 const isSundayEntry = (entry) => {
   const isCalendarSunday = (/* @__PURE__ */ new Date(entry.date + "T00:00:00")).getDay() === 0;
@@ -28752,27 +28784,16 @@ const DailyEntryPage = React.memo(() => {
   const { data, addEntry } = useData();
   const { showToast: showToast2 } = useToast();
   const { settings } = data;
-  const onRoll = reactExports.useMemo(() => {
-    const totals = { balvatika: 0, primary: 0, middle: 0 };
-    if (!settings.classRolls) return totals;
-    settings.classRolls.forEach((c2) => {
-      const classTotal = c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls;
-      if (["bal", "pp1", "pp2"].includes(c2.id)) {
-        totals.balvatika += classTotal;
-      } else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) {
-        totals.primary += classTotal;
-      } else if (["c6", "c7", "c8"].includes(c2.id)) {
-        totals.middle += classTotal;
-      }
-    });
-    return totals;
-  }, [settings.classRolls]);
   const today = reactExports.useMemo(() => {
     const d2 = /* @__PURE__ */ new Date();
     return `${d2.getFullYear()}-${String(d2.getMonth() + 1).padStart(2, "0")}-${String(d2.getDate()).padStart(2, "0")}`;
   }, []);
   const [selectedDate, setSelectedDate] = reactExports.useState(today);
   const rates = reactExports.useMemo(() => getRatesForDate(settings, selectedDate), [settings, selectedDate]);
+  const onRoll = reactExports.useMemo(
+    () => getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, selectedDate)),
+    [settings, selectedDate]
+  );
   const [showDatePicker, setShowDatePicker] = reactExports.useState(false);
   const [present, setPresent] = reactExports.useState({ balvatika: 0, primary: 0, middle: 0 });
   const [consumption, setConsumption] = reactExports.useState({ rice: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, total: 0 });
@@ -29896,12 +29917,14 @@ const SimpleDailyEntriesTable = React.memo(({ entries }) => /* @__PURE__ */ jsxR
   }) : /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "border-b border-slate-100 dark:border-slate-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 4, className: "p-4 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950", children: "No entries with meals served for this category in the selected month." }) }) })
 ] }) }));
 SimpleDailyEntriesTable.displayName = "SimpleDailyEntriesTable";
-const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHistory, onRoll }) => {
+const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHistory, classRolls, enrollmentHistory }) => {
   const { dailyData, totals } = reactExports.useMemo(() => {
     const data = entries.map((entry, index) => {
       const present = entry.present[category];
       const mealServed = present > 0;
       const entryRates = getRatesForDate({ rates, rateHistory }, entry.date);
+      const entryRolls = getClassRollsForDate({ classRolls, enrollmentHistory }, entry.date);
+      const dayOnRoll = getOnRollTotalsFromClassRolls(entryRolls)[category];
       const riceUsed = mealServed ? present * entryRates.rice[category] / 1e3 : 0;
       const dalVeg = mealServed ? present * entryRates.dalVeg[category] : 0;
       const oilCond = mealServed ? present * entryRates.oilCond[category] : 0;
@@ -29911,6 +29934,7 @@ const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHis
       return {
         sNo: index + 1,
         date: entry.date,
+        onRoll: dayOnRoll,
         present,
         riceUsed,
         dalVeg,
@@ -29933,7 +29957,7 @@ const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHis
       return acc;
     }, { present: 0, riceUsed: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, totalCost: 0 });
     return { dailyData: data, totals: totals2 };
-  }, [entries, category, rates, rateHistory]);
+  }, [entries, category, rates, rateHistory, classRolls, enrollmentHistory]);
   const thClasses = "p-2 whitespace-nowrap";
   const tdClasses = "p-2 whitespace-nowrap";
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[768px] w-full text-xs text-left border-collapse", children: [
@@ -29960,7 +29984,7 @@ const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHis
       ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: day.sNo }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: (/* @__PURE__ */ new Date(day.date + "T00:00:00")).toLocaleDateString("en-IN") }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: onRoll }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.onRoll }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.present }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.riceUsed.toFixed(3) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.dalVeg.toFixed(2) }),
@@ -30004,21 +30028,6 @@ const MonthlySummary = React.memo(() => {
     [data.entries, data.receipts, data.monthlyBalances, data.settings, selectedMonth]
   );
   const { monthEntries, riceAbstracts, cashAbstracts, totals, categoryTotals, closingBalance, workingDays } = summaryData;
-  const onRoll = reactExports.useMemo(() => {
-    const totals2 = { balvatika: 0, primary: 0, middle: 0 };
-    if (!settings.classRolls) return totals2;
-    settings.classRolls.forEach((c2) => {
-      const classTotal = c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls;
-      if (["bal", "pp1", "pp2"].includes(c2.id)) {
-        totals2.balvatika += classTotal;
-      } else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) {
-        totals2.primary += classTotal;
-      } else if (["c6", "c7", "c8"].includes(c2.id)) {
-        totals2.middle += classTotal;
-      }
-    });
-    return totals2;
-  }, [settings.classRolls]);
   const savedBalance = data.monthlyBalances[selectedMonth];
   reactExports.useEffect(() => {
     if (closingBalance && monthEntries.length > 0) {
@@ -30133,7 +30142,8 @@ const MonthlySummary = React.memo(() => {
             category: view,
             rates: settings.rates,
             rateHistory: settings.rateHistory,
-            onRoll: onRoll[view]
+            classRolls: settings.classRolls,
+            enrollmentHistory: settings.enrollmentHistory
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: hideDetails, className: "w-full mt-4", variant: "secondary", children: "Hide Details" })
@@ -31061,7 +31071,7 @@ registerPlugin("SystemBars", {
   web: () => new SystemBarsPluginWeb()
 });
 const App$1 = registerPlugin("App", {
-  web: () => __vitePreload(() => import("./web-BRqY3xmv.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.AppWeb())
+  web: () => __vitePreload(() => import("./web-C6hEqLRJ.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.AppWeb())
 });
 const CURRENT_APP_VERSION = "2.1.0";
 const GITHUB_REPO = "ImranSir09/PM-POSHAN-PRO-V2";
@@ -31189,11 +31199,11 @@ var Encoding;
   Encoding2["UTF16"] = "utf16";
 })(Encoding || (Encoding = {}));
 const Filesystem = registerPlugin("Filesystem", {
-  web: () => __vitePreload(() => import("./web-78vfFlWw.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.FilesystemWeb())
+  web: () => __vitePreload(() => import("./web-BIOCJc19.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.FilesystemWeb())
 });
 f();
 const Share = registerPlugin("Share", {
-  web: () => __vitePreload(() => import("./web-T0-at-M3.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.ShareWeb())
+  web: () => __vitePreload(() => import("./web-D-T8g7ul.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.ShareWeb())
 });
 function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
@@ -31714,6 +31724,7 @@ const SectionTotalRow = ({ label, totals }) => /* @__PURE__ */ jsxRuntimeExports
   /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300", children: totals.total.onRoll })
 ] });
 const cloneRates = (r2) => JSON.parse(JSON.stringify(r2));
+const cloneClassRolls = (rolls) => JSON.parse(JSON.stringify(rolls));
 const SettingsPage = () => {
   var _a2, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r;
   const { data, updateSettings } = useData();
@@ -31721,6 +31732,7 @@ const SettingsPage = () => {
   const [settings, setSettings] = reactExports.useState(data.settings);
   const [isUdiseValid, setIsUdiseValid] = reactExports.useState(settings.schoolDetails.udise.length === 11 || settings.schoolDetails.udise.length === 0);
   const [isRatesEditable, setIsRatesEditable] = reactExports.useState(false);
+  const [isEnrollmentEditable, setIsEnrollmentEditable] = reactExports.useState(false);
   const todayStr = reactExports.useMemo(() => {
     const d2 = /* @__PURE__ */ new Date();
     return `${d2.getFullYear()}-${String(d2.getMonth() + 1).padStart(2, "0")}-${String(d2.getDate()).padStart(2, "0")}`;
@@ -31728,6 +31740,9 @@ const SettingsPage = () => {
   const [rateEffectiveDate, setRateEffectiveDate] = reactExports.useState(todayStr);
   const [hasRateSessionEdits, setHasRateSessionEdits] = reactExports.useState(false);
   const rateSessionRef = reactExports.useRef(null);
+  const [enrollmentEffectiveDate, setEnrollmentEffectiveDate] = reactExports.useState(todayStr);
+  const [hasEnrollmentSessionEdits, setHasEnrollmentSessionEdits] = reactExports.useState(false);
+  const enrollmentSessionRef = reactExports.useRef(null);
   const availableDistricts = reactExports.useMemo(() => {
     const selectedStateData = indianStates.find((s2) => s2.name === settings.schoolDetails.state);
     return selectedStateData ? selectedStateData.districts.sort() : [];
@@ -31774,14 +31789,120 @@ const SettingsPage = () => {
       }
     }));
   };
+  const displayedClassRolls = reactExports.useMemo(() => {
+    if (!isEnrollmentEditable) {
+      return getClassRollsForDate(settings, todayStr);
+    }
+    return getClassRollsForDate(settings, enrollmentEffectiveDate);
+  }, [isEnrollmentEditable, settings, todayStr, enrollmentEffectiveDate]);
+  const applyEnrollmentRevisionToHistory = (baseClassRolls, baseHistory, effectiveFrom, revisedClassRolls) => {
+    const history = baseHistory.length > 0 ? baseHistory.map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) })) : [{ effectiveFrom: "1970-01-01", classRolls: cloneClassRolls(baseClassRolls) }];
+    const existingIdx = history.findIndex((r2) => r2.effectiveFrom === effectiveFrom);
+    if (existingIdx !== -1) {
+      history[existingIdx] = { effectiveFrom, classRolls: cloneClassRolls(revisedClassRolls) };
+    } else {
+      history.push({ effectiveFrom, classRolls: cloneClassRolls(revisedClassRolls) });
+    }
+    history.sort((a2, b2) => a2.effectiveFrom.localeCompare(b2.effectiveFrom));
+    const activeTodayRolls = getClassRollsForDate({ classRolls: baseClassRolls, enrollmentHistory: history }, todayStr);
+    return { classRolls: cloneClassRolls(activeTodayRolls), enrollmentHistory: history };
+  };
+  const handleToggleEnrollmentEditable = (enabled) => {
+    if (enabled) {
+      enrollmentSessionRef.current = {
+        baseClassRolls: cloneClassRolls(settings.classRolls),
+        baseHistory: (settings.enrollmentHistory || []).map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) })),
+        edited: false
+      };
+      setHasEnrollmentSessionEdits(false);
+      setEnrollmentEffectiveDate(todayStr);
+      setIsEnrollmentEditable(true);
+    } else {
+      enrollmentSessionRef.current = null;
+      setHasEnrollmentSessionEdits(false);
+      setIsEnrollmentEditable(false);
+    }
+  };
+  const handleEnrollmentEffectiveDateChange = (newDate2) => {
+    var _a3;
+    if (!newDate2) return;
+    if ((_a3 = enrollmentSessionRef.current) == null ? void 0 : _a3.edited) {
+      const currentEditedRolls = getClassRollsForDate(settings, enrollmentEffectiveDate);
+      const { classRolls: activeTodayRolls, enrollmentHistory } = applyEnrollmentRevisionToHistory(
+        enrollmentSessionRef.current.baseClassRolls,
+        enrollmentSessionRef.current.baseHistory,
+        newDate2,
+        currentEditedRolls
+      );
+      setSettings((prev) => ({ ...prev, classRolls: activeTodayRolls, enrollmentHistory }));
+    }
+    setEnrollmentEffectiveDate(newDate2);
+  };
+  const handleCommitAndAddAnotherEnrollmentDate = () => {
+    enrollmentSessionRef.current = {
+      baseClassRolls: cloneClassRolls(settings.classRolls),
+      baseHistory: (settings.enrollmentHistory || []).map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) })),
+      edited: false
+    };
+    setHasEnrollmentSessionEdits(false);
+    showToast2(`Enrollment saved for ${(/* @__PURE__ */ new Date(enrollmentEffectiveDate + "T00:00:00")).toLocaleDateString("en-IN")}. Select another date to add a new revision.`, "success");
+  };
+  const handleEditEnrollmentRevision = (effectiveFrom) => {
+    enrollmentSessionRef.current = {
+      baseClassRolls: cloneClassRolls(settings.classRolls),
+      baseHistory: (settings.enrollmentHistory || []).map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) })),
+      edited: false
+    };
+    setHasEnrollmentSessionEdits(false);
+    setEnrollmentEffectiveDate(effectiveFrom);
+    setIsEnrollmentEditable(true);
+  };
+  const handleDeleteEnrollmentRevision = (effectiveFrom) => {
+    const remaining = (settings.enrollmentHistory || []).filter((r2) => r2.effectiveFrom !== effectiveFrom);
+    let nextActiveRolls;
+    let nextHistory = [];
+    if (remaining.length <= 1) {
+      nextActiveRolls = remaining.length === 1 ? cloneClassRolls(remaining[0].classRolls) : cloneClassRolls(settings.classRolls);
+      setSettings((prev) => {
+        const { enrollmentHistory: _removed, ...rest } = prev;
+        return { ...rest, classRolls: nextActiveRolls };
+      });
+    } else {
+      nextActiveRolls = cloneClassRolls(getClassRollsForDate({ classRolls: settings.classRolls, enrollmentHistory: remaining }, todayStr));
+      nextHistory = remaining.map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) }));
+      setSettings((prev) => ({ ...prev, classRolls: nextActiveRolls, enrollmentHistory: nextHistory }));
+    }
+    if (enrollmentSessionRef.current) {
+      enrollmentSessionRef.current = {
+        baseClassRolls: cloneClassRolls(nextActiveRolls),
+        baseHistory: nextHistory.map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) })),
+        edited: false
+      };
+    }
+    setHasEnrollmentSessionEdits(false);
+    showToast2("Enrollment revision removed.", "info");
+  };
   const handleClassRollChange = (classId, category, gender, value) => {
-    const numValue = parseInt(value) || 0;
-    setSettings((prev) => ({
-      ...prev,
-      classRolls: prev.classRolls.map(
-        (cr) => cr.id === classId ? { ...cr, [category]: { ...cr[category], [gender]: numValue } } : cr
-      )
-    }));
+    const numValue = Math.max(0, parseInt(value) || 0);
+    const updatedRolls = cloneClassRolls(displayedClassRolls).map(
+      (cr) => cr.id === classId ? { ...cr, [category]: { ...cr[category], [gender]: numValue } } : cr
+    );
+    if (!enrollmentSessionRef.current) {
+      enrollmentSessionRef.current = {
+        baseClassRolls: cloneClassRolls(settings.classRolls),
+        baseHistory: (settings.enrollmentHistory || []).map((r2) => ({ effectiveFrom: r2.effectiveFrom, classRolls: cloneClassRolls(r2.classRolls) })),
+        edited: false
+      };
+    }
+    enrollmentSessionRef.current.edited = true;
+    setHasEnrollmentSessionEdits(true);
+    const { classRolls: activeTodayRolls, enrollmentHistory } = applyEnrollmentRevisionToHistory(
+      enrollmentSessionRef.current.baseClassRolls,
+      enrollmentSessionRef.current.baseHistory,
+      enrollmentEffectiveDate,
+      updatedRolls
+    );
+    setSettings((prev) => ({ ...prev, classRolls: activeTodayRolls, enrollmentHistory }));
   };
   const displayedRates = reactExports.useMemo(() => {
     if (!isRatesEditable) {
@@ -31966,13 +32087,13 @@ const SettingsPage = () => {
       return acc;
     }, {});
     const sortFunction = (a2, b2) => (classOrder[a2.id] ?? 99) - (classOrder[b2.id] ?? 99);
-    const allRolls = settings.classRolls || [];
+    const allRolls = displayedClassRolls || [];
     const middle = allRolls.filter((c2) => ["c6", "c7", "c8"].includes(c2.id)).sort(sortFunction);
     const primary = allRolls.filter((c2) => ["c1", "c2", "c3", "c4", "c5"].includes(c2.id)).sort(sortFunction);
     const prePrimary = allRolls.filter((c2) => ["bal", "pp1", "pp2"].includes(c2.id)).sort(sortFunction);
     const total = calculateSectionTotals(allRolls);
     return { middleClasses: middle, primaryClasses: primary, prePrimaryClasses: prePrimary, grandTotal: total };
-  }, [settings.classRolls]);
+  }, [displayedClassRolls]);
   const middleTotals = reactExports.useMemo(() => calculateSectionTotals(middleClasses), [middleClasses]);
   const primaryTotals = reactExports.useMemo(() => calculateSectionTotals(primaryClasses), [primaryClasses]);
   const prePrimaryTotals = reactExports.useMemo(() => calculateSectionTotals(prePrimaryClasses), [prePrimaryClasses]);
@@ -32211,50 +32332,146 @@ const SettingsPage = () => {
         )
       ] })
     ] }) }),
-    "                    ",
-    /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionItem, { id: "enrollment", title: "Student Enrollment (Roll Statement)", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-center border-collapse", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("thead", { className: "bg-slate-50 dark:bg-slate-900/50", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Class" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "General" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "ST/SC" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Total" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "On Roll" })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionItem, { id: "enrollment", title: "Student Enrollment (Roll Statement)", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "edit-enrollment", className: "font-medium text-slate-700 dark:text-slate-300", children: "Edit Enrollment" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Enable to update class-wise student enrollment from a specific date." })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", id: "edit-enrollment", className: "sr-only peer", checked: isEnrollmentEditable, onChange: (e3) => handleToggleEnrollmentEditable(e3.target.checked) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-indigo-500/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600" })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: [
-        { title: "Middle (VI-VIII)", classes: middleClasses, totals: middleTotals },
-        { title: "Primary (I-V)", classes: primaryClasses, totals: primaryTotals },
-        { title: "Pre-Primary", classes: prePrimaryClasses, totals: prePrimaryTotals }
-      ].map((section) => section.classes.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(React.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "bg-slate-50 dark:bg-slate-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 8, className: "p-2 font-semibold text-indigo-600 dark:text-indigo-400 text-left pl-3", children: section.title }) }),
-        section.classes.map((cr) => {
-          const totalBoys = cr.general.boys + cr.stsc.boys;
-          const totalGirls = cr.general.girls + cr.stsc.girls;
-          const onRoll = totalBoys + totalGirls;
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-700 dark:text-slate-300", children: cr.name }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.boys, onChange: (e3) => handleClassRollChange(cr.id, "general", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.girls, onChange: (e3) => handleClassRollChange(cr.id, "general", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.boys, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.girls, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300", children: totalBoys }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300", children: totalGirls }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-indigo-600 dark:text-indigo-400", children: onRoll })
-          ] }, cr.id);
-        }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: `${section.title.split(" ")[0]} Total`, totals: section.totals })
-      ] }, section.title)) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "font-semibold bg-slate-100 dark:bg-slate-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: "Grand Total", totals: grandTotal }) })
-    ] }) }) }),
+      isEnrollmentEditable && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3.5 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-end gap-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "enrollment-effective-date", className: "block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1", children: "Effective From Date" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                id: "enrollment-effective-date",
+                type: "date",
+                value: enrollmentEffectiveDate,
+                onChange: (e3) => handleEnrollmentEffectiveDateChange(e3.target.value),
+                className: "w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
+              }
+            )
+          ] }),
+          hasEnrollmentSessionEdits && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                type: "button",
+                variant: "secondary",
+                className: "text-xs px-3 py-2",
+                onClick: handleCommitAndAddAnotherEnrollmentDate,
+                children: "+ Add Another Date"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                type: "button",
+                className: "text-xs px-3 py-2",
+                onClick: () => handleToggleEnrollmentEditable(false),
+                children: "Done"
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-600 dark:text-slate-400", children: "Changes apply to entries and reports on or after this date. Earlier months and sessions retain their previous roll statement." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-center border-collapse", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("thead", { className: "bg-slate-50 dark:bg-slate-900/50", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Class" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "General" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "ST/SC" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Total" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "On Roll" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: [
+          { title: "Middle (VI-VIII)", classes: middleClasses, totals: middleTotals },
+          { title: "Primary (I-V)", classes: primaryClasses, totals: primaryTotals },
+          { title: "Pre-Primary", classes: prePrimaryClasses, totals: prePrimaryTotals }
+        ].map((section) => section.classes.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(React.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "bg-slate-50 dark:bg-slate-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 8, className: "p-2 font-semibold text-indigo-600 dark:text-indigo-400 text-left pl-3", children: section.title }) }),
+          section.classes.map((cr) => {
+            const totalBoys = cr.general.boys + cr.stsc.boys;
+            const totalGirls = cr.general.girls + cr.stsc.girls;
+            const onRoll = totalBoys + totalGirls;
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-700 dark:text-slate-300", children: cr.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.boys, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "general", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.girls, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "general", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.boys, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.girls, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300", children: totalBoys }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300", children: totalGirls }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-indigo-600 dark:text-indigo-400", children: onRoll })
+            ] }, cr.id);
+          }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: `${section.title.split(" ")[0]} Total`, totals: section.totals })
+        ] }, section.title)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "font-semibold bg-slate-100 dark:bg-slate-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: "Grand Total", totals: grandTotal }) })
+      ] }) }),
+      settings.enrollmentHistory && settings.enrollmentHistory.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-300 text-sm", children: "Enrollment Revision History" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: [...settings.enrollmentHistory].sort((a2, b2) => b2.effectiveFrom.localeCompare(a2.effectiveFrom)).map((rev) => {
+          const catTotals = getOnRollTotalsFromClassRolls(rev.classRolls);
+          const totalRoll = catTotals.balvatika + catTotals.primary + catTotals.middle;
+          const isBase = rev.effectiveFrom === "1970-01-01";
+          const dateLabel = isBase ? "Base Enrollment (Prior Records)" : `Effective from ${(/* @__PURE__ */ new Date(rev.effectiveFrom + "T00:00:00")).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}`;
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-200 text-xs", children: dateLabel }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5", children: [
+                "On Roll — Bal: ",
+                catTotals.balvatika,
+                " • Pri: ",
+                catTotals.primary,
+                " • Mid: ",
+                catTotals.middle,
+                " | Total: ",
+                totalRoll
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 shrink-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  type: "button",
+                  variant: "secondary",
+                  className: "px-2.5 py-1 text-xs",
+                  onClick: () => handleEditEnrollmentRevision(rev.effectiveFrom),
+                  children: "Edit"
+                }
+              ),
+              !isBase && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                Button,
+                {
+                  type: "button",
+                  variant: "danger",
+                  className: "px-2.5 py-1 text-xs",
+                  onClick: () => handleDeleteEnrollmentRevision(rev.effectiveFrom),
+                  children: "Remove"
+                }
+              )
+            ] })
+          ] }, rev.effectiveFrom);
+        }) })
+      ] })
+    ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionItem, { id: "finance", title: "Financial, Stock & Rates", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2", children: "Initial Opening Balance" }),
@@ -61688,7 +61905,8 @@ const generateMDCF = (data, selectedMonth, overrideData, options) => {
     styles: { fontSize: 8, cellPadding: 2, textColor: [15, 23, 42] },
     headStyles: { fillColor: colors.headFill, textColor: colors.headText }
   });
-  const onRoll = data.settings.classRolls.reduce((sum, c2) => sum + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls, 0);
+  const monthClassRolls = getClassRollsForDate(data.settings, `${selectedMonth}-31`);
+  const onRoll = monthClassRolls.reduce((sum, c2) => sum + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls, 0);
   doc.setFontSize(8);
   drawCheckbox(doc, 20, 52, "Government", schoolDetails.schoolTypeMDCF === "Government");
   drawCheckbox(doc, 20, 57, "Local Body", schoolDetails.schoolTypeMDCF === "Local Body");
@@ -61832,8 +62050,11 @@ const generateRollStatementPDF = (data, options) => {
     { title: "Primary Section (I-V)", ids: ["c5", "c4", "c3", "c2", "c1"] },
     { title: "Pre-Primary Section", ids: ["bal", "pp1", "pp2"] }
   ];
+  const now2 = /* @__PURE__ */ new Date();
+  const todayKey = `${now2.getFullYear()}-${String(now2.getMonth() + 1).padStart(2, "0")}-${String(now2.getDate()).padStart(2, "0")}`;
+  const activeClassRolls = getClassRollsForDate(settings, todayKey);
   sections.forEach((section) => {
-    const sectionClasses = (settings.classRolls || []).filter((cr) => section.ids.includes(cr.id));
+    const sectionClasses = (activeClassRolls || []).filter((cr) => section.ids.includes(cr.id));
     if (sectionClasses.length > 0) {
       body.push([{ content: section.title, colSpan: 8, styles: { fontStyle: "bold", fillColor: [241, 245, 249], textColor: [15, 23, 42] } }]);
       sectionClasses.forEach((cr) => {
@@ -61888,17 +62109,11 @@ const generateDailyConsumptionPDF = (data, selectedMonth, options) => {
   const monthName = monthDate.toLocaleString("default", { month: "long" });
   const year = monthDate.getFullYear();
   const categories = ["balvatika", "primary", "middle"];
-  const onRollTotals = { balvatika: 0, primary: 0, middle: 0 };
-  settings.classRolls.forEach((c2) => {
-    const classTotal = c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls;
-    if (["bal", "pp1", "pp2"].includes(c2.id)) onRollTotals.balvatika += classTotal;
-    else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) onRollTotals.primary += classTotal;
-    else if (["c6", "c7", "c8"].includes(c2.id)) onRollTotals.middle += classTotal;
-  });
+  const monthEndOnRollTotals = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, `${selectedMonth}-31`));
   let renderedCategoryCount = 0;
   categories.forEach((category) => {
-    const categoryOnRoll = onRollTotals[category];
-    if (categoryOnRoll === 0) return;
+    const hasActivityOrRoll = monthEndOnRollTotals[category] > 0 || monthEntries.some((e3) => e3.present[category] > 0 || getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, e3.date))[category] > 0);
+    if (!hasActivityOrRoll) return;
     if (renderedCategoryCount > 0) {
       doc.addPage();
     }
@@ -61919,6 +62134,7 @@ const generateDailyConsumptionPDF = (data, selectedMonth, options) => {
       const mealServed = present > 0;
       if (mealServed) {
         const entryRates = getRatesForDate(settings, entry.date);
+        const entryOnRoll = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, entry.date))[category];
         const riceUsed = present * entryRates.rice[category] / 1e3;
         const dalVeg = present * entryRates.dalVeg[category];
         const oilCond = present * entryRates.oilCond[category];
@@ -61935,7 +62151,7 @@ const generateDailyConsumptionPDF = (data, selectedMonth, options) => {
         body.push([
           entryIndex + 1,
           (/* @__PURE__ */ new Date(entry.date + "T00:00:00")).toLocaleDateString("en-IN"),
-          categoryOnRoll,
+          entryOnRoll,
           present,
           riceUsed.toFixed(3),
           dalVeg.toFixed(2),
@@ -62036,19 +62252,15 @@ const generateRiceRequirementPDF = (data, selectedMonth, options) => {
   doc.text((schoolDetails.name || "SCHOOL").toUpperCase(), doc.internal.pageSize.getWidth() / 2, 16, { align: "center" });
   doc.setFontSize(9).setFont(void 0, "normal");
   doc.text("OFFICIAL RICE REQUIREMENT CERTIFICATE", doc.internal.pageSize.getWidth() / 2, 21, { align: "center" });
-  const enrollment = settings.classRolls.reduce((sum, c2) => sum + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls, 0);
+  const monthClassRolls = getClassRollsForDate(settings, `${selectedMonth}-31`);
+  const monthOnRollByCategory = getOnRollTotalsFromClassRolls(monthClassRolls);
+  const enrollment = monthOnRollByCategory.balvatika + monthOnRollByCategory.primary + monthOnRollByCategory.middle;
   const monthRates = getRatesForDate(settings, `${selectedMonth}-31`);
-  const riceByCategory = { balvatika: 0, primary: 0, middle: 0 };
-  settings.classRolls.forEach((c2) => {
-    let cat = null;
-    if (["bal", "pp1", "pp2"].includes(c2.id)) cat = "balvatika";
-    else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) cat = "primary";
-    else if (["c6", "c7", "c8"].includes(c2.id)) cat = "middle";
-    if (cat) {
-      const classRoll = c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls;
-      riceByCategory[cat] += classRoll * workingDays * monthRates.rice[cat] / 1e3;
-    }
-  });
+  const riceByCategory = {
+    balvatika: monthOnRollByCategory.balvatika * workingDays * monthRates.rice.balvatika / 1e3,
+    primary: monthOnRollByCategory.primary * workingDays * monthRates.rice.primary / 1e3,
+    middle: monthOnRollByCategory.middle * workingDays * monthRates.rice.middle / 1e3
+  };
   const totalRiceKg = Object.values(riceByCategory).reduce((sum, val) => sum + val, 0);
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(10).setFont(void 0, "normal");
@@ -62058,9 +62270,9 @@ const generateRiceRequirementPDF = (data, selectedMonth, options) => {
     startY: 50,
     head: [["Category", "Enrollment", "Working Days", "Norm (g/student/day)", "Total Requirement (kg)"]],
     body: [
-      ["Balvatika", settings.classRolls.filter((c2) => ["bal", "pp1", "pp2"].includes(c2.id)).reduce((s2, c2) => s2 + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls, 0), workingDays, monthRates.rice.balvatika, riceByCategory.balvatika.toFixed(3)],
-      ["Primary (I-V)", settings.classRolls.filter((c2) => ["c1", "c2", "c3", "c4", "c5"].includes(c2.id)).reduce((s2, c2) => s2 + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls, 0), workingDays, monthRates.rice.primary, riceByCategory.primary.toFixed(3)],
-      ["Upper Primary (VI-VIII)", settings.classRolls.filter((c2) => ["c6", "c7", "c8"].includes(c2.id)).reduce((s2, c2) => s2 + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls, 0), workingDays, monthRates.rice.middle, riceByCategory.middle.toFixed(3)]
+      ["Balvatika", monthOnRollByCategory.balvatika, workingDays, monthRates.rice.balvatika, riceByCategory.balvatika.toFixed(3)],
+      ["Primary (I-V)", monthOnRollByCategory.primary, workingDays, monthRates.rice.primary, riceByCategory.primary.toFixed(3)],
+      ["Upper Primary (VI-VIII)", monthOnRollByCategory.middle, workingDays, monthRates.rice.middle, riceByCategory.middle.toFixed(3)]
     ],
     foot: [["Total", enrollment, "", "", totalRiceKg.toFixed(3)]],
     theme: "grid",
@@ -62078,15 +62290,9 @@ const generateYearlyConsumptionDetailedPDF = (data, financialYear, options) => {
   const { settings } = data;
   const { schoolDetails } = settings;
   const categories = ["balvatika", "primary", "middle"];
-  const onRollTotals = { balvatika: 0, primary: 0, middle: 0 };
-  settings.classRolls.forEach((c2) => {
-    const classTotal = c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls;
-    if (["bal", "pp1", "pp2"].includes(c2.id)) onRollTotals.balvatika += classTotal;
-    else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) onRollTotals.primary += classTotal;
-    else if (["c6", "c7", "c8"].includes(c2.id)) onRollTotals.middle += classTotal;
-  });
-  const totalOnRoll = onRollTotals.balvatika + onRollTotals.primary + onRollTotals.middle;
   const [startYear, endYear] = financialYear.split("-").map(Number);
+  const fyEndOnRollTotals = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, `${endYear}-03-31`));
+  const totalOnRoll = fyEndOnRollTotals.balvatika + fyEndOnRollTotals.primary + fyEndOnRollTotals.middle;
   doc.setFillColor(colors.headFill[0], colors.headFill[1], colors.headFill[2]);
   doc.rect(14, 10, doc.internal.pageSize.getWidth() - 28, 14, "F");
   doc.setTextColor(255, 255, 255);
@@ -62133,6 +62339,7 @@ const generateYearlyConsumptionDetailedPDF = (data, financialYear, options) => {
     const monthDate = new Date(year, monthIndex, 1);
     const monthName = monthDate.toLocaleString("default", { month: "long" });
     const summary = calculateMonthlySummary(data, monthKey);
+    const monthOnRollTotals = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, `${monthKey}-31`));
     const monthTotals = {
       onRoll: 0,
       mealsServed: 0,
@@ -62146,7 +62353,7 @@ const generateYearlyConsumptionDetailedPDF = (data, financialYear, options) => {
       cashClosing: 0
     };
     categories.forEach((cat, catIndex) => {
-      const onRoll = onRollTotals[cat];
+      const onRoll = monthOnRollTotals[cat];
       const mealsServed = summary.categoryTotals.present[cat];
       const rice = summary.riceAbstracts[cat];
       const cash = summary.cashAbstracts[cat];
@@ -62329,21 +62536,26 @@ const Reports = () => {
           "Total Expenditure": `Rs. ${totals.expenditure.toFixed(2)}`
         };
         break;
-      case "roll_statement":
-        const totalEnrollment = data.settings.classRolls.reduce(
+      case "roll_statement": {
+        const now2 = /* @__PURE__ */ new Date();
+        const todayKey = `${now2.getFullYear()}-${String(now2.getMonth() + 1).padStart(2, "0")}-${String(now2.getDate()).padStart(2, "0")}`;
+        const activeClassRolls = getClassRollsForDate(data.settings, todayKey);
+        const totalEnrollment = activeClassRolls.reduce(
           (sum, c2) => sum + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls,
           0
         );
         newSummary = { Report: "Roll Statement", "Total Enrollment": totalEnrollment };
         break;
-      case "rice_requirement":
+      }
+      case "rice_requirement": {
         const workingDays = summary.workingDays !== void 0 ? summary.workingDays : monthEntries.filter(isSchoolWorkingDay).length;
-        const enrollment = data.settings.classRolls.reduce(
+        const monthClassRolls = getClassRollsForDate(data.settings, `${selectedMonth}-31`);
+        const enrollment = monthClassRolls.reduce(
           (sum, c2) => sum + c2.general.boys + c2.general.girls + c2.stsc.boys + c2.stsc.girls,
           0
         );
         const monthRates = getRatesForDate(data.settings, `${selectedMonth}-31`);
-        const totalRiceKg = data.settings.classRolls.reduce((total, c2) => {
+        const totalRiceKg = monthClassRolls.reduce((total, c2) => {
           let cat = null;
           if (["bal", "pp1", "pp2"].includes(c2.id)) cat = "balvatika";
           else if (["c1", "c2", "c3", "c4", "c5"].includes(c2.id)) cat = "primary";
@@ -62362,6 +62574,7 @@ const Reports = () => {
           "Total Rice Required": `${totalRiceKg.toFixed(3)} kg`
         };
         break;
+      }
       case "yearly_consumption_detailed":
         newSummary = {
           Report: "Detailed Yearly Consumption Report",

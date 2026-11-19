@@ -1,5 +1,5 @@
 import { AppData, Category, ClassRoll, Settings } from '../types';
-import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate } from './summaryCalculator';
+import { calculateMonthlySummary, isSchoolWorkingDay, getRatesForDate, getClassRollsForDate, getOnRollTotalsFromClassRolls } from './summaryCalculator';
 
 interface jsPDF {
     autoTable: (options: any) => jsPDF;
@@ -214,7 +214,8 @@ const generateMDCF = (
         headStyles: { fillColor: colors.headFill, textColor: colors.headText },
     });
 
-    const onRoll = data.settings.classRolls.reduce((sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0);
+    const monthClassRolls = getClassRollsForDate(data.settings, `${selectedMonth}-31`);
+    const onRoll = monthClassRolls.reduce((sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0);
 
     doc.setFontSize(8);
     drawCheckbox(doc, 20, 52, 'Government', schoolDetails.schoolTypeMDCF === 'Government');
@@ -387,8 +388,12 @@ const generateRollStatementPDF = (data: AppData, options?: PdfExportOptions): Bl
         { title: 'Pre-Primary Section', ids: ['bal', 'pp1', 'pp2'] },
     ];
 
+    const now = new Date();
+    const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const activeClassRolls = getClassRollsForDate(settings, todayKey);
+
     sections.forEach(section => {
-        const sectionClasses = (settings.classRolls || []).filter(cr => section.ids.includes(cr.id));
+        const sectionClasses = (activeClassRolls || []).filter(cr => section.ids.includes(cr.id));
         if (sectionClasses.length > 0) {
             body.push([{ content: section.title, colSpan: 8, styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: [15, 23, 42] } } as any]);
 
@@ -453,19 +458,15 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
     const year = monthDate.getFullYear();
     const categories: Category[] = ['balvatika', 'primary', 'middle'];
 
-    const onRollTotals: Record<Category, number> = { balvatika: 0, primary: 0, middle: 0 };
-    settings.classRolls.forEach(c => {
-        const classTotal = c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls;
-        if (['bal', 'pp1', 'pp2'].includes(c.id)) onRollTotals.balvatika += classTotal;
-        else if (['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)) onRollTotals.primary += classTotal;
-        else if (['c6', 'c7', 'c8'].includes(c.id)) onRollTotals.middle += classTotal;
-    });
+    const monthEndOnRollTotals = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, `${selectedMonth}-31`));
 
     let renderedCategoryCount = 0;
 
     categories.forEach((category) => {
-        const categoryOnRoll = onRollTotals[category];
-        if (categoryOnRoll === 0) return;
+        const hasActivityOrRoll =
+            monthEndOnRollTotals[category] > 0 ||
+            monthEntries.some(e => e.present[category] > 0 || getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, e.date))[category] > 0);
+        if (!hasActivityOrRoll) return;
 
         if (renderedCategoryCount > 0) {
             doc.addPage();
@@ -494,6 +495,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
 
             if (mealServed) {
                 const entryRates = getRatesForDate(settings, entry.date);
+                const entryOnRoll = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, entry.date))[category];
                 const riceUsed = (present * entryRates.rice[category]) / 1000;
                 const dalVeg = present * entryRates.dalVeg[category];
                 const oilCond = present * entryRates.oilCond[category];
@@ -512,7 +514,7 @@ const generateDailyConsumptionPDF = (data: AppData, selectedMonth: string, optio
                 body.push([
                     entryIndex + 1,
                     new Date(entry.date + 'T00:00:00').toLocaleDateString('en-IN'),
-                    categoryOnRoll,
+                    entryOnRoll,
                     present,
                     riceUsed.toFixed(3),
                     dalVeg.toFixed(2),
@@ -631,20 +633,16 @@ const generateRiceRequirementPDF = (data: AppData, selectedMonth: string, option
     doc.setFontSize(9).setFont(undefined, 'normal');
     doc.text('OFFICIAL RICE REQUIREMENT CERTIFICATE', doc.internal.pageSize.getWidth() / 2, 21, { align: 'center' });
 
-    const enrollment = settings.classRolls.reduce((sum, c) => sum + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0);
+    const monthClassRolls = getClassRollsForDate(settings, `${selectedMonth}-31`);
+    const monthOnRollByCategory = getOnRollTotalsFromClassRolls(monthClassRolls);
+    const enrollment = monthOnRollByCategory.balvatika + monthOnRollByCategory.primary + monthOnRollByCategory.middle;
     const monthRates = getRatesForDate(settings, `${selectedMonth}-31`);
 
-    const riceByCategory = { balvatika: 0, primary: 0, middle: 0 };
-    settings.classRolls.forEach(c => {
-        let cat: Category | null = null;
-        if (['bal', 'pp1', 'pp2'].includes(c.id)) cat = 'balvatika';
-        else if (['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)) cat = 'primary';
-        else if (['c6', 'c7', 'c8'].includes(c.id)) cat = 'middle';
-        if (cat) {
-            const classRoll = c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls;
-            riceByCategory[cat] += (classRoll * workingDays * monthRates.rice[cat]) / 1000;
-        }
-    });
+    const riceByCategory = {
+        balvatika: (monthOnRollByCategory.balvatika * workingDays * monthRates.rice.balvatika) / 1000,
+        primary: (monthOnRollByCategory.primary * workingDays * monthRates.rice.primary) / 1000,
+        middle: (monthOnRollByCategory.middle * workingDays * monthRates.rice.middle) / 1000,
+    };
     const totalRiceKg = Object.values(riceByCategory).reduce((sum, val) => sum + val, 0);
 
     doc.setTextColor(30, 41, 59);
@@ -656,9 +654,9 @@ const generateRiceRequirementPDF = (data: AppData, selectedMonth: string, option
         startY: 50,
         head: [['Category', 'Enrollment', 'Working Days', 'Norm (g/student/day)', 'Total Requirement (kg)']],
         body: [
-            ['Balvatika', settings.classRolls.filter(c => ['bal', 'pp1', 'pp2'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, monthRates.rice.balvatika, riceByCategory.balvatika.toFixed(3)],
-            ['Primary (I-V)', settings.classRolls.filter(c => ['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, monthRates.rice.primary, riceByCategory.primary.toFixed(3)],
-            ['Upper Primary (VI-VIII)', settings.classRolls.filter(c => ['c6', 'c7', 'c8'].includes(c.id)).reduce((s, c) => s + c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls, 0), workingDays, monthRates.rice.middle, riceByCategory.middle.toFixed(3)],
+            ['Balvatika', monthOnRollByCategory.balvatika, workingDays, monthRates.rice.balvatika, riceByCategory.balvatika.toFixed(3)],
+            ['Primary (I-V)', monthOnRollByCategory.primary, workingDays, monthRates.rice.primary, riceByCategory.primary.toFixed(3)],
+            ['Upper Primary (VI-VIII)', monthOnRollByCategory.middle, workingDays, monthRates.rice.middle, riceByCategory.middle.toFixed(3)],
         ],
         foot: [['Total', enrollment, '', '', totalRiceKg.toFixed(3)]],
         theme: 'grid',
@@ -680,16 +678,9 @@ const generateYearlyConsumptionDetailedPDF = (data: AppData, financialYear: stri
     const { schoolDetails } = settings;
     const categories: Category[] = ['balvatika', 'primary', 'middle'];
 
-    const onRollTotals: Record<Category, number> = { balvatika: 0, primary: 0, middle: 0 };
-    settings.classRolls.forEach(c => {
-        const classTotal = c.general.boys + c.general.girls + c.stsc.boys + c.stsc.girls;
-        if (['bal', 'pp1', 'pp2'].includes(c.id)) onRollTotals.balvatika += classTotal;
-        else if (['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id)) onRollTotals.primary += classTotal;
-        else if (['c6', 'c7', 'c8'].includes(c.id)) onRollTotals.middle += classTotal;
-    });
-    const totalOnRoll = onRollTotals.balvatika + onRollTotals.primary + onRollTotals.middle;
-
     const [startYear, endYear] = financialYear.split('-').map(Number);
+    const fyEndOnRollTotals = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, `${endYear}-03-31`));
+    const totalOnRoll = fyEndOnRollTotals.balvatika + fyEndOnRollTotals.primary + fyEndOnRollTotals.middle;
 
     doc.setFillColor(colors.headFill[0], colors.headFill[1], colors.headFill[2]);
     doc.rect(14, 10, doc.internal.pageSize.getWidth() - 28, 14, 'F');
@@ -737,6 +728,7 @@ const generateYearlyConsumptionDetailedPDF = (data: AppData, financialYear: stri
         const monthName = monthDate.toLocaleString('default', { month: 'long' });
 
         const summary = calculateMonthlySummary(data, monthKey);
+        const monthOnRollTotals = getOnRollTotalsFromClassRolls(getClassRollsForDate(settings, `${monthKey}-31`));
 
         const monthTotals = {
             onRoll: 0, mealsServed: 0,
@@ -745,7 +737,7 @@ const generateYearlyConsumptionDetailedPDF = (data: AppData, financialYear: stri
         };
 
         categories.forEach((cat, catIndex) => {
-            const onRoll = onRollTotals[cat];
+            const onRoll = monthOnRollTotals[cat];
             const mealsServed = summary.categoryTotals.present[cat];
             const rice = summary.riceAbstracts[cat];
             const cash = summary.cashAbstracts[cat];

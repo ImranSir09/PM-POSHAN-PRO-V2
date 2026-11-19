@@ -66,6 +66,9 @@ const getInitialData = (): AppData => {
                 if (dataToProcess.settings.rateHistory !== undefined && !Array.isArray(dataToProcess.settings.rateHistory)) {
                     delete dataToProcess.settings.rateHistory;
                 }
+                if (dataToProcess.settings.enrollmentHistory !== undefined && !Array.isArray(dataToProcess.settings.enrollmentHistory)) {
+                    delete dataToProcess.settings.enrollmentHistory;
+                }
             } else {
                 dataToProcess.settings = DEFAULT_SETTINGS;
             }
