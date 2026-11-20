@@ -25,7 +25,7 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif'],
             },
           },
         },
@@ -33,10 +33,15 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
       body {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
       }
       .animated-blob {
           position: absolute;
@@ -72,15 +77,34 @@
       @keyframes page-enter {
           from {
               opacity: 0;
-              transform: translateY(20px);
+              transform: translateY(8px);
           }
           to {
               opacity: 1;
               transform: translateY(0);
           }
       }
+      @keyframes modal-enter {
+          from {
+              opacity: 0;
+              transform: scale(0.97) translateY(6px);
+          }
+          to {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+          }
+      }
       .page-transition-wrapper {
-          animation: page-enter 0.5s ease-out forwards;
+          animation: page-enter 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .modal-enter {
+          animation: modal-enter 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @media (prefers-reduced-motion: reduce) {
+          .page-transition-wrapper,
+          .modal-enter {
+              animation: none;
+          }
       }
 
       /* Print-specific styles for the PDF Preview Modal */

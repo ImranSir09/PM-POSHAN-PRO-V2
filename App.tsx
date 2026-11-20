@@ -129,21 +129,12 @@ const AuthenticatedApp: React.FC = () => {
                 updateInfo={updateInfo} 
             />
 
-            <div className="min-h-screen text-slate-800 dark:text-slate-200 font-sans">
-                {/* Clean Background Layer */}
-                <div className="fixed inset-0 z-0 bg-slate-50 dark:bg-slate-950">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-slate-50 to-slate-50 dark:from-indigo-900/20 dark:via-slate-950 dark:to-slate-950"></div>
-                </div>
-                
-                {/* Fixed Header Layer */}
-                <div className="fixed top-0 left-0 right-0 z-20">
-                    <div className="container mx-auto max-w-2xl p-2 sm:p-4">
-                        <Header />
-                    </div>
-                </div>
+            <div className="min-h-screen text-slate-800 dark:text-slate-200 font-sans bg-slate-50 dark:bg-slate-950">
+                {/* Fixed Slim Top Header */}
+                <Header />
 
                 {/* Content Layer */}
-                <div className="container mx-auto p-2 pb-28 max-w-2xl relative z-10 pt-28">
+                <div className="container mx-auto px-3 sm:px-5 pb-24 max-w-3xl relative z-10 pt-[70px]">
                     <main>
                         <div key={currentPage} className="page-transition-wrapper">
                             {renderPage()}

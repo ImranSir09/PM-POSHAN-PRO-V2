@@ -8689,13 +8689,13 @@ function shallowEqual(a2, b2) {
   }
   return true;
 }
-function _typeof$F(o) {
+function _typeof$G(o) {
   "@babel/helpers - typeof";
-  return _typeof$F = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$G = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$F(o);
+  }, _typeof$G(o);
 }
 var SVGContainerPropKeys = ["viewBox", "children"];
 var SVGElementPropKeys = [
@@ -9043,7 +9043,7 @@ var getEventHandlerOfChild = function getEventHandlerOfChild2(originalHandler, d
   };
 };
 var adaptEventsOfChild = function adaptEventsOfChild2(props, data, index) {
-  if (!isObject$a(props) || _typeof$F(props) !== "object") {
+  if (!isObject$a(props) || _typeof$G(props) !== "object") {
     return null;
   }
   var out = null;
@@ -9056,10 +9056,10 @@ var adaptEventsOfChild = function adaptEventsOfChild2(props, data, index) {
   });
   return out;
 };
-var _excluded$f = ["children"], _excluded2$4 = ["children"];
-function _objectWithoutProperties$f(source, excluded) {
+var _excluded$g = ["children"], _excluded2$5 = ["children"];
+function _objectWithoutProperties$g(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$f(source, excluded);
+  var target = _objectWithoutPropertiesLoose$g(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -9072,7 +9072,7 @@ function _objectWithoutProperties$f(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$f(source, excluded) {
+function _objectWithoutPropertiesLoose$g(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -9220,8 +9220,8 @@ var isSingleChildEqual = function isSingleChildEqual2(nextChild, prevChild) {
     return true;
   }
   if (!isNil$1(nextChild) && !isNil$1(prevChild)) {
-    var _ref = nextChild.props || {}, nextChildren = _ref.children, nextProps = _objectWithoutProperties$f(_ref, _excluded$f);
-    var _ref2 = prevChild.props || {}, prevChildren = _ref2.children, prevProps = _objectWithoutProperties$f(_ref2, _excluded2$4);
+    var _ref = nextChild.props || {}, nextChildren = _ref.children, nextProps = _objectWithoutProperties$g(_ref, _excluded$g);
+    var _ref2 = prevChild.props || {}, prevChildren = _ref2.children, prevProps = _objectWithoutProperties$g(_ref2, _excluded2$5);
     if (nextChildren && prevChildren) {
       return shallowEqual(nextProps, prevProps) && isChildrenEqual(nextChildren, prevChildren);
     }
@@ -9260,7 +9260,65 @@ var getReactEventByType = function getReactEventByType2(e3) {
 var parseChildIndex = function parseChildIndex2(child, children) {
   return toArray(children).indexOf(child);
 };
-var _excluded$e = ["children", "width", "height", "viewBox", "className", "style", "title", "desc"];
+var _excluded$f = ["children", "width", "height", "viewBox", "className", "style", "title", "desc"];
+function _extends$p() {
+  _extends$p = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends$p.apply(this, arguments);
+}
+function _objectWithoutProperties$f(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$f(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose$f(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function Surface(props) {
+  var children = props.children, width = props.width, height = props.height, viewBox = props.viewBox, className = props.className, style = props.style, title = props.title, desc = props.desc, others = _objectWithoutProperties$f(props, _excluded$f);
+  var svgView = viewBox || {
+    width,
+    height,
+    x: 0,
+    y: 0
+  };
+  var layerClass = clsx("recharts-surface", className);
+  return /* @__PURE__ */ React.createElement("svg", _extends$p({}, filterProps$1(others, true, "svg"), {
+    className: layerClass,
+    width,
+    height,
+    style,
+    viewBox: "".concat(svgView.x, " ").concat(svgView.y, " ").concat(svgView.width, " ").concat(svgView.height)
+  }), /* @__PURE__ */ React.createElement("title", null, title), /* @__PURE__ */ React.createElement("desc", null, desc), children);
+}
+var _excluded$e = ["children", "className"];
 function _extends$o() {
   _extends$o = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -9301,68 +9359,10 @@ function _objectWithoutPropertiesLoose$e(source, excluded) {
   }
   return target;
 }
-function Surface(props) {
-  var children = props.children, width = props.width, height = props.height, viewBox = props.viewBox, className = props.className, style = props.style, title = props.title, desc = props.desc, others = _objectWithoutProperties$e(props, _excluded$e);
-  var svgView = viewBox || {
-    width,
-    height,
-    x: 0,
-    y: 0
-  };
-  var layerClass = clsx("recharts-surface", className);
-  return /* @__PURE__ */ React.createElement("svg", _extends$o({}, filterProps$1(others, true, "svg"), {
-    className: layerClass,
-    width,
-    height,
-    style,
-    viewBox: "".concat(svgView.x, " ").concat(svgView.y, " ").concat(svgView.width, " ").concat(svgView.height)
-  }), /* @__PURE__ */ React.createElement("title", null, title), /* @__PURE__ */ React.createElement("desc", null, desc), children);
-}
-var _excluded$d = ["children", "className"];
-function _extends$n() {
-  _extends$n = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends$n.apply(this, arguments);
-}
-function _objectWithoutProperties$d(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$d(source, excluded);
-  var key, i;
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _objectWithoutPropertiesLoose$d(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  for (var key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
 var Layer = /* @__PURE__ */ React.forwardRef(function(props, ref) {
-  var children = props.children, className = props.className, others = _objectWithoutProperties$d(props, _excluded$d);
+  var children = props.children, className = props.className, others = _objectWithoutProperties$e(props, _excluded$e);
   var layerClass = clsx("recharts-layer", className);
-  return /* @__PURE__ */ React.createElement("g", _extends$n({
+  return /* @__PURE__ */ React.createElement("g", _extends$o({
     className: layerClass
   }, filterProps$1(others, true), {
     ref
@@ -10327,17 +10327,17 @@ function stackOffsetWiggle(series, order) {
   s0[j - 1][1] += s0[j - 1][0] = y2;
   stackOffsetNone(series, order);
 }
-function _typeof$E(o) {
+function _typeof$F(o) {
   "@babel/helpers - typeof";
-  return _typeof$E = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$F = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$E(o);
+  }, _typeof$F(o);
 }
-var _excluded$c = ["type", "size", "sizeType"];
-function _extends$m() {
-  _extends$m = Object.assign ? Object.assign.bind() : function(target) {
+var _excluded$d = ["type", "size", "sizeType"];
+function _extends$n() {
+  _extends$n = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -10348,9 +10348,9 @@ function _extends$m() {
     }
     return target;
   };
-  return _extends$m.apply(this, arguments);
+  return _extends$n.apply(this, arguments);
 }
-function ownKeys$x(e3, r2) {
+function ownKeys$y(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -10360,19 +10360,19 @@ function ownKeys$x(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$x(e3) {
+function _objectSpread$y(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$x(Object(t2), true).forEach(function(r3) {
-      _defineProperty$D(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$x(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$y(Object(t2), true).forEach(function(r3) {
+      _defineProperty$E(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$y(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$D(obj, key, value) {
-  key = _toPropertyKey$D(key);
+function _defineProperty$E(obj, key, value) {
+  key = _toPropertyKey$E(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -10380,23 +10380,23 @@ function _defineProperty$D(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$D(t2) {
-  var i = _toPrimitive$D(t2, "string");
-  return "symbol" == _typeof$E(i) ? i : i + "";
+function _toPropertyKey$E(t2) {
+  var i = _toPrimitive$E(t2, "string");
+  return "symbol" == _typeof$F(i) ? i : i + "";
 }
-function _toPrimitive$D(t2, r2) {
-  if ("object" != _typeof$E(t2) || !t2) return t2;
+function _toPrimitive$E(t2, r2) {
+  if ("object" != _typeof$F(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$E(i)) return i;
+    if ("object" != _typeof$F(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-function _objectWithoutProperties$c(source, excluded) {
+function _objectWithoutProperties$d(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$c(source, excluded);
+  var target = _objectWithoutPropertiesLoose$d(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -10409,7 +10409,7 @@ function _objectWithoutProperties$c(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$c(source, excluded) {
+function _objectWithoutPropertiesLoose$d(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -10461,8 +10461,8 @@ var registerSymbol = function registerSymbol2(key, factory) {
   symbolFactories["symbol".concat(upperFirst$1(key))] = factory;
 };
 var Symbols = function Symbols2(_ref) {
-  var _ref$type = _ref.type, type = _ref$type === void 0 ? "circle" : _ref$type, _ref$size = _ref.size, size = _ref$size === void 0 ? 64 : _ref$size, _ref$sizeType = _ref.sizeType, sizeType = _ref$sizeType === void 0 ? "area" : _ref$sizeType, rest = _objectWithoutProperties$c(_ref, _excluded$c);
-  var props = _objectSpread$x(_objectSpread$x({}, rest), {}, {
+  var _ref$type = _ref.type, type = _ref$type === void 0 ? "circle" : _ref$type, _ref$size = _ref.size, size = _ref$size === void 0 ? 64 : _ref$size, _ref$sizeType = _ref.sizeType, sizeType = _ref$sizeType === void 0 ? "area" : _ref$sizeType, rest = _objectWithoutProperties$d(_ref, _excluded$d);
+  var props = _objectSpread$y(_objectSpread$y({}, rest), {}, {
     type,
     size,
     sizeType
@@ -10475,7 +10475,7 @@ var Symbols = function Symbols2(_ref) {
   var className = props.className, cx = props.cx, cy = props.cy;
   var filteredProps = filterProps$1(props, true);
   if (cx === +cx && cy === +cy && size === +size) {
-    return /* @__PURE__ */ React.createElement("path", _extends$m({}, filteredProps, {
+    return /* @__PURE__ */ React.createElement("path", _extends$n({}, filteredProps, {
       className: clsx("recharts-symbols", className),
       transform: "translate(".concat(cx, ", ").concat(cy, ")"),
       d: getPath4()
@@ -10484,16 +10484,16 @@ var Symbols = function Symbols2(_ref) {
   return null;
 };
 Symbols.registerSymbol = registerSymbol;
-function _typeof$D(o) {
+function _typeof$E(o) {
   "@babel/helpers - typeof";
-  return _typeof$D = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$E = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$D(o);
+  }, _typeof$E(o);
 }
-function _extends$l() {
-  _extends$l = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$m() {
+  _extends$m = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -10504,9 +10504,9 @@ function _extends$l() {
     }
     return target;
   };
-  return _extends$l.apply(this, arguments);
+  return _extends$m.apply(this, arguments);
 }
-function ownKeys$w(e3, r2) {
+function ownKeys$x(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -10516,12 +10516,12 @@ function ownKeys$w(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$w(e3) {
+function _objectSpread$x(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$w(Object(t2), true).forEach(function(r3) {
-      _defineProperty$C(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$w(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$x(Object(t2), true).forEach(function(r3) {
+      _defineProperty$D(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$x(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -10538,7 +10538,7 @@ function _defineProperties$h(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$C(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$D(descriptor.key), descriptor);
   }
 }
 function _createClass$h(Constructor, protoProps, staticProps) {
@@ -10550,7 +10550,7 @@ function _callSuper$d(t2, o, e3) {
   return o = _getPrototypeOf$e(o), _possibleConstructorReturn$e(t2, _isNativeReflectConstruct$e() ? Reflect.construct(o, e3 || [], _getPrototypeOf$e(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$e(self2, call) {
-  if (call && (_typeof$D(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$E(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -10594,8 +10594,8 @@ function _setPrototypeOf$e(o, p2) {
   };
   return _setPrototypeOf$e(o, p2);
 }
-function _defineProperty$C(obj, key, value) {
-  key = _toPropertyKey$C(key);
+function _defineProperty$D(obj, key, value) {
+  key = _toPropertyKey$D(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -10603,16 +10603,16 @@ function _defineProperty$C(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$C(t2) {
-  var i = _toPrimitive$C(t2, "string");
-  return "symbol" == _typeof$D(i) ? i : i + "";
+function _toPropertyKey$D(t2) {
+  var i = _toPrimitive$D(t2, "string");
+  return "symbol" == _typeof$E(i) ? i : i + "";
 }
-function _toPrimitive$C(t2, r2) {
-  if ("object" != _typeof$D(t2) || !t2) return t2;
+function _toPrimitive$D(t2, r2) {
+  if ("object" != _typeof$E(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$D(i)) return i;
+    if ("object" != _typeof$E(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -10669,7 +10669,7 @@ var DefaultLegendContent = /* @__PURE__ */ function(_PureComponent) {
           });
         }
         if (/* @__PURE__ */ React.isValidElement(data.legendIcon)) {
-          var iconProps = _objectSpread$w({}, data);
+          var iconProps = _objectSpread$x({}, data);
           delete iconProps.legendIcon;
           return /* @__PURE__ */ React.cloneElement(data.legendIcon, iconProps);
         }
@@ -10709,7 +10709,7 @@ var DefaultLegendContent = /* @__PURE__ */ function(_PureComponent) {
       };
       return payload.map(function(entry, i) {
         var finalFormatter = entry.formatter || formatter;
-        var className = clsx(_defineProperty$C(_defineProperty$C({
+        var className = clsx(_defineProperty$D(_defineProperty$D({
           "recharts-legend-item": true
         }, "legend-item-".concat(i), true), "inactive", entry.inactive));
         if (entry.type === "none") {
@@ -10722,7 +10722,7 @@ var DefaultLegendContent = /* @__PURE__ */ function(_PureComponent) {
           // eslint-disable-line max-len
         );
         var color2 = entry.inactive ? inactiveColor : entry.color;
-        return /* @__PURE__ */ React.createElement("li", _extends$l({
+        return /* @__PURE__ */ React.createElement("li", _extends$m({
           className,
           style: itemStyle,
           key: "legend-item-".concat(i)
@@ -10758,8 +10758,8 @@ var DefaultLegendContent = /* @__PURE__ */ function(_PureComponent) {
     }
   }]);
 }(reactExports.PureComponent);
-_defineProperty$C(DefaultLegendContent, "displayName", "Legend");
-_defineProperty$C(DefaultLegendContent, "defaultProps", {
+_defineProperty$D(DefaultLegendContent, "displayName", "Legend");
+_defineProperty$D(DefaultLegendContent, "defaultProps", {
   iconSize: 14,
   layout: "horizontal",
   align: "center",
@@ -11154,18 +11154,18 @@ function baseKeys$1(object2) {
 }
 var _baseKeys = baseKeys$1;
 var isFunction = isFunction_1, isLength$1 = isLength_1;
-function isArrayLike$4(value) {
+function isArrayLike$5(value) {
   return value != null && isLength$1(value.length) && !isFunction(value);
 }
-var isArrayLike_1 = isArrayLike$4;
-var arrayLikeKeys = _arrayLikeKeys, baseKeys = _baseKeys, isArrayLike$3 = isArrayLike_1;
-function keys$4(object2) {
-  return isArrayLike$3(object2) ? arrayLikeKeys(object2) : baseKeys(object2);
+var isArrayLike_1 = isArrayLike$5;
+var arrayLikeKeys = _arrayLikeKeys, baseKeys = _baseKeys, isArrayLike$4 = isArrayLike_1;
+function keys$5(object2) {
+  return isArrayLike$4(object2) ? arrayLikeKeys(object2) : baseKeys(object2);
 }
-var keys_1 = keys$4;
-var baseGetAllKeys = _baseGetAllKeys, getSymbols = _getSymbols, keys$3 = keys_1;
+var keys_1 = keys$5;
+var baseGetAllKeys = _baseGetAllKeys, getSymbols = _getSymbols, keys$4 = keys_1;
 function getAllKeys$1(object2) {
-  return baseGetAllKeys(object2, keys$3, getSymbols);
+  return baseGetAllKeys(object2, keys$4, getSymbols);
 }
 var _getAllKeys = getAllKeys$1;
 var getAllKeys = _getAllKeys;
@@ -11340,9 +11340,9 @@ function isStrictComparable$2(value) {
   return value === value && !isObject$6(value);
 }
 var _isStrictComparable = isStrictComparable$2;
-var isStrictComparable$1 = _isStrictComparable, keys$2 = keys_1;
+var isStrictComparable$1 = _isStrictComparable, keys$3 = keys_1;
 function getMatchData$1(object2) {
-  var result = keys$2(object2), length = result.length;
+  var result = keys$3(object2), length = result.length;
   while (length--) {
     var key = result[length], value = object2[key];
     result[length] = [key, value, isStrictComparable$1(value)];
@@ -11432,7 +11432,7 @@ function property$1(path) {
 }
 var property_1 = property$1;
 var baseMatches = _baseMatches, baseMatchesProperty = _baseMatchesProperty, identity$a = identity_1, isArray$5 = isArray_1, property = property_1;
-function baseIteratee$6(value) {
+function baseIteratee$8(value) {
   if (typeof value == "function") {
     return value;
   }
@@ -11444,8 +11444,8 @@ function baseIteratee$6(value) {
   }
   return property(value);
 }
-var _baseIteratee = baseIteratee$6;
-function baseFindIndex$1(array2, predicate, fromIndex, fromRight) {
+var _baseIteratee = baseIteratee$8;
+function baseFindIndex$2(array2, predicate, fromIndex, fromRight) {
   var length = array2.length, index = fromIndex + (fromRight ? 1 : -1);
   while (fromRight ? index-- : ++index < length) {
     if (predicate(array2[index], index, array2)) {
@@ -11454,7 +11454,7 @@ function baseFindIndex$1(array2, predicate, fromIndex, fromRight) {
   }
   return -1;
 }
-var _baseFindIndex = baseFindIndex$1;
+var _baseFindIndex = baseFindIndex$2;
 function baseIsNaN$1(value) {
   return value !== value;
 }
@@ -11469,9 +11469,9 @@ function strictIndexOf$1(array2, value, fromIndex) {
   return -1;
 }
 var _strictIndexOf = strictIndexOf$1;
-var baseFindIndex = _baseFindIndex, baseIsNaN = _baseIsNaN, strictIndexOf = _strictIndexOf;
+var baseFindIndex$1 = _baseFindIndex, baseIsNaN = _baseIsNaN, strictIndexOf = _strictIndexOf;
 function baseIndexOf$1(array2, value, fromIndex) {
-  return value === value ? strictIndexOf(array2, value, fromIndex) : baseFindIndex(array2, baseIsNaN, fromIndex);
+  return value === value ? strictIndexOf(array2, value, fromIndex) : baseFindIndex$1(array2, baseIsNaN, fromIndex);
 }
 var _baseIndexOf = baseIndexOf$1;
 var baseIndexOf = _baseIndexOf;
@@ -11542,9 +11542,9 @@ function baseUniq$1(array2, iteratee, comparator) {
   return result;
 }
 var _baseUniq = baseUniq$1;
-var baseIteratee$5 = _baseIteratee, baseUniq = _baseUniq;
+var baseIteratee$7 = _baseIteratee, baseUniq = _baseUniq;
 function uniqBy(array2, iteratee) {
-  return array2 && array2.length ? baseUniq(array2, baseIteratee$5(iteratee)) : [];
+  return array2 && array2.length ? baseUniq(array2, baseIteratee$7(iteratee)) : [];
 }
 var uniqBy_1 = uniqBy;
 const uniqBy$1 = /* @__PURE__ */ getDefaultExportFromCjs(uniqBy_1);
@@ -11557,16 +11557,16 @@ function getUniqPayload(payload, option, defaultUniqBy2) {
   }
   return payload;
 }
-function _typeof$C(o) {
+function _typeof$D(o) {
   "@babel/helpers - typeof";
-  return _typeof$C = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$D = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$C(o);
+  }, _typeof$D(o);
 }
-var _excluded$b = ["ref"];
-function ownKeys$v(e3, r2) {
+var _excluded$c = ["ref"];
+function ownKeys$w(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -11576,12 +11576,12 @@ function ownKeys$v(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$v(e3) {
+function _objectSpread$w(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$v(Object(t2), true).forEach(function(r3) {
-      _defineProperty$B(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$v(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$w(Object(t2), true).forEach(function(r3) {
+      _defineProperty$C(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$w(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -11598,7 +11598,7 @@ function _defineProperties$g(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$B(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$C(descriptor.key), descriptor);
   }
 }
 function _createClass$g(Constructor, protoProps, staticProps) {
@@ -11611,7 +11611,7 @@ function _callSuper$c(t2, o, e3) {
   return o = _getPrototypeOf$d(o), _possibleConstructorReturn$d(t2, _isNativeReflectConstruct$d() ? Reflect.construct(o, e3 || [], _getPrototypeOf$d(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$d(self2, call) {
-  if (call && (_typeof$C(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$D(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -11655,8 +11655,8 @@ function _setPrototypeOf$d(o, p2) {
   };
   return _setPrototypeOf$d(o, p2);
 }
-function _defineProperty$B(obj, key, value) {
-  key = _toPropertyKey$B(key);
+function _defineProperty$C(obj, key, value) {
+  key = _toPropertyKey$C(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -11664,23 +11664,23 @@ function _defineProperty$B(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$B(t2) {
-  var i = _toPrimitive$B(t2, "string");
-  return "symbol" == _typeof$C(i) ? i : i + "";
+function _toPropertyKey$C(t2) {
+  var i = _toPrimitive$C(t2, "string");
+  return "symbol" == _typeof$D(i) ? i : i + "";
 }
-function _toPrimitive$B(t2, r2) {
-  if ("object" != _typeof$C(t2) || !t2) return t2;
+function _toPrimitive$C(t2, r2) {
+  if ("object" != _typeof$D(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$C(i)) return i;
+    if ("object" != _typeof$D(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
 }
-function _objectWithoutProperties$b(source, excluded) {
+function _objectWithoutProperties$c(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$b(source, excluded);
+  var target = _objectWithoutPropertiesLoose$c(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -11693,7 +11693,7 @@ function _objectWithoutProperties$b(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$b(source, excluded) {
+function _objectWithoutPropertiesLoose$c(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -11715,7 +11715,7 @@ function renderContent$1(content, props) {
     return /* @__PURE__ */ React.createElement(content, props);
   }
   props.ref;
-  var otherProps = _objectWithoutProperties$b(props, _excluded$b);
+  var otherProps = _objectWithoutProperties$c(props, _excluded$c);
   return /* @__PURE__ */ React.createElement(DefaultLegendContent, otherProps);
 }
 var EPS$1 = 1;
@@ -11727,7 +11727,7 @@ var Legend = /* @__PURE__ */ function(_PureComponent) {
       args[_key] = arguments[_key];
     }
     _this = _callSuper$c(this, Legend2, [].concat(args));
-    _defineProperty$B(_this, "lastBoundingBox", {
+    _defineProperty$C(_this, "lastBoundingBox", {
       width: -1,
       height: -1
     });
@@ -11780,7 +11780,7 @@ var Legend = /* @__PURE__ */ function(_PureComponent) {
     key: "getBBoxSnapshot",
     value: function getBBoxSnapshot() {
       if (this.lastBoundingBox.width >= 0 && this.lastBoundingBox.height >= 0) {
-        return _objectSpread$v({}, this.lastBoundingBox);
+        return _objectSpread$w({}, this.lastBoundingBox);
       }
       return {
         width: 0,
@@ -11820,14 +11820,14 @@ var Legend = /* @__PURE__ */ function(_PureComponent) {
           };
         }
       }
-      return _objectSpread$v(_objectSpread$v({}, hPos), vPos);
+      return _objectSpread$w(_objectSpread$w({}, hPos), vPos);
     }
   }, {
     key: "render",
     value: function render() {
       var _this2 = this;
       var _this$props2 = this.props, content = _this$props2.content, width = _this$props2.width, height = _this$props2.height, wrapperStyle = _this$props2.wrapperStyle, payloadUniqBy = _this$props2.payloadUniqBy, payload = _this$props2.payload;
-      var outerStyle = _objectSpread$v(_objectSpread$v({
+      var outerStyle = _objectSpread$w(_objectSpread$w({
         position: "absolute",
         width: width || "auto",
         height: height || "auto"
@@ -11838,14 +11838,14 @@ var Legend = /* @__PURE__ */ function(_PureComponent) {
         ref: function ref(node) {
           _this2.wrapperNode = node;
         }
-      }, renderContent$1(content, _objectSpread$v(_objectSpread$v({}, this.props), {}, {
+      }, renderContent$1(content, _objectSpread$w(_objectSpread$w({}, this.props), {}, {
         payload: getUniqPayload(payload, payloadUniqBy, defaultUniqBy$1)
       })));
     }
   }], [{
     key: "getWithHeight",
     value: function getWithHeight(item, chartWidth) {
-      var _this$defaultProps$it = _objectSpread$v(_objectSpread$v({}, this.defaultProps), item.props), layout2 = _this$defaultProps$it.layout;
+      var _this$defaultProps$it = _objectSpread$w(_objectSpread$w({}, this.defaultProps), item.props), layout2 = _this$defaultProps$it.layout;
       if (layout2 === "vertical" && isNumber(item.props.height)) {
         return {
           height: item.props.height
@@ -11860,8 +11860,8 @@ var Legend = /* @__PURE__ */ function(_PureComponent) {
     }
   }]);
 }(reactExports.PureComponent);
-_defineProperty$B(Legend, "displayName", "Legend");
-_defineProperty$B(Legend, "defaultProps", {
+_defineProperty$C(Legend, "displayName", "Legend");
+_defineProperty$C(Legend, "defaultProps", {
   iconSize: 14,
   layout: "horizontal",
   align: "center",
@@ -11909,18 +11909,18 @@ var _createBaseFor = createBaseFor$1;
 var createBaseFor = _createBaseFor;
 var baseFor$1 = createBaseFor();
 var _baseFor = baseFor$1;
-var baseFor = _baseFor, keys$1 = keys_1;
+var baseFor = _baseFor, keys$2 = keys_1;
 function baseForOwn$2(object2, iteratee) {
-  return object2 && baseFor(object2, iteratee, keys$1);
+  return object2 && baseFor(object2, iteratee, keys$2);
 }
 var _baseForOwn = baseForOwn$2;
-var isArrayLike$2 = isArrayLike_1;
+var isArrayLike$3 = isArrayLike_1;
 function createBaseEach$1(eachFunc, fromRight) {
   return function(collection, iteratee) {
     if (collection == null) {
       return collection;
     }
-    if (!isArrayLike$2(collection)) {
+    if (!isArrayLike$3(collection)) {
       return eachFunc(collection, iteratee);
     }
     var length = collection.length, index = fromRight ? length : -1, iterable = Object(collection);
@@ -11936,9 +11936,9 @@ var _createBaseEach = createBaseEach$1;
 var baseForOwn$1 = _baseForOwn, createBaseEach = _createBaseEach;
 var baseEach$3 = createBaseEach(baseForOwn$1);
 var _baseEach = baseEach$3;
-var baseEach$2 = _baseEach, isArrayLike$1 = isArrayLike_1;
+var baseEach$2 = _baseEach, isArrayLike$2 = isArrayLike_1;
 function baseMap$2(collection, iteratee) {
-  var index = -1, result = isArrayLike$1(collection) ? Array(collection.length) : [];
+  var index = -1, result = isArrayLike$2(collection) ? Array(collection.length) : [];
   baseEach$2(collection, function(value, key, collection2) {
     result[++index] = iteratee(value, key, collection2);
   });
@@ -11985,7 +11985,7 @@ function compareMultiple$1(object2, other, orders) {
   return object2.index - other.index;
 }
 var _compareMultiple = compareMultiple$1;
-var arrayMap$1 = _arrayMap, baseGet = _baseGet, baseIteratee$4 = _baseIteratee, baseMap$1 = _baseMap, baseSortBy = _baseSortBy, baseUnary = _baseUnary, compareMultiple = _compareMultiple, identity$9 = identity_1, isArray$3 = isArray_1;
+var arrayMap$1 = _arrayMap, baseGet = _baseGet, baseIteratee$6 = _baseIteratee, baseMap$1 = _baseMap, baseSortBy = _baseSortBy, baseUnary = _baseUnary, compareMultiple = _compareMultiple, identity$9 = identity_1, isArray$3 = isArray_1;
 function baseOrderBy$1(collection, iteratees, orders) {
   if (iteratees.length) {
     iteratees = arrayMap$1(iteratees, function(iteratee) {
@@ -12000,7 +12000,7 @@ function baseOrderBy$1(collection, iteratees, orders) {
     iteratees = [identity$9];
   }
   var index = -1;
-  iteratees = arrayMap$1(iteratees, baseUnary(baseIteratee$4));
+  iteratees = arrayMap$1(iteratees, baseUnary(baseIteratee$6));
   var result = baseMap$1(collection, function(value, key, collection2) {
     var criteria = arrayMap$1(iteratees, function(iteratee) {
       return iteratee(value);
@@ -12027,11 +12027,11 @@ function apply$1(func, thisArg, args) {
 }
 var _apply = apply$1;
 var apply = _apply;
-var nativeMax$2 = Math.max;
+var nativeMax$3 = Math.max;
 function overRest$1(func, start, transform) {
-  start = nativeMax$2(start === void 0 ? func.length - 1 : start, 0);
+  start = nativeMax$3(start === void 0 ? func.length - 1 : start, 0);
   return function() {
-    var args = arguments, index = -1, length = nativeMax$2(args.length - start, 0), array2 = Array(length);
+    var args = arguments, index = -1, length = nativeMax$3(args.length - start, 0), array2 = Array(length);
     while (++index < length) {
       array2[index] = args[start + index];
     }
@@ -12060,8 +12060,8 @@ var defineProperty$2 = function() {
   } catch (e3) {
   }
 }();
-var _defineProperty$A = defineProperty$2;
-var constant$1 = constant_1, defineProperty$1 = _defineProperty$A, identity$8 = identity_1;
+var _defineProperty$B = defineProperty$2;
+var constant$1 = constant_1, defineProperty$1 = _defineProperty$B, identity$8 = identity_1;
 var baseSetToString$1 = !defineProperty$1 ? identity$8 : function(func, string2) {
   return defineProperty$1(func, "toString", {
     "configurable": true,
@@ -12097,13 +12097,13 @@ function baseRest$1(func, start) {
   return setToString(overRest(func, start, identity$7), func + "");
 }
 var _baseRest = baseRest$1;
-var eq = eq_1, isArrayLike = isArrayLike_1, isIndex = _isIndex, isObject$5 = isObject_1;
+var eq = eq_1, isArrayLike$1 = isArrayLike_1, isIndex = _isIndex, isObject$5 = isObject_1;
 function isIterateeCall$4(value, index, object2) {
   if (!isObject$5(object2)) {
     return false;
   }
   var type = typeof index;
-  if (type == "number" ? isArrayLike(object2) && isIndex(index, object2.length) : type == "string" && index in object2) {
+  if (type == "number" ? isArrayLike$1(object2) && isIndex(index, object2.length) : type == "string" && index in object2) {
     return eq(object2[index], value);
   }
   return false;
@@ -12124,16 +12124,16 @@ var sortBy = baseRest(function(collection, iteratees) {
 });
 var sortBy_1 = sortBy;
 const sortBy$1 = /* @__PURE__ */ getDefaultExportFromCjs(sortBy_1);
-function _typeof$B(o) {
+function _typeof$C(o) {
   "@babel/helpers - typeof";
-  return _typeof$B = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$C = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$B(o);
+  }, _typeof$C(o);
 }
-function _extends$k() {
-  _extends$k = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$l() {
+  _extends$l = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -12144,7 +12144,7 @@ function _extends$k() {
     }
     return target;
   };
-  return _extends$k.apply(this, arguments);
+  return _extends$l.apply(this, arguments);
 }
 function _slicedToArray$b(arr, i) {
   return _arrayWithHoles$c(arr) || _iterableToArrayLimit$b(arr, i) || _unsupportedIterableToArray$i(arr, i) || _nonIterableRest$c();
@@ -12187,7 +12187,7 @@ function _iterableToArrayLimit$b(r2, l2) {
 function _arrayWithHoles$c(arr) {
   if (Array.isArray(arr)) return arr;
 }
-function ownKeys$u(e3, r2) {
+function ownKeys$v(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -12197,19 +12197,19 @@ function ownKeys$u(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$u(e3) {
+function _objectSpread$v(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$u(Object(t2), true).forEach(function(r3) {
-      _defineProperty$z(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$u(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$v(Object(t2), true).forEach(function(r3) {
+      _defineProperty$A(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$v(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$z(obj, key, value) {
-  key = _toPropertyKey$A(key);
+function _defineProperty$A(obj, key, value) {
+  key = _toPropertyKey$B(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -12217,16 +12217,16 @@ function _defineProperty$z(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$A(t2) {
-  var i = _toPrimitive$A(t2, "string");
-  return "symbol" == _typeof$B(i) ? i : i + "";
+function _toPropertyKey$B(t2) {
+  var i = _toPrimitive$B(t2, "string");
+  return "symbol" == _typeof$C(i) ? i : i + "";
 }
-function _toPrimitive$A(t2, r2) {
-  if ("object" != _typeof$B(t2) || !t2) return t2;
+function _toPrimitive$B(t2, r2) {
+  if ("object" != _typeof$C(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$B(i)) return i;
+    if ("object" != _typeof$C(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -12246,7 +12246,7 @@ var DefaultTooltipContent = function DefaultTooltipContent2(props) {
         if (entry.type === "none") {
           return null;
         }
-        var finalItemStyle = _objectSpread$u({
+        var finalItemStyle = _objectSpread$v({
           display: "block",
           paddingTop: 4,
           paddingBottom: 4,
@@ -12290,14 +12290,14 @@ var DefaultTooltipContent = function DefaultTooltipContent2(props) {
     }
     return null;
   };
-  var finalStyle = _objectSpread$u({
+  var finalStyle = _objectSpread$v({
     margin: 0,
     padding: 10,
     backgroundColor: "#fff",
     border: "1px solid #ccc",
     whiteSpace: "nowrap"
   }, contentStyle);
-  var finalLabelStyle = _objectSpread$u({
+  var finalLabelStyle = _objectSpread$v({
     margin: 0
   }, labelStyle);
   var hasLabel = !isNil$1(label);
@@ -12311,7 +12311,7 @@ var DefaultTooltipContent = function DefaultTooltipContent2(props) {
     role: "status",
     "aria-live": "assertive"
   } : {};
-  return /* @__PURE__ */ React.createElement("div", _extends$k({
+  return /* @__PURE__ */ React.createElement("div", _extends$l({
     className: wrapperCN,
     style: finalStyle
   }, accessibilityAttributes), /* @__PURE__ */ React.createElement("p", {
@@ -12319,16 +12319,16 @@ var DefaultTooltipContent = function DefaultTooltipContent2(props) {
     style: finalLabelStyle
   }, /* @__PURE__ */ React.isValidElement(finalLabel) ? finalLabel : "".concat(finalLabel)), renderContent2());
 };
-function _typeof$A(o) {
+function _typeof$B(o) {
   "@babel/helpers - typeof";
-  return _typeof$A = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$B = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$A(o);
+  }, _typeof$B(o);
 }
-function _defineProperty$y(obj, key, value) {
-  key = _toPropertyKey$z(key);
+function _defineProperty$z(obj, key, value) {
+  key = _toPropertyKey$A(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -12336,16 +12336,16 @@ function _defineProperty$y(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$z(t2) {
-  var i = _toPrimitive$z(t2, "string");
-  return "symbol" == _typeof$A(i) ? i : i + "";
+function _toPropertyKey$A(t2) {
+  var i = _toPrimitive$A(t2, "string");
+  return "symbol" == _typeof$B(i) ? i : i + "";
 }
-function _toPrimitive$z(t2, r2) {
-  if ("object" != _typeof$A(t2) || !t2) return t2;
+function _toPrimitive$A(t2, r2) {
+  if ("object" != _typeof$B(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$A(i)) return i;
+    if ("object" != _typeof$B(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -12356,7 +12356,7 @@ var TOOLTIP_HIDDEN = {
 };
 function getTooltipCSSClassName(_ref) {
   var coordinate = _ref.coordinate, translateX = _ref.translateX, translateY = _ref.translateY;
-  return clsx(CSS_CLASS_PREFIX, _defineProperty$y(_defineProperty$y(_defineProperty$y(_defineProperty$y({}, "".concat(CSS_CLASS_PREFIX, "-right"), isNumber(translateX) && coordinate && isNumber(coordinate.x) && translateX >= coordinate.x), "".concat(CSS_CLASS_PREFIX, "-left"), isNumber(translateX) && coordinate && isNumber(coordinate.x) && translateX < coordinate.x), "".concat(CSS_CLASS_PREFIX, "-bottom"), isNumber(translateY) && coordinate && isNumber(coordinate.y) && translateY >= coordinate.y), "".concat(CSS_CLASS_PREFIX, "-top"), isNumber(translateY) && coordinate && isNumber(coordinate.y) && translateY < coordinate.y));
+  return clsx(CSS_CLASS_PREFIX, _defineProperty$z(_defineProperty$z(_defineProperty$z(_defineProperty$z({}, "".concat(CSS_CLASS_PREFIX, "-right"), isNumber(translateX) && coordinate && isNumber(coordinate.x) && translateX >= coordinate.x), "".concat(CSS_CLASS_PREFIX, "-left"), isNumber(translateX) && coordinate && isNumber(coordinate.x) && translateX < coordinate.x), "".concat(CSS_CLASS_PREFIX, "-bottom"), isNumber(translateY) && coordinate && isNumber(coordinate.y) && translateY >= coordinate.y), "".concat(CSS_CLASS_PREFIX, "-top"), isNumber(translateY) && coordinate && isNumber(coordinate.y) && translateY < coordinate.y));
 }
 function getTooltipTranslateXY(_ref2) {
   var allowEscapeViewBox = _ref2.allowEscapeViewBox, coordinate = _ref2.coordinate, key = _ref2.key, offsetTopLeft = _ref2.offsetTopLeft, position = _ref2.position, reverseDirection = _ref2.reverseDirection, tooltipDimension = _ref2.tooltipDimension, viewBox = _ref2.viewBox, viewBoxDimension = _ref2.viewBoxDimension;
@@ -12432,15 +12432,15 @@ function getTooltipTranslate(_ref4) {
     })
   };
 }
-function _typeof$z(o) {
+function _typeof$A(o) {
   "@babel/helpers - typeof";
-  return _typeof$z = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$A = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$z(o);
+  }, _typeof$A(o);
 }
-function ownKeys$t(e3, r2) {
+function ownKeys$u(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -12450,12 +12450,12 @@ function ownKeys$t(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$t(e3) {
+function _objectSpread$u(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$t(Object(t2), true).forEach(function(r3) {
-      _defineProperty$x(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$t(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$u(Object(t2), true).forEach(function(r3) {
+      _defineProperty$y(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$u(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -12472,7 +12472,7 @@ function _defineProperties$f(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$y(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$z(descriptor.key), descriptor);
   }
 }
 function _createClass$f(Constructor, protoProps, staticProps) {
@@ -12484,7 +12484,7 @@ function _callSuper$b(t2, o, e3) {
   return o = _getPrototypeOf$c(o), _possibleConstructorReturn$c(t2, _isNativeReflectConstruct$c() ? Reflect.construct(o, e3 || [], _getPrototypeOf$c(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$c(self2, call) {
-  if (call && (_typeof$z(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$A(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -12528,8 +12528,8 @@ function _setPrototypeOf$c(o, p2) {
   };
   return _setPrototypeOf$c(o, p2);
 }
-function _defineProperty$x(obj, key, value) {
-  key = _toPropertyKey$y(key);
+function _defineProperty$y(obj, key, value) {
+  key = _toPropertyKey$z(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -12537,16 +12537,16 @@ function _defineProperty$x(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$y(t2) {
-  var i = _toPrimitive$y(t2, "string");
-  return "symbol" == _typeof$z(i) ? i : i + "";
+function _toPropertyKey$z(t2) {
+  var i = _toPrimitive$z(t2, "string");
+  return "symbol" == _typeof$A(i) ? i : i + "";
 }
-function _toPrimitive$y(t2, r2) {
-  if ("object" != _typeof$z(t2) || !t2) return t2;
+function _toPrimitive$z(t2, r2) {
+  if ("object" != _typeof$A(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$z(i)) return i;
+    if ("object" != _typeof$A(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -12560,7 +12560,7 @@ var TooltipBoundingBox = /* @__PURE__ */ function(_PureComponent) {
       args[_key] = arguments[_key];
     }
     _this = _callSuper$b(this, TooltipBoundingBox2, [].concat(args));
-    _defineProperty$x(_this, "state", {
+    _defineProperty$y(_this, "state", {
       dismissed: false,
       dismissedAtCoordinate: {
         x: 0,
@@ -12571,7 +12571,7 @@ var TooltipBoundingBox = /* @__PURE__ */ function(_PureComponent) {
         height: -1
       }
     });
-    _defineProperty$x(_this, "handleKeyDown", function(event) {
+    _defineProperty$y(_this, "handleKeyDown", function(event) {
       if (event.key === "Escape") {
         var _this$props$coordinat, _this$props$coordinat2, _this$props$coordinat3, _this$props$coordinat4;
         _this.setState({
@@ -12648,7 +12648,7 @@ var TooltipBoundingBox = /* @__PURE__ */ function(_PureComponent) {
         useTranslate3d,
         viewBox
       }), cssClasses = _getTooltipTranslate.cssClasses, cssProperties = _getTooltipTranslate.cssProperties;
-      var outerStyle = _objectSpread$t(_objectSpread$t({
+      var outerStyle = _objectSpread$u(_objectSpread$u({
         transition: isAnimationActive && active ? "transform ".concat(animationDuration, "ms ").concat(animationEasing) : void 0
       }, cssProperties), {}, {
         pointerEvents: "none",
@@ -12678,15 +12678,15 @@ var parseIsSsrByDefault = function parseIsSsrByDefault2() {
 var Global = {
   isSsr: parseIsSsrByDefault()
 };
-function _typeof$y(o) {
+function _typeof$z(o) {
   "@babel/helpers - typeof";
-  return _typeof$y = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$z = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$y(o);
+  }, _typeof$z(o);
 }
-function ownKeys$s(e3, r2) {
+function ownKeys$t(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -12696,12 +12696,12 @@ function ownKeys$s(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$s(e3) {
+function _objectSpread$t(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$s(Object(t2), true).forEach(function(r3) {
-      _defineProperty$w(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$s(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$t(Object(t2), true).forEach(function(r3) {
+      _defineProperty$x(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$t(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -12718,7 +12718,7 @@ function _defineProperties$e(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$x(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$y(descriptor.key), descriptor);
   }
 }
 function _createClass$e(Constructor, protoProps, staticProps) {
@@ -12730,7 +12730,7 @@ function _callSuper$a(t2, o, e3) {
   return o = _getPrototypeOf$b(o), _possibleConstructorReturn$b(t2, _isNativeReflectConstruct$b() ? Reflect.construct(o, e3 || [], _getPrototypeOf$b(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$b(self2, call) {
-  if (call && (_typeof$y(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$z(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -12774,8 +12774,8 @@ function _setPrototypeOf$b(o, p2) {
   };
   return _setPrototypeOf$b(o, p2);
 }
-function _defineProperty$w(obj, key, value) {
-  key = _toPropertyKey$x(key);
+function _defineProperty$x(obj, key, value) {
+  key = _toPropertyKey$y(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -12783,16 +12783,16 @@ function _defineProperty$w(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$x(t2) {
-  var i = _toPrimitive$x(t2, "string");
-  return "symbol" == _typeof$y(i) ? i : i + "";
+function _toPropertyKey$y(t2) {
+  var i = _toPrimitive$y(t2, "string");
+  return "symbol" == _typeof$z(i) ? i : i + "";
 }
-function _toPrimitive$x(t2, r2) {
-  if ("object" != _typeof$y(t2) || !t2) return t2;
+function _toPrimitive$y(t2, r2) {
+  if ("object" != _typeof$z(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$y(i)) return i;
+    if ("object" != _typeof$z(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -12841,14 +12841,14 @@ var Tooltip = /* @__PURE__ */ function(_PureComponent) {
         useTranslate3d,
         viewBox,
         wrapperStyle
-      }, renderContent(content, _objectSpread$s(_objectSpread$s({}, this.props), {}, {
+      }, renderContent(content, _objectSpread$t(_objectSpread$t({}, this.props), {}, {
         payload: finalPayload
       })));
     }
   }]);
 }(reactExports.PureComponent);
-_defineProperty$w(Tooltip, "displayName", "Tooltip");
-_defineProperty$w(Tooltip, "defaultProps", {
+_defineProperty$x(Tooltip, "displayName", "Tooltip");
+_defineProperty$x(Tooltip, "defaultProps", {
   accessibilityLayer: false,
   allowEscapeViewBox: {
     x: false,
@@ -12929,7 +12929,7 @@ function toNumber$2(value) {
 var toNumber_1 = toNumber$2;
 var isObject$3 = isObject_1, now$1 = now_1, toNumber$1 = toNumber_1;
 var FUNC_ERROR_TEXT$1 = "Expected a function";
-var nativeMax$1 = Math.max, nativeMin = Math.min;
+var nativeMax$2 = Math.max, nativeMin = Math.min;
 function debounce$1(func, wait, options) {
   var lastArgs, lastThis, maxWait, result, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
   if (typeof func != "function") {
@@ -12939,7 +12939,7 @@ function debounce$1(func, wait, options) {
   if (isObject$3(options)) {
     leading = !!options.leading;
     maxing = "maxWait" in options;
-    maxWait = maxing ? nativeMax$1(toNumber$1(options.maxWait) || 0, wait) : maxWait;
+    maxWait = maxing ? nativeMax$2(toNumber$1(options.maxWait) || 0, wait) : maxWait;
     trailing = "trailing" in options ? !!options.trailing : trailing;
   }
   function invokeFunc(time2) {
@@ -13031,15 +13031,15 @@ function throttle(func, wait, options) {
 }
 var throttle_1 = throttle;
 const throttle$1 = /* @__PURE__ */ getDefaultExportFromCjs(throttle_1);
-function _typeof$x(o) {
+function _typeof$y(o) {
   "@babel/helpers - typeof";
-  return _typeof$x = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$y = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$x(o);
+  }, _typeof$y(o);
 }
-function ownKeys$r(e3, r2) {
+function ownKeys$s(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -13049,19 +13049,19 @@ function ownKeys$r(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$r(e3) {
+function _objectSpread$s(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$r(Object(t2), true).forEach(function(r3) {
-      _defineProperty$v(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$r(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$s(Object(t2), true).forEach(function(r3) {
+      _defineProperty$w(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$s(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$v(obj, key, value) {
-  key = _toPropertyKey$w(key);
+function _defineProperty$w(obj, key, value) {
+  key = _toPropertyKey$x(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -13069,16 +13069,16 @@ function _defineProperty$v(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$w(t2) {
-  var i = _toPrimitive$w(t2, "string");
-  return "symbol" == _typeof$x(i) ? i : i + "";
+function _toPropertyKey$x(t2) {
+  var i = _toPrimitive$x(t2, "string");
+  return "symbol" == _typeof$y(i) ? i : i + "";
 }
-function _toPrimitive$w(t2, r2) {
-  if ("object" != _typeof$x(t2) || !t2) return t2;
+function _toPrimitive$x(t2, r2) {
+  if ("object" != _typeof$y(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$x(i)) return i;
+    if ("object" != _typeof$y(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -13202,11 +13202,11 @@ var ResponsiveContainer = /* @__PURE__ */ reactExports.forwardRef(function(_ref,
     var isCharts = !Array.isArray(children) && getDisplayName(children.type).endsWith("Chart");
     return React.Children.map(children, function(child) {
       if (/* @__PURE__ */ React.isValidElement(child)) {
-        return /* @__PURE__ */ reactExports.cloneElement(child, _objectSpread$r({
+        return /* @__PURE__ */ reactExports.cloneElement(child, _objectSpread$s({
           width: calculatedWidth,
           height: calculatedHeight
         }, isCharts ? {
-          style: _objectSpread$r({
+          style: _objectSpread$s({
             height: "100%",
             width: "100%",
             maxHeight: calculatedHeight,
@@ -13220,7 +13220,7 @@ var ResponsiveContainer = /* @__PURE__ */ reactExports.forwardRef(function(_ref,
   return /* @__PURE__ */ React.createElement("div", {
     id: id2 ? "".concat(id2) : void 0,
     className: clsx("recharts-responsive-container", className),
-    style: _objectSpread$r(_objectSpread$r({}, style), {}, {
+    style: _objectSpread$s(_objectSpread$s({}, style), {}, {
       width,
       height,
       minWidth,
@@ -13234,15 +13234,15 @@ var Cell = function Cell2(_props) {
   return null;
 };
 Cell.displayName = "Cell";
-function _typeof$w(o) {
+function _typeof$x(o) {
   "@babel/helpers - typeof";
-  return _typeof$w = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$x = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$w(o);
+  }, _typeof$x(o);
 }
-function ownKeys$q(e3, r2) {
+function ownKeys$r(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -13252,19 +13252,19 @@ function ownKeys$q(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$q(e3) {
+function _objectSpread$r(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$q(Object(t2), true).forEach(function(r3) {
-      _defineProperty$u(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$q(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$r(Object(t2), true).forEach(function(r3) {
+      _defineProperty$v(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$r(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$u(obj, key, value) {
-  key = _toPropertyKey$v(key);
+function _defineProperty$v(obj, key, value) {
+  key = _toPropertyKey$w(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -13272,16 +13272,16 @@ function _defineProperty$u(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$v(t2) {
-  var i = _toPrimitive$v(t2, "string");
-  return "symbol" == _typeof$w(i) ? i : i + "";
+function _toPropertyKey$w(t2) {
+  var i = _toPrimitive$w(t2, "string");
+  return "symbol" == _typeof$x(i) ? i : i + "";
 }
-function _toPrimitive$v(t2, r2) {
-  if ("object" != _typeof$w(t2) || !t2) return t2;
+function _toPrimitive$w(t2, r2) {
+  if ("object" != _typeof$x(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$w(i)) return i;
+    if ("object" != _typeof$x(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -13302,7 +13302,7 @@ var SPAN_STYLE = {
 };
 var MEASUREMENT_SPAN_ID = "recharts_measurement_span";
 function removeInvalidKeys(obj) {
-  var copyObj = _objectSpread$q({}, obj);
+  var copyObj = _objectSpread$r({}, obj);
   Object.keys(copyObj).forEach(function(key) {
     if (!copyObj[key]) {
       delete copyObj[key];
@@ -13334,7 +13334,7 @@ var getStringSize = function getStringSize2(text) {
       measurementSpan.setAttribute("aria-hidden", "true");
       document.body.appendChild(measurementSpan);
     }
-    var measurementSpanStyle = _objectSpread$q(_objectSpread$q({}, SPAN_STYLE), copyStyle);
+    var measurementSpanStyle = _objectSpread$r(_objectSpread$r({}, SPAN_STYLE), copyStyle);
     Object.assign(measurementSpan.style, measurementSpanStyle);
     measurementSpan.textContent = "".concat(text);
     var rect = measurementSpan.getBoundingClientRect();
@@ -13361,13 +13361,13 @@ var getOffset = function getOffset2(rect) {
     left: rect.left + window.scrollX - document.documentElement.clientLeft
   };
 };
-function _typeof$v(o) {
+function _typeof$w(o) {
   "@babel/helpers - typeof";
-  return _typeof$v = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$w = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$v(o);
+  }, _typeof$w(o);
 }
 function _slicedToArray$9(arr, i) {
   return _arrayWithHoles$a(arr) || _iterableToArrayLimit$9(arr, i) || _unsupportedIterableToArray$g(arr, i) || _nonIterableRest$a();
@@ -13423,7 +13423,7 @@ function _defineProperties$d(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$u(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$v(descriptor.key), descriptor);
   }
 }
 function _createClass$d(Constructor, protoProps, staticProps) {
@@ -13432,16 +13432,16 @@ function _createClass$d(Constructor, protoProps, staticProps) {
   Object.defineProperty(Constructor, "prototype", { writable: false });
   return Constructor;
 }
-function _toPropertyKey$u(t2) {
-  var i = _toPrimitive$u(t2, "string");
-  return "symbol" == _typeof$v(i) ? i : i + "";
+function _toPropertyKey$v(t2) {
+  var i = _toPrimitive$v(t2, "string");
+  return "symbol" == _typeof$w(i) ? i : i + "";
 }
-function _toPrimitive$u(t2, r2) {
-  if ("object" != _typeof$v(t2) || !t2) return t2;
+function _toPrimitive$v(t2, r2) {
+  if ("object" != _typeof$w(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$v(i)) return i;
+    if ("object" != _typeof$w(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -13592,9 +13592,9 @@ function reduceCSSCalc(expression) {
   }
   return result;
 }
-var _excluded$a = ["x", "y", "lineHeight", "capHeight", "scaleToFit", "textAnchor", "verticalAnchor", "fill"], _excluded2$3 = ["dx", "dy", "angle", "className", "breakAll"];
-function _extends$j() {
-  _extends$j = Object.assign ? Object.assign.bind() : function(target) {
+var _excluded$b = ["x", "y", "lineHeight", "capHeight", "scaleToFit", "textAnchor", "verticalAnchor", "fill"], _excluded2$4 = ["dx", "dy", "angle", "className", "breakAll"];
+function _extends$k() {
+  _extends$k = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -13605,11 +13605,11 @@ function _extends$j() {
     }
     return target;
   };
-  return _extends$j.apply(this, arguments);
+  return _extends$k.apply(this, arguments);
 }
-function _objectWithoutProperties$a(source, excluded) {
+function _objectWithoutProperties$b(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$a(source, excluded);
+  var target = _objectWithoutPropertiesLoose$b(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -13622,7 +13622,7 @@ function _objectWithoutProperties$a(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$a(source, excluded) {
+function _objectWithoutPropertiesLoose$b(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -13802,7 +13802,7 @@ var getWordsByLines = function getWordsByLines2(_ref4) {
 };
 var DEFAULT_FILL = "#808080";
 var Text = function Text2(_ref5) {
-  var _ref5$x = _ref5.x, propsX = _ref5$x === void 0 ? 0 : _ref5$x, _ref5$y = _ref5.y, propsY = _ref5$y === void 0 ? 0 : _ref5$y, _ref5$lineHeight = _ref5.lineHeight, lineHeight = _ref5$lineHeight === void 0 ? "1em" : _ref5$lineHeight, _ref5$capHeight = _ref5.capHeight, capHeight = _ref5$capHeight === void 0 ? "0.71em" : _ref5$capHeight, _ref5$scaleToFit = _ref5.scaleToFit, scaleToFit = _ref5$scaleToFit === void 0 ? false : _ref5$scaleToFit, _ref5$textAnchor = _ref5.textAnchor, textAnchor = _ref5$textAnchor === void 0 ? "start" : _ref5$textAnchor, _ref5$verticalAnchor = _ref5.verticalAnchor, verticalAnchor = _ref5$verticalAnchor === void 0 ? "end" : _ref5$verticalAnchor, _ref5$fill = _ref5.fill, fill = _ref5$fill === void 0 ? DEFAULT_FILL : _ref5$fill, props = _objectWithoutProperties$a(_ref5, _excluded$a);
+  var _ref5$x = _ref5.x, propsX = _ref5$x === void 0 ? 0 : _ref5$x, _ref5$y = _ref5.y, propsY = _ref5$y === void 0 ? 0 : _ref5$y, _ref5$lineHeight = _ref5.lineHeight, lineHeight = _ref5$lineHeight === void 0 ? "1em" : _ref5$lineHeight, _ref5$capHeight = _ref5.capHeight, capHeight = _ref5$capHeight === void 0 ? "0.71em" : _ref5$capHeight, _ref5$scaleToFit = _ref5.scaleToFit, scaleToFit = _ref5$scaleToFit === void 0 ? false : _ref5$scaleToFit, _ref5$textAnchor = _ref5.textAnchor, textAnchor = _ref5$textAnchor === void 0 ? "start" : _ref5$textAnchor, _ref5$verticalAnchor = _ref5.verticalAnchor, verticalAnchor = _ref5$verticalAnchor === void 0 ? "end" : _ref5$verticalAnchor, _ref5$fill = _ref5.fill, fill = _ref5$fill === void 0 ? DEFAULT_FILL : _ref5$fill, props = _objectWithoutProperties$b(_ref5, _excluded$b);
   var wordsByLines = reactExports.useMemo(function() {
     return getWordsByLines({
       breakAll: props.breakAll,
@@ -13813,7 +13813,7 @@ var Text = function Text2(_ref5) {
       width: props.width
     });
   }, [props.breakAll, props.children, props.maxLines, scaleToFit, props.style, props.width]);
-  var dx = props.dx, dy = props.dy, angle = props.angle, className = props.className, breakAll = props.breakAll, textProps = _objectWithoutProperties$a(props, _excluded2$3);
+  var dx = props.dx, dy = props.dy, angle = props.angle, className = props.className, breakAll = props.breakAll, textProps = _objectWithoutProperties$b(props, _excluded2$4);
   if (!isNumOrStr(propsX) || !isNumOrStr(propsY)) {
     return null;
   }
@@ -13843,7 +13843,7 @@ var Text = function Text2(_ref5) {
   if (transforms.length) {
     textProps.transform = transforms.join(" ");
   }
-  return /* @__PURE__ */ React.createElement("text", _extends$j({}, filterProps$1(textProps, true), {
+  return /* @__PURE__ */ React.createElement("text", _extends$k({}, filterProps$1(textProps, true), {
     x: x2,
     y: y2,
     className: clsx("recharts-text", className),
@@ -16538,10 +16538,10 @@ function min(array2) {
 }
 var min_1 = min;
 const min$1 = /* @__PURE__ */ getDefaultExportFromCjs(min_1);
-var arrayMap = _arrayMap, baseIteratee$3 = _baseIteratee, baseMap = _baseMap, isArray$2 = isArray_1;
+var arrayMap = _arrayMap, baseIteratee$5 = _baseIteratee, baseMap = _baseMap, isArray$2 = isArray_1;
 function map$2(collection, iteratee) {
   var func = isArray$2(collection) ? arrayMap : baseMap;
-  return func(collection, baseIteratee$3(iteratee));
+  return func(collection, baseIteratee$5(iteratee));
 }
 var map_1 = map$2;
 var baseFlatten = _baseFlatten, map$1 = map_1;
@@ -17864,17 +17864,17 @@ function invariant$1(condition, message) {
     throw new Error(prefix);
   }
 }
-var _excluded$9 = ["offset", "layout", "width", "dataKey", "data", "dataPointFormatter", "xAxis", "yAxis"];
-function _typeof$u(o) {
+var _excluded$a = ["offset", "layout", "width", "dataKey", "data", "dataPointFormatter", "xAxis", "yAxis"];
+function _typeof$v(o) {
   "@babel/helpers - typeof";
-  return _typeof$u = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$v = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$u(o);
+  }, _typeof$v(o);
 }
-function _extends$i() {
-  _extends$i = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$j() {
+  _extends$j = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -17885,7 +17885,7 @@ function _extends$i() {
     }
     return target;
   };
-  return _extends$i.apply(this, arguments);
+  return _extends$j.apply(this, arguments);
 }
 function _slicedToArray$6(arr, i) {
   return _arrayWithHoles$7(arr) || _iterableToArrayLimit$6(arr, i) || _unsupportedIterableToArray$c(arr, i) || _nonIterableRest$7();
@@ -17928,9 +17928,9 @@ function _iterableToArrayLimit$6(r2, l2) {
 function _arrayWithHoles$7(arr) {
   if (Array.isArray(arr)) return arr;
 }
-function _objectWithoutProperties$9(source, excluded) {
+function _objectWithoutProperties$a(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$9(source, excluded);
+  var target = _objectWithoutPropertiesLoose$a(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -17943,7 +17943,7 @@ function _objectWithoutProperties$9(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$9(source, excluded) {
+function _objectWithoutPropertiesLoose$a(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -17965,7 +17965,7 @@ function _defineProperties$c(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$t(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$u(descriptor.key), descriptor);
   }
 }
 function _createClass$c(Constructor, protoProps, staticProps) {
@@ -17977,7 +17977,7 @@ function _callSuper$9(t2, o, e3) {
   return o = _getPrototypeOf$a(o), _possibleConstructorReturn$a(t2, _isNativeReflectConstruct$a() ? Reflect.construct(o, e3 || [], _getPrototypeOf$a(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$a(self2, call) {
-  if (call && (_typeof$u(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$v(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -18021,8 +18021,8 @@ function _setPrototypeOf$a(o, p2) {
   };
   return _setPrototypeOf$a(o, p2);
 }
-function _defineProperty$t(obj, key, value) {
-  key = _toPropertyKey$t(key);
+function _defineProperty$u(obj, key, value) {
+  key = _toPropertyKey$u(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -18030,16 +18030,16 @@ function _defineProperty$t(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$t(t2) {
-  var i = _toPrimitive$t(t2, "string");
-  return "symbol" == _typeof$u(i) ? i : i + "";
+function _toPropertyKey$u(t2) {
+  var i = _toPrimitive$u(t2, "string");
+  return "symbol" == _typeof$v(i) ? i : i + "";
 }
-function _toPrimitive$t(t2, r2) {
-  if ("object" != _typeof$u(t2) || !t2) return t2;
+function _toPrimitive$u(t2, r2) {
+  if ("object" != _typeof$v(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$u(i)) return i;
+    if ("object" != _typeof$v(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -18053,7 +18053,7 @@ var ErrorBar = /* @__PURE__ */ function(_React$Component) {
   return _createClass$c(ErrorBar2, [{
     key: "render",
     value: function render() {
-      var _this$props = this.props, offset = _this$props.offset, layout2 = _this$props.layout, width = _this$props.width, dataKey = _this$props.dataKey, data = _this$props.data, dataPointFormatter = _this$props.dataPointFormatter, xAxis = _this$props.xAxis, yAxis = _this$props.yAxis, others = _objectWithoutProperties$9(_this$props, _excluded$9);
+      var _this$props = this.props, offset = _this$props.offset, layout2 = _this$props.layout, width = _this$props.width, dataKey = _this$props.dataKey, data = _this$props.data, dataPointFormatter = _this$props.dataPointFormatter, xAxis = _this$props.xAxis, yAxis = _this$props.yAxis, others = _objectWithoutProperties$a(_this$props, _excluded$a);
       var svgProps = filterProps$1(others, false);
       !!(this.props.direction === "x" && xAxis.type !== "number") ? invariant$1() : void 0;
       var errorBars = data.map(function(entry) {
@@ -18121,13 +18121,13 @@ var ErrorBar = /* @__PURE__ */ function(_React$Component) {
             y2: _yMin
           });
         }
-        return /* @__PURE__ */ React.createElement(Layer, _extends$i({
+        return /* @__PURE__ */ React.createElement(Layer, _extends$j({
           className: "recharts-errorBar",
           key: "bar-".concat(lineCoordinates.map(function(c2) {
             return "".concat(c2.x1, "-").concat(c2.x2, "-").concat(c2.y1, "-").concat(c2.y2);
           }))
         }, svgProps), lineCoordinates.map(function(coordinates) {
-          return /* @__PURE__ */ React.createElement("line", _extends$i({}, coordinates, {
+          return /* @__PURE__ */ React.createElement("line", _extends$j({}, coordinates, {
             key: "line-".concat(coordinates.x1, "-").concat(coordinates.x2, "-").concat(coordinates.y1, "-").concat(coordinates.y2)
           }));
         }));
@@ -18138,14 +18138,112 @@ var ErrorBar = /* @__PURE__ */ function(_React$Component) {
     }
   }]);
 }(React.Component);
-_defineProperty$t(ErrorBar, "defaultProps", {
+_defineProperty$u(ErrorBar, "defaultProps", {
   stroke: "black",
   strokeWidth: 1.5,
   width: 5,
   offset: 0,
   layout: "horizontal"
 });
-_defineProperty$t(ErrorBar, "displayName", "ErrorBar");
+_defineProperty$u(ErrorBar, "displayName", "ErrorBar");
+function _typeof$u(o) {
+  "@babel/helpers - typeof";
+  return _typeof$u = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$u(o);
+}
+function ownKeys$q(e3, r2) {
+  var t2 = Object.keys(e3);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e3);
+    r2 && (o = o.filter(function(r3) {
+      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
+    })), t2.push.apply(t2, o);
+  }
+  return t2;
+}
+function _objectSpread$q(e3) {
+  for (var r2 = 1; r2 < arguments.length; r2++) {
+    var t2 = null != arguments[r2] ? arguments[r2] : {};
+    r2 % 2 ? ownKeys$q(Object(t2), true).forEach(function(r3) {
+      _defineProperty$t(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$q(Object(t2)).forEach(function(r3) {
+      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
+    });
+  }
+  return e3;
+}
+function _defineProperty$t(obj, key, value) {
+  key = _toPropertyKey$t(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey$t(t2) {
+  var i = _toPrimitive$t(t2, "string");
+  return "symbol" == _typeof$u(i) ? i : i + "";
+}
+function _toPrimitive$t(t2, r2) {
+  if ("object" != _typeof$u(t2) || !t2) return t2;
+  var e3 = t2[Symbol.toPrimitive];
+  if (void 0 !== e3) {
+    var i = e3.call(t2, r2);
+    if ("object" != _typeof$u(i)) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r2 ? String : Number)(t2);
+}
+var getLegendProps = function getLegendProps2(_ref) {
+  var children = _ref.children, formattedGraphicalItems = _ref.formattedGraphicalItems, legendWidth = _ref.legendWidth, legendContent = _ref.legendContent;
+  var legendItem = findChildByType(children, Legend);
+  if (!legendItem) {
+    return null;
+  }
+  var legendDefaultProps = Legend.defaultProps;
+  var legendProps = legendDefaultProps !== void 0 ? _objectSpread$q(_objectSpread$q({}, legendDefaultProps), legendItem.props) : {};
+  var legendData;
+  if (legendItem.props && legendItem.props.payload) {
+    legendData = legendItem.props && legendItem.props.payload;
+  } else if (legendContent === "children") {
+    legendData = (formattedGraphicalItems || []).reduce(function(result, _ref2) {
+      var item = _ref2.item, props = _ref2.props;
+      var data = props.sectors || props.data || [];
+      return result.concat(data.map(function(entry) {
+        return {
+          type: legendItem.props.iconType || item.props.legendType,
+          value: entry.name,
+          color: entry.fill,
+          payload: entry
+        };
+      }));
+    }, []);
+  } else {
+    legendData = (formattedGraphicalItems || []).map(function(_ref3) {
+      var item = _ref3.item;
+      var itemDefaultProps = item.type.defaultProps;
+      var itemProps = itemDefaultProps !== void 0 ? _objectSpread$q(_objectSpread$q({}, itemDefaultProps), item.props) : {};
+      var dataKey = itemProps.dataKey, name = itemProps.name, legendType = itemProps.legendType, hide = itemProps.hide;
+      return {
+        inactive: hide,
+        dataKey,
+        type: legendProps.iconType || legendType || "square",
+        color: getMainColorOfGraphicItem(item),
+        value: name || dataKey,
+        // @ts-expect-error property strokeDasharray is required in Payload but optional in props
+        payload: itemProps
+      };
+    });
+  }
+  return _objectSpread$q(_objectSpread$q(_objectSpread$q({}, legendProps), Legend.getWithHeight(legendItem, legendWidth)), {}, {
+    payload: legendData,
+    item: legendItem
+  });
+};
 function _typeof$t(o) {
   "@babel/helpers - typeof";
   return _typeof$t = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -18153,6 +18251,31 @@ function _typeof$t(o) {
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
   }, _typeof$t(o);
+}
+function _toConsumableArray$7(arr) {
+  return _arrayWithoutHoles$7(arr) || _iterableToArray$8(arr) || _unsupportedIterableToArray$b(arr) || _nonIterableSpread$7();
+}
+function _nonIterableSpread$7() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _unsupportedIterableToArray$b(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray$b(o, minLen);
+  var n2 = Object.prototype.toString.call(o).slice(8, -1);
+  if (n2 === "Object" && o.constructor) n2 = o.constructor.name;
+  if (n2 === "Map" || n2 === "Set") return Array.from(o);
+  if (n2 === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n2)) return _arrayLikeToArray$b(o, minLen);
+}
+function _iterableToArray$8(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+function _arrayWithoutHoles$7(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray$b(arr);
+}
+function _arrayLikeToArray$b(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+  return arr2;
 }
 function ownKeys$p(e3, r2) {
   var t2 = Object.keys(e3);
@@ -18194,129 +18317,6 @@ function _toPrimitive$s(t2, r2) {
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
     if ("object" != _typeof$t(i)) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r2 ? String : Number)(t2);
-}
-var getLegendProps = function getLegendProps2(_ref) {
-  var children = _ref.children, formattedGraphicalItems = _ref.formattedGraphicalItems, legendWidth = _ref.legendWidth, legendContent = _ref.legendContent;
-  var legendItem = findChildByType(children, Legend);
-  if (!legendItem) {
-    return null;
-  }
-  var legendDefaultProps = Legend.defaultProps;
-  var legendProps = legendDefaultProps !== void 0 ? _objectSpread$p(_objectSpread$p({}, legendDefaultProps), legendItem.props) : {};
-  var legendData;
-  if (legendItem.props && legendItem.props.payload) {
-    legendData = legendItem.props && legendItem.props.payload;
-  } else if (legendContent === "children") {
-    legendData = (formattedGraphicalItems || []).reduce(function(result, _ref2) {
-      var item = _ref2.item, props = _ref2.props;
-      var data = props.sectors || props.data || [];
-      return result.concat(data.map(function(entry) {
-        return {
-          type: legendItem.props.iconType || item.props.legendType,
-          value: entry.name,
-          color: entry.fill,
-          payload: entry
-        };
-      }));
-    }, []);
-  } else {
-    legendData = (formattedGraphicalItems || []).map(function(_ref3) {
-      var item = _ref3.item;
-      var itemDefaultProps = item.type.defaultProps;
-      var itemProps = itemDefaultProps !== void 0 ? _objectSpread$p(_objectSpread$p({}, itemDefaultProps), item.props) : {};
-      var dataKey = itemProps.dataKey, name = itemProps.name, legendType = itemProps.legendType, hide = itemProps.hide;
-      return {
-        inactive: hide,
-        dataKey,
-        type: legendProps.iconType || legendType || "square",
-        color: getMainColorOfGraphicItem(item),
-        value: name || dataKey,
-        // @ts-expect-error property strokeDasharray is required in Payload but optional in props
-        payload: itemProps
-      };
-    });
-  }
-  return _objectSpread$p(_objectSpread$p(_objectSpread$p({}, legendProps), Legend.getWithHeight(legendItem, legendWidth)), {}, {
-    payload: legendData,
-    item: legendItem
-  });
-};
-function _typeof$s(o) {
-  "@babel/helpers - typeof";
-  return _typeof$s = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-    return typeof o2;
-  } : function(o2) {
-    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$s(o);
-}
-function _toConsumableArray$7(arr) {
-  return _arrayWithoutHoles$7(arr) || _iterableToArray$8(arr) || _unsupportedIterableToArray$b(arr) || _nonIterableSpread$7();
-}
-function _nonIterableSpread$7() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-function _unsupportedIterableToArray$b(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray$b(o, minLen);
-  var n2 = Object.prototype.toString.call(o).slice(8, -1);
-  if (n2 === "Object" && o.constructor) n2 = o.constructor.name;
-  if (n2 === "Map" || n2 === "Set") return Array.from(o);
-  if (n2 === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n2)) return _arrayLikeToArray$b(o, minLen);
-}
-function _iterableToArray$8(iter) {
-  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-}
-function _arrayWithoutHoles$7(arr) {
-  if (Array.isArray(arr)) return _arrayLikeToArray$b(arr);
-}
-function _arrayLikeToArray$b(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-  return arr2;
-}
-function ownKeys$o(e3, r2) {
-  var t2 = Object.keys(e3);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e3);
-    r2 && (o = o.filter(function(r3) {
-      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
-    })), t2.push.apply(t2, o);
-  }
-  return t2;
-}
-function _objectSpread$o(e3) {
-  for (var r2 = 1; r2 < arguments.length; r2++) {
-    var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$o(Object(t2), true).forEach(function(r3) {
-      _defineProperty$r(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$o(Object(t2)).forEach(function(r3) {
-      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
-    });
-  }
-  return e3;
-}
-function _defineProperty$r(obj, key, value) {
-  key = _toPropertyKey$r(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey$r(t2) {
-  var i = _toPrimitive$r(t2, "string");
-  return "symbol" == _typeof$s(i) ? i : i + "";
-}
-function _toPrimitive$r(t2, r2) {
-  if ("object" != _typeof$s(t2) || !t2) return t2;
-  var e3 = t2[Symbol.toPrimitive];
-  if (void 0 !== e3) {
-    var i = e3.call(t2, r2);
-    if ("object" != _typeof$s(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -18407,7 +18407,7 @@ var calculateActiveTickIndex = function calculateActiveTickIndex2(coordinate) {
 var getMainColorOfGraphicItem = function getMainColorOfGraphicItem2(item) {
   var _item$type;
   var _ref = item, displayName = _ref.type.displayName;
-  var defaultedProps = (_item$type = item.type) !== null && _item$type !== void 0 && _item$type.defaultProps ? _objectSpread$o(_objectSpread$o({}, item.type.defaultProps), item.props) : item.props;
+  var defaultedProps = (_item$type = item.type) !== null && _item$type !== void 0 && _item$type.defaultProps ? _objectSpread$p(_objectSpread$p({}, item.type.defaultProps), item.props) : item.props;
   var stroke = defaultedProps.stroke, fill = defaultedProps.fill;
   var result;
   switch (displayName) {
@@ -18441,7 +18441,7 @@ var getBarSizeList = function getBarSizeList2(_ref2) {
       });
       if (barItems && barItems.length) {
         var barItemDefaultProps = barItems[0].type.defaultProps;
-        var barItemProps = barItemDefaultProps !== void 0 ? _objectSpread$o(_objectSpread$o({}, barItemDefaultProps), barItems[0].props) : barItems[0].props;
+        var barItemProps = barItemDefaultProps !== void 0 ? _objectSpread$p(_objectSpread$p({}, barItemDefaultProps), barItems[0].props) : barItems[0].props;
         var selfSize = barItemProps.barSize;
         var cateId = barItemProps[cateAxisId];
         if (!result[cateId]) {
@@ -18549,10 +18549,10 @@ var appendOffsetOfLegend = function appendOffsetOfLegend2(offset, _unused, props
     var _ref4 = legendBox || {}, boxWidth = _ref4.width, boxHeight = _ref4.height;
     var align = legendProps.align, verticalAlign = legendProps.verticalAlign, layout2 = legendProps.layout;
     if ((layout2 === "vertical" || layout2 === "horizontal" && verticalAlign === "middle") && align !== "center" && isNumber(offset[align])) {
-      return _objectSpread$o(_objectSpread$o({}, offset), {}, _defineProperty$r({}, align, offset[align] + (boxWidth || 0)));
+      return _objectSpread$p(_objectSpread$p({}, offset), {}, _defineProperty$s({}, align, offset[align] + (boxWidth || 0)));
     }
     if ((layout2 === "horizontal" || layout2 === "vertical" && align === "center") && verticalAlign !== "middle" && isNumber(offset[verticalAlign])) {
-      return _objectSpread$o(_objectSpread$o({}, offset), {}, _defineProperty$r({}, verticalAlign, offset[verticalAlign] + (boxHeight || 0)));
+      return _objectSpread$p(_objectSpread$p({}, offset), {}, _defineProperty$s({}, verticalAlign, offset[verticalAlign] + (boxHeight || 0)));
     }
   }
   return offset;
@@ -18643,6 +18643,30 @@ var getDomainOfItemsWithSameAxis = function getDomainOfItemsWithSameAxis2(data, 
 };
 var isCategoricalAxis = function isCategoricalAxis2(layout2, axisType) {
   return layout2 === "horizontal" && axisType === "xAxis" || layout2 === "vertical" && axisType === "yAxis" || layout2 === "centric" && axisType === "angleAxis" || layout2 === "radial" && axisType === "radiusAxis";
+};
+var getCoordinatesOfGrid = function getCoordinatesOfGrid2(ticks2, minValue, maxValue, syncWithTicks) {
+  if (syncWithTicks) {
+    return ticks2.map(function(entry) {
+      return entry.coordinate;
+    });
+  }
+  var hasMin, hasMax;
+  var values = ticks2.map(function(entry) {
+    if (entry.coordinate === minValue) {
+      hasMin = true;
+    }
+    if (entry.coordinate === maxValue) {
+      hasMax = true;
+    }
+    return entry.coordinate;
+  });
+  if (!hasMin) {
+    values.push(minValue);
+  }
+  if (!hasMax) {
+    values.push(maxValue);
+  }
+  return values;
 };
 var getTicksOfAxis = function getTicksOfAxis2(axis, isGrid, isAll) {
   if (!axis) return null;
@@ -18879,7 +18903,7 @@ var getStackGroupsByAxisId = function getStackGroupsByAxisId2(data, _items, nume
   var parentStackGroupsInitialValue = {};
   var stackGroups = items.reduce(function(result, item) {
     var _item$type2;
-    var defaultedProps = (_item$type2 = item.type) !== null && _item$type2 !== void 0 && _item$type2.defaultProps ? _objectSpread$o(_objectSpread$o({}, item.type.defaultProps), item.props) : item.props;
+    var defaultedProps = (_item$type2 = item.type) !== null && _item$type2 !== void 0 && _item$type2.defaultProps ? _objectSpread$p(_objectSpread$p({}, item.type.defaultProps), item.props) : item.props;
     var stackId = defaultedProps.stackId, hide = defaultedProps.hide;
     if (hide) {
       return result;
@@ -18905,7 +18929,7 @@ var getStackGroupsByAxisId = function getStackGroupsByAxisId2(data, _items, nume
         items: [item]
       };
     }
-    return _objectSpread$o(_objectSpread$o({}, result), {}, _defineProperty$r({}, axisId, parentGroup));
+    return _objectSpread$p(_objectSpread$p({}, result), {}, _defineProperty$s({}, axisId, parentGroup));
   }, parentStackGroupsInitialValue);
   var axisStackGroupsInitialValue = {};
   return Object.keys(stackGroups).reduce(function(result, axisId) {
@@ -18914,7 +18938,7 @@ var getStackGroupsByAxisId = function getStackGroupsByAxisId2(data, _items, nume
       var stackGroupsInitialValue = {};
       group.stackGroups = Object.keys(group.stackGroups).reduce(function(res, stackId) {
         var g2 = group.stackGroups[stackId];
-        return _objectSpread$o(_objectSpread$o({}, res), {}, _defineProperty$r({}, stackId, {
+        return _objectSpread$p(_objectSpread$p({}, res), {}, _defineProperty$s({}, stackId, {
           numericAxisId,
           cateAxisId,
           items: g2.items,
@@ -18922,7 +18946,7 @@ var getStackGroupsByAxisId = function getStackGroupsByAxisId2(data, _items, nume
         }));
       }, stackGroupsInitialValue);
     }
-    return _objectSpread$o(_objectSpread$o({}, result), {}, _defineProperty$r({}, axisId, group));
+    return _objectSpread$p(_objectSpread$p({}, result), {}, _defineProperty$s({}, axisId, group));
   }, axisStackGroupsInitialValue);
 };
 var getTicksOfScale = function getTicksOfScale2(scale2, opts) {
@@ -18977,7 +19001,7 @@ var getBaseValueOfBar = function getBaseValueOfBar2(_ref7) {
 };
 var getStackedDataOfItem = function getStackedDataOfItem2(item, stackGroups) {
   var _item$type3;
-  var defaultedProps = (_item$type3 = item.type) !== null && _item$type3 !== void 0 && _item$type3.defaultProps ? _objectSpread$o(_objectSpread$o({}, item.type.defaultProps), item.props) : item.props;
+  var defaultedProps = (_item$type3 = item.type) !== null && _item$type3 !== void 0 && _item$type3.defaultProps ? _objectSpread$p(_objectSpread$p({}, item.type.defaultProps), item.props) : item.props;
   var stackId = defaultedProps.stackId;
   if (isNumOrStr(stackId)) {
     var group = stackGroups[stackId];
@@ -19069,9 +19093,9 @@ var parseDomainOfCategoryAxis = function parseDomainOfCategoryAxis2(specifiedDom
   return specifiedDomain;
 };
 var getTooltipItem = function getTooltipItem2(graphicalItem, payload) {
-  var defaultedProps = graphicalItem.type.defaultProps ? _objectSpread$o(_objectSpread$o({}, graphicalItem.type.defaultProps), graphicalItem.props) : graphicalItem.props;
+  var defaultedProps = graphicalItem.type.defaultProps ? _objectSpread$p(_objectSpread$p({}, graphicalItem.type.defaultProps), graphicalItem.props) : graphicalItem.props;
   var dataKey = defaultedProps.dataKey, name = defaultedProps.name, unit2 = defaultedProps.unit, formatter = defaultedProps.formatter, tooltipType = defaultedProps.tooltipType, chartType = defaultedProps.chartType, hide = defaultedProps.hide;
-  return _objectSpread$o(_objectSpread$o({}, filterProps$1(graphicalItem, false)), {}, {
+  return _objectSpread$p(_objectSpread$p({}, filterProps$1(graphicalItem, false)), {}, {
     dataKey,
     unit: unit2,
     formatter,
@@ -19084,15 +19108,15 @@ var getTooltipItem = function getTooltipItem2(graphicalItem, payload) {
     hide
   });
 };
-function _typeof$r(o) {
+function _typeof$s(o) {
   "@babel/helpers - typeof";
-  return _typeof$r = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$s = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$r(o);
+  }, _typeof$s(o);
 }
-function ownKeys$n(e3, r2) {
+function ownKeys$o(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -19102,19 +19126,19 @@ function ownKeys$n(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$n(e3) {
+function _objectSpread$o(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$n(Object(t2), true).forEach(function(r3) {
-      _defineProperty$q(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$n(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$o(Object(t2), true).forEach(function(r3) {
+      _defineProperty$r(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$o(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$q(obj, key, value) {
-  key = _toPropertyKey$q(key);
+function _defineProperty$r(obj, key, value) {
+  key = _toPropertyKey$r(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -19122,16 +19146,16 @@ function _defineProperty$q(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$q(t2) {
-  var i = _toPrimitive$q(t2, "string");
-  return "symbol" == _typeof$r(i) ? i : i + "";
+function _toPropertyKey$r(t2) {
+  var i = _toPrimitive$r(t2, "string");
+  return "symbol" == _typeof$s(i) ? i : i + "";
 }
-function _toPrimitive$q(t2, r2) {
-  if ("object" != _typeof$r(t2) || !t2) return t2;
+function _toPrimitive$r(t2, r2) {
+  if ("object" != _typeof$s(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$r(i)) return i;
+    if ("object" != _typeof$s(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -19228,22 +19252,22 @@ var inRangeOfSector = function inRangeOfSector2(_ref5, sector) {
     inRange = formatAngle >= endAngle && formatAngle <= startAngle;
   }
   if (inRange) {
-    return _objectSpread$n(_objectSpread$n({}, sector), {}, {
+    return _objectSpread$o(_objectSpread$o({}, sector), {}, {
       radius,
       angle: reverseFormatAngleOfSetor(formatAngle, sector)
     });
   }
   return null;
 };
-function _typeof$q(o) {
+function _typeof$r(o) {
   "@babel/helpers - typeof";
-  return _typeof$q = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$r = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$q(o);
+  }, _typeof$r(o);
 }
-var _excluded$8 = ["offset"];
+var _excluded$9 = ["offset"];
 function _toConsumableArray$6(arr) {
   return _arrayWithoutHoles$6(arr) || _iterableToArray$7(arr) || _unsupportedIterableToArray$a(arr) || _nonIterableSpread$6();
 }
@@ -19269,9 +19293,9 @@ function _arrayLikeToArray$a(arr, len) {
   for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
   return arr2;
 }
-function _objectWithoutProperties$8(source, excluded) {
+function _objectWithoutProperties$9(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$8(source, excluded);
+  var target = _objectWithoutPropertiesLoose$9(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -19284,7 +19308,7 @@ function _objectWithoutProperties$8(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$8(source, excluded) {
+function _objectWithoutPropertiesLoose$9(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -19295,7 +19319,7 @@ function _objectWithoutPropertiesLoose$8(source, excluded) {
   }
   return target;
 }
-function ownKeys$m(e3, r2) {
+function ownKeys$n(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -19305,19 +19329,19 @@ function ownKeys$m(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$m(e3) {
+function _objectSpread$n(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$m(Object(t2), true).forEach(function(r3) {
-      _defineProperty$p(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$m(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$n(Object(t2), true).forEach(function(r3) {
+      _defineProperty$q(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$n(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$p(obj, key, value) {
-  key = _toPropertyKey$p(key);
+function _defineProperty$q(obj, key, value) {
+  key = _toPropertyKey$q(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -19325,22 +19349,22 @@ function _defineProperty$p(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$p(t2) {
-  var i = _toPrimitive$p(t2, "string");
-  return "symbol" == _typeof$q(i) ? i : i + "";
+function _toPropertyKey$q(t2) {
+  var i = _toPrimitive$q(t2, "string");
+  return "symbol" == _typeof$r(i) ? i : i + "";
 }
-function _toPrimitive$p(t2, r2) {
-  if ("object" != _typeof$q(t2) || !t2) return t2;
+function _toPrimitive$q(t2, r2) {
+  if ("object" != _typeof$r(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$q(i)) return i;
+    if ("object" != _typeof$r(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-function _extends$h() {
-  _extends$h = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$i() {
+  _extends$i = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -19351,7 +19375,7 @@ function _extends$h() {
     }
     return target;
   };
-  return _extends$h.apply(this, arguments);
+  return _extends$i.apply(this, arguments);
 }
 var getLabel = function getLabel2(props) {
   var value = props.value, formatter = props.formatter;
@@ -19388,7 +19412,7 @@ var renderRadialLabel = function renderRadialLabel2(labelProps, label, attrs) {
   var endPoint = polarToCartesian(cx, cy, radius, labelAngle + (direction ? 1 : -1) * 359);
   var path = "M".concat(startPoint.x, ",").concat(startPoint.y, "\n    A").concat(radius, ",").concat(radius, ",0,1,").concat(direction ? 0 : 1, ",\n    ").concat(endPoint.x, ",").concat(endPoint.y);
   var id2 = isNil$1(labelProps.id) ? uniqueId("recharts-radial-line-") : labelProps.id;
-  return /* @__PURE__ */ React.createElement("text", _extends$h({}, attrs, {
+  return /* @__PURE__ */ React.createElement("text", _extends$i({}, attrs, {
     dominantBaseline: "central",
     className: clsx("recharts-radial-bar-label", className)
   }), /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("path", {
@@ -19462,7 +19486,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
       textAnchor: "middle",
       verticalAnchor: verticalEnd
     };
-    return _objectSpread$m(_objectSpread$m({}, attrs), parentViewBox ? {
+    return _objectSpread$n(_objectSpread$n({}, attrs), parentViewBox ? {
       height: Math.max(y2 - parentViewBox.y, 0),
       width
     } : {});
@@ -19474,7 +19498,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
       textAnchor: "middle",
       verticalAnchor: verticalStart
     };
-    return _objectSpread$m(_objectSpread$m({}, _attrs), parentViewBox ? {
+    return _objectSpread$n(_objectSpread$n({}, _attrs), parentViewBox ? {
       height: Math.max(parentViewBox.y + parentViewBox.height - (y2 + height), 0),
       width
     } : {});
@@ -19486,7 +19510,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
       textAnchor: horizontalEnd,
       verticalAnchor: "middle"
     };
-    return _objectSpread$m(_objectSpread$m({}, _attrs2), parentViewBox ? {
+    return _objectSpread$n(_objectSpread$n({}, _attrs2), parentViewBox ? {
       width: Math.max(_attrs2.x - parentViewBox.x, 0),
       height
     } : {});
@@ -19498,7 +19522,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
       textAnchor: horizontalStart,
       verticalAnchor: "middle"
     };
-    return _objectSpread$m(_objectSpread$m({}, _attrs3), parentViewBox ? {
+    return _objectSpread$n(_objectSpread$n({}, _attrs3), parentViewBox ? {
       width: Math.max(parentViewBox.x + parentViewBox.width - _attrs3.x, 0),
       height
     } : {});
@@ -19508,7 +19532,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     height
   } : {};
   if (position === "insideLeft") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + horizontalOffset,
       y: y2 + height / 2,
       textAnchor: horizontalStart,
@@ -19516,7 +19540,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideRight") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + width - horizontalOffset,
       y: y2 + height / 2,
       textAnchor: horizontalEnd,
@@ -19524,7 +19548,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideTop") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + width / 2,
       y: y2 + verticalOffset,
       textAnchor: "middle",
@@ -19532,7 +19556,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideBottom") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + width / 2,
       y: y2 + height - verticalOffset,
       textAnchor: "middle",
@@ -19540,7 +19564,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideTopLeft") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + horizontalOffset,
       y: y2 + verticalOffset,
       textAnchor: horizontalStart,
@@ -19548,7 +19572,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideTopRight") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + width - horizontalOffset,
       y: y2 + verticalOffset,
       textAnchor: horizontalEnd,
@@ -19556,7 +19580,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideBottomLeft") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + horizontalOffset,
       y: y2 + height - verticalOffset,
       textAnchor: horizontalStart,
@@ -19564,7 +19588,7 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (position === "insideBottomRight") {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + width - horizontalOffset,
       y: y2 + height - verticalOffset,
       textAnchor: horizontalEnd,
@@ -19572,14 +19596,14 @@ var getAttrsOfCartesianLabel = function getAttrsOfCartesianLabel2(props) {
     }, sizeAttrs);
   }
   if (isObject$a(position) && (isNumber(position.x) || isPercent(position.x)) && (isNumber(position.y) || isPercent(position.y))) {
-    return _objectSpread$m({
+    return _objectSpread$n({
       x: x2 + getPercentValue(position.x, width),
       y: y2 + getPercentValue(position.y, height),
       textAnchor: "end",
       verticalAnchor: "end"
     }, sizeAttrs);
   }
-  return _objectSpread$m({
+  return _objectSpread$n({
     x: x2 + width / 2,
     y: y2 + height / 2,
     textAnchor: "middle",
@@ -19590,8 +19614,8 @@ var isPolar = function isPolar2(viewBox) {
   return "cx" in viewBox && isNumber(viewBox.cx);
 };
 function Label(_ref4) {
-  var _ref4$offset = _ref4.offset, offset = _ref4$offset === void 0 ? 5 : _ref4$offset, restProps = _objectWithoutProperties$8(_ref4, _excluded$8);
-  var props = _objectSpread$m({
+  var _ref4$offset = _ref4.offset, offset = _ref4$offset === void 0 ? 5 : _ref4$offset, restProps = _objectWithoutProperties$9(_ref4, _excluded$9);
+  var props = _objectSpread$n({
     offset
   }, restProps);
   var viewBox = props.viewBox, position = props.position, value = props.value, children = props.children, content = props.content, _props$className = props.className, className = _props$className === void 0 ? "" : _props$className, textBreakAll = props.textBreakAll;
@@ -19616,7 +19640,7 @@ function Label(_ref4) {
     return renderRadialLabel(props, label, attrs);
   }
   var positionAttrs = isPolarLabel ? getAttrsOfPolarLabel(props) : getAttrsOfCartesianLabel(props);
-  return /* @__PURE__ */ React.createElement(Text, _extends$h({
+  return /* @__PURE__ */ React.createElement(Text, _extends$i({
     className: clsx("recharts-label", className)
   }, attrs, positionAttrs, {
     breakAll: textBreakAll
@@ -19708,7 +19732,7 @@ var parseLabel = function parseLabel2(label, viewBox) {
     });
   }
   if (isObject$a(label)) {
-    return /* @__PURE__ */ React.createElement(Label, _extends$h({
+    return /* @__PURE__ */ React.createElement(Label, _extends$i({
       viewBox
     }, label, {
       key: "label-implicit"
@@ -19744,15 +19768,15 @@ function last(array2) {
 }
 var last_1 = last;
 const last$1 = /* @__PURE__ */ getDefaultExportFromCjs(last_1);
-function _typeof$p(o) {
+function _typeof$q(o) {
   "@babel/helpers - typeof";
-  return _typeof$p = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$q = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$p(o);
+  }, _typeof$q(o);
 }
-var _excluded$7 = ["valueAccessor"], _excluded2$2 = ["data", "dataKey", "clockWise", "id", "textBreakAll"];
+var _excluded$8 = ["valueAccessor"], _excluded2$3 = ["data", "dataKey", "clockWise", "id", "textBreakAll"];
 function _toConsumableArray$5(arr) {
   return _arrayWithoutHoles$5(arr) || _iterableToArray$6(arr) || _unsupportedIterableToArray$9(arr) || _nonIterableSpread$5();
 }
@@ -19777,6 +19801,173 @@ function _arrayLikeToArray$9(arr, len) {
   if (len == null || len > arr.length) len = arr.length;
   for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
   return arr2;
+}
+function _extends$h() {
+  _extends$h = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends$h.apply(this, arguments);
+}
+function ownKeys$m(e3, r2) {
+  var t2 = Object.keys(e3);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e3);
+    r2 && (o = o.filter(function(r3) {
+      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
+    })), t2.push.apply(t2, o);
+  }
+  return t2;
+}
+function _objectSpread$m(e3) {
+  for (var r2 = 1; r2 < arguments.length; r2++) {
+    var t2 = null != arguments[r2] ? arguments[r2] : {};
+    r2 % 2 ? ownKeys$m(Object(t2), true).forEach(function(r3) {
+      _defineProperty$p(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$m(Object(t2)).forEach(function(r3) {
+      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
+    });
+  }
+  return e3;
+}
+function _defineProperty$p(obj, key, value) {
+  key = _toPropertyKey$p(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey$p(t2) {
+  var i = _toPrimitive$p(t2, "string");
+  return "symbol" == _typeof$q(i) ? i : i + "";
+}
+function _toPrimitive$p(t2, r2) {
+  if ("object" != _typeof$q(t2) || !t2) return t2;
+  var e3 = t2[Symbol.toPrimitive];
+  if (void 0 !== e3) {
+    var i = e3.call(t2, r2);
+    if ("object" != _typeof$q(i)) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r2 ? String : Number)(t2);
+}
+function _objectWithoutProperties$8(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$8(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose$8(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+var defaultAccessor = function defaultAccessor2(entry) {
+  return Array.isArray(entry.value) ? last$1(entry.value) : entry.value;
+};
+function LabelList(_ref) {
+  var _ref$valueAccessor = _ref.valueAccessor, valueAccessor = _ref$valueAccessor === void 0 ? defaultAccessor : _ref$valueAccessor, restProps = _objectWithoutProperties$8(_ref, _excluded$8);
+  var data = restProps.data, dataKey = restProps.dataKey, clockWise = restProps.clockWise, id2 = restProps.id, textBreakAll = restProps.textBreakAll, others = _objectWithoutProperties$8(restProps, _excluded2$3);
+  if (!data || !data.length) {
+    return null;
+  }
+  return /* @__PURE__ */ React.createElement(Layer, {
+    className: "recharts-label-list"
+  }, data.map(function(entry, index) {
+    var value = isNil$1(dataKey) ? valueAccessor(entry, index) : getValueByDataKey(entry && entry.payload, dataKey);
+    var idProps = isNil$1(id2) ? {} : {
+      id: "".concat(id2, "-").concat(index)
+    };
+    return /* @__PURE__ */ React.createElement(Label, _extends$h({}, filterProps$1(entry, true), others, idProps, {
+      parentViewBox: entry.parentViewBox,
+      value,
+      textBreakAll,
+      viewBox: Label.parseViewBox(isNil$1(clockWise) ? entry : _objectSpread$m(_objectSpread$m({}, entry), {}, {
+        clockWise
+      })),
+      key: "label-".concat(index),
+      index
+    }));
+  }));
+}
+LabelList.displayName = "LabelList";
+function parseLabelList(label, data) {
+  if (!label) {
+    return null;
+  }
+  if (label === true) {
+    return /* @__PURE__ */ React.createElement(LabelList, {
+      key: "labelList-implicit",
+      data
+    });
+  }
+  if (/* @__PURE__ */ React.isValidElement(label) || isFunction$3(label)) {
+    return /* @__PURE__ */ React.createElement(LabelList, {
+      key: "labelList-implicit",
+      data,
+      content: label
+    });
+  }
+  if (isObject$a(label)) {
+    return /* @__PURE__ */ React.createElement(LabelList, _extends$h({
+      data
+    }, label, {
+      key: "labelList-implicit"
+    }));
+  }
+  return null;
+}
+function renderCallByParent2(parentProps, data) {
+  var checkPropsLabel = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
+  if (!parentProps || !parentProps.children && checkPropsLabel && !parentProps.label) {
+    return null;
+  }
+  var children = parentProps.children;
+  var explicitChildren = findAllByType(children, LabelList).map(function(child, index) {
+    return /* @__PURE__ */ reactExports.cloneElement(child, {
+      data,
+      // eslint-disable-next-line react/no-array-index-key
+      key: "labelList-".concat(index)
+    });
+  });
+  if (!checkPropsLabel) {
+    return explicitChildren;
+  }
+  var implicitLabelList = parseLabelList(parentProps.label, data);
+  return [implicitLabelList].concat(_toConsumableArray$5(explicitChildren));
+}
+LabelList.renderCallByParent = renderCallByParent2;
+function _typeof$p(o) {
+  "@babel/helpers - typeof";
+  return _typeof$p = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$p(o);
 }
 function _extends$g() {
   _extends$g = Object.assign ? Object.assign.bind() : function(target) {
@@ -19832,173 +20023,6 @@ function _toPrimitive$o(t2, r2) {
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
     if ("object" != _typeof$p(i)) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r2 ? String : Number)(t2);
-}
-function _objectWithoutProperties$7(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$7(source, excluded);
-  var key, i;
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _objectWithoutPropertiesLoose$7(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  for (var key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-var defaultAccessor = function defaultAccessor2(entry) {
-  return Array.isArray(entry.value) ? last$1(entry.value) : entry.value;
-};
-function LabelList(_ref) {
-  var _ref$valueAccessor = _ref.valueAccessor, valueAccessor = _ref$valueAccessor === void 0 ? defaultAccessor : _ref$valueAccessor, restProps = _objectWithoutProperties$7(_ref, _excluded$7);
-  var data = restProps.data, dataKey = restProps.dataKey, clockWise = restProps.clockWise, id2 = restProps.id, textBreakAll = restProps.textBreakAll, others = _objectWithoutProperties$7(restProps, _excluded2$2);
-  if (!data || !data.length) {
-    return null;
-  }
-  return /* @__PURE__ */ React.createElement(Layer, {
-    className: "recharts-label-list"
-  }, data.map(function(entry, index) {
-    var value = isNil$1(dataKey) ? valueAccessor(entry, index) : getValueByDataKey(entry && entry.payload, dataKey);
-    var idProps = isNil$1(id2) ? {} : {
-      id: "".concat(id2, "-").concat(index)
-    };
-    return /* @__PURE__ */ React.createElement(Label, _extends$g({}, filterProps$1(entry, true), others, idProps, {
-      parentViewBox: entry.parentViewBox,
-      value,
-      textBreakAll,
-      viewBox: Label.parseViewBox(isNil$1(clockWise) ? entry : _objectSpread$l(_objectSpread$l({}, entry), {}, {
-        clockWise
-      })),
-      key: "label-".concat(index),
-      index
-    }));
-  }));
-}
-LabelList.displayName = "LabelList";
-function parseLabelList(label, data) {
-  if (!label) {
-    return null;
-  }
-  if (label === true) {
-    return /* @__PURE__ */ React.createElement(LabelList, {
-      key: "labelList-implicit",
-      data
-    });
-  }
-  if (/* @__PURE__ */ React.isValidElement(label) || isFunction$3(label)) {
-    return /* @__PURE__ */ React.createElement(LabelList, {
-      key: "labelList-implicit",
-      data,
-      content: label
-    });
-  }
-  if (isObject$a(label)) {
-    return /* @__PURE__ */ React.createElement(LabelList, _extends$g({
-      data
-    }, label, {
-      key: "labelList-implicit"
-    }));
-  }
-  return null;
-}
-function renderCallByParent2(parentProps, data) {
-  var checkPropsLabel = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
-  if (!parentProps || !parentProps.children && checkPropsLabel && !parentProps.label) {
-    return null;
-  }
-  var children = parentProps.children;
-  var explicitChildren = findAllByType(children, LabelList).map(function(child, index) {
-    return /* @__PURE__ */ reactExports.cloneElement(child, {
-      data,
-      // eslint-disable-next-line react/no-array-index-key
-      key: "labelList-".concat(index)
-    });
-  });
-  if (!checkPropsLabel) {
-    return explicitChildren;
-  }
-  var implicitLabelList = parseLabelList(parentProps.label, data);
-  return [implicitLabelList].concat(_toConsumableArray$5(explicitChildren));
-}
-LabelList.renderCallByParent = renderCallByParent2;
-function _typeof$o(o) {
-  "@babel/helpers - typeof";
-  return _typeof$o = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-    return typeof o2;
-  } : function(o2) {
-    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$o(o);
-}
-function _extends$f() {
-  _extends$f = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends$f.apply(this, arguments);
-}
-function ownKeys$k(e3, r2) {
-  var t2 = Object.keys(e3);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e3);
-    r2 && (o = o.filter(function(r3) {
-      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
-    })), t2.push.apply(t2, o);
-  }
-  return t2;
-}
-function _objectSpread$k(e3) {
-  for (var r2 = 1; r2 < arguments.length; r2++) {
-    var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$k(Object(t2), true).forEach(function(r3) {
-      _defineProperty$n(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$k(Object(t2)).forEach(function(r3) {
-      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
-    });
-  }
-  return e3;
-}
-function _defineProperty$n(obj, key, value) {
-  key = _toPropertyKey$n(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey$n(t2) {
-  var i = _toPrimitive$n(t2, "string");
-  return "symbol" == _typeof$o(i) ? i : i + "";
-}
-function _toPrimitive$n(t2, r2) {
-  if ("object" != _typeof$o(t2) || !t2) return t2;
-  var e3 = t2[Symbol.toPrimitive];
-  if (void 0 !== e3) {
-    var i = e3.call(t2, r2);
-    if ("object" != _typeof$o(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -20107,7 +20131,7 @@ var getSectorWithCorner = function getSectorWithCorner2(_ref3) {
   }
   return path;
 };
-var defaultProps$2 = {
+var defaultProps$3 = {
   cx: 0,
   cy: 0,
   innerRadius: 0,
@@ -20119,7 +20143,7 @@ var defaultProps$2 = {
   cornerIsExternal: false
 };
 var Sector = function Sector2(sectorProps) {
-  var props = _objectSpread$k(_objectSpread$k({}, defaultProps$2), sectorProps);
+  var props = _objectSpread$l(_objectSpread$l({}, defaultProps$3), sectorProps);
   var cx = props.cx, cy = props.cy, innerRadius = props.innerRadius, outerRadius = props.outerRadius, cornerRadius = props.cornerRadius, forceCornerRadius = props.forceCornerRadius, cornerIsExternal = props.cornerIsExternal, startAngle = props.startAngle, endAngle = props.endAngle, className = props.className;
   if (outerRadius < innerRadius || startAngle === endAngle) {
     return null;
@@ -20150,22 +20174,22 @@ var Sector = function Sector2(sectorProps) {
       endAngle
     });
   }
-  return /* @__PURE__ */ React.createElement("path", _extends$f({}, filterProps$1(props, true), {
+  return /* @__PURE__ */ React.createElement("path", _extends$g({}, filterProps$1(props, true), {
     className: layerClass,
     d: path,
     role: "img"
   }));
 };
-function _typeof$n(o) {
+function _typeof$o(o) {
   "@babel/helpers - typeof";
-  return _typeof$n = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$o = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$n(o);
+  }, _typeof$o(o);
 }
-function _extends$e() {
-  _extends$e = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$f() {
+  _extends$f = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -20176,9 +20200,9 @@ function _extends$e() {
     }
     return target;
   };
-  return _extends$e.apply(this, arguments);
+  return _extends$f.apply(this, arguments);
 }
-function ownKeys$j(e3, r2) {
+function ownKeys$k(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -20188,19 +20212,19 @@ function ownKeys$j(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$j(e3) {
+function _objectSpread$k(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$j(Object(t2), true).forEach(function(r3) {
-      _defineProperty$m(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$j(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$k(Object(t2), true).forEach(function(r3) {
+      _defineProperty$n(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$k(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$m(obj, key, value) {
-  key = _toPropertyKey$m(key);
+function _defineProperty$n(obj, key, value) {
+  key = _toPropertyKey$n(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -20208,16 +20232,16 @@ function _defineProperty$m(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$m(t2) {
-  var i = _toPrimitive$m(t2, "string");
-  return "symbol" == _typeof$n(i) ? i : i + "";
+function _toPropertyKey$n(t2) {
+  var i = _toPrimitive$n(t2, "string");
+  return "symbol" == _typeof$o(i) ? i : i + "";
 }
-function _toPrimitive$m(t2, r2) {
-  if ("object" != _typeof$n(t2) || !t2) return t2;
+function _toPrimitive$n(t2, r2) {
+  if ("object" != _typeof$o(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$n(i)) return i;
+    if ("object" != _typeof$o(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -20268,7 +20292,7 @@ var getPath$1 = function getPath(_ref) {
       return defined(base);
     }) : baseLine;
     var areaPoints = formatPoints.map(function(entry, index) {
-      return _objectSpread$j(_objectSpread$j({}, entry), {}, {
+      return _objectSpread$k(_objectSpread$k({}, entry), {}, {
         base: formatBaseLine[index]
       });
     });
@@ -20300,7 +20324,7 @@ var Curve = function Curve2(props) {
     return null;
   }
   var realPath = points && points.length ? getPath$1(props) : path;
-  return /* @__PURE__ */ reactExports.createElement("path", _extends$e({}, filterProps$1(props, false), adaptEventHandlers(props), {
+  return /* @__PURE__ */ reactExports.createElement("path", _extends$f({}, filterProps$1(props, false), adaptEventHandlers(props), {
     className: clsx("recharts-curve", className),
     d: realPath,
     ref: pathRef
@@ -20403,7 +20427,7 @@ function sameValueZeroEqual(a2, b2) {
 const PREACT_VNODE = "__v";
 const PREACT_OWNER = "__o";
 const REACT_OWNER = "_owner";
-const { getOwnPropertyDescriptor, keys } = Object;
+const { getOwnPropertyDescriptor, keys: keys$1 } = Object;
 function areArrayBuffersEqual(a2, b2) {
   return a2.byteLength === b2.byteLength && areTypedArraysEqual(new Uint8Array(a2), new Uint8Array(b2));
 }
@@ -20476,9 +20500,9 @@ function areMapsEqual(a2, b2, state) {
 }
 const areNumbersEqual = sameValueZeroEqual;
 function areObjectsEqual(a2, b2, state) {
-  const properties = keys(a2);
+  const properties = keys$1(a2);
   let index = properties.length;
-  if (keys(b2).length !== index) {
+  if (keys$1(b2).length !== index) {
     return false;
   }
   while (index-- > 0) {
@@ -20816,13 +20840,13 @@ function setRafTimeout(callback) {
   };
   requestAnimationFrame(shouldUpdate);
 }
-function _typeof$m(o) {
+function _typeof$n(o) {
   "@babel/helpers - typeof";
-  return _typeof$m = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$n = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$m(o);
+  }, _typeof$n(o);
 }
 function _toArray(arr) {
   return _arrayWithHoles$6(arr) || _iterableToArray$5(arr) || _unsupportedIterableToArray$8(arr) || _nonIterableRest$6();
@@ -20873,7 +20897,7 @@ function createAnimateManager() {
       setRafTimeout(setStyle3.bind(null, restStyles));
       return;
     }
-    if (_typeof$m(_style) === "object") {
+    if (_typeof$n(_style) === "object") {
       currStyle = _style;
       handleChange(currStyle);
     }
@@ -20899,15 +20923,15 @@ function createAnimateManager() {
     }
   };
 }
-function _typeof$l(o) {
+function _typeof$m(o) {
   "@babel/helpers - typeof";
-  return _typeof$l = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$m = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$l(o);
+  }, _typeof$m(o);
 }
-function ownKeys$i(e3, r2) {
+function ownKeys$j(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -20917,19 +20941,19 @@ function ownKeys$i(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$i(e3) {
+function _objectSpread$j(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$i(Object(t2), true).forEach(function(r22) {
-      _defineProperty$l(e3, r22, t2[r22]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$i(Object(t2)).forEach(function(r22) {
+    r2 % 2 ? ownKeys$j(Object(t2), true).forEach(function(r22) {
+      _defineProperty$m(e3, r22, t2[r22]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$j(Object(t2)).forEach(function(r22) {
       Object.defineProperty(e3, r22, Object.getOwnPropertyDescriptor(t2, r22));
     });
   }
   return e3;
 }
-function _defineProperty$l(obj, key, value) {
-  key = _toPropertyKey$l(key);
+function _defineProperty$m(obj, key, value) {
+  key = _toPropertyKey$m(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -20937,16 +20961,16 @@ function _defineProperty$l(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$l(arg) {
-  var key = _toPrimitive$l(arg, "string");
-  return _typeof$l(key) === "symbol" ? key : String(key);
+function _toPropertyKey$m(arg) {
+  var key = _toPrimitive$m(arg, "string");
+  return _typeof$m(key) === "symbol" ? key : String(key);
 }
-function _toPrimitive$l(input, hint) {
-  if (_typeof$l(input) !== "object" || input === null) return input;
+function _toPrimitive$m(input, hint) {
+  if (_typeof$m(input) !== "object" || input === null) return input;
   var prim = input[Symbol.toPrimitive];
   if (prim !== void 0) {
     var res = prim.call(input, hint);
-    if (_typeof$l(res) !== "object") return res;
+    if (_typeof$m(res) !== "object") return res;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return (hint === "string" ? String : Number)(input);
@@ -20968,7 +20992,7 @@ var getDashCase = function getDashCase2(name) {
 };
 var mapObject = function mapObject2(fn, obj) {
   return Object.keys(obj).reduce(function(res, key) {
-    return _objectSpread$i(_objectSpread$i({}, res), {}, _defineProperty$l({}, key, fn(key, obj[key])));
+    return _objectSpread$j(_objectSpread$j({}, res), {}, _defineProperty$m({}, key, fn(key, obj[key])));
   }, {});
 };
 var getTransitionVal = function getTransitionVal2(props, duration, easing) {
@@ -21178,13 +21202,13 @@ var configEasing = function configEasing2() {
   }
   return null;
 };
-function _typeof$k(o) {
+function _typeof$l(o) {
   "@babel/helpers - typeof";
-  return _typeof$k = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$l = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$k(o);
+  }, _typeof$l(o);
 }
 function _toConsumableArray$3(arr) {
   return _arrayWithoutHoles$3(arr) || _iterableToArray$3(arr) || _unsupportedIterableToArray$6(arr) || _nonIterableSpread$3();
@@ -21198,7 +21222,7 @@ function _iterableToArray$3(iter) {
 function _arrayWithoutHoles$3(arr) {
   if (Array.isArray(arr)) return _arrayLikeToArray$6(arr);
 }
-function ownKeys$h(e3, r2) {
+function ownKeys$i(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -21208,19 +21232,19 @@ function ownKeys$h(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$h(e3) {
+function _objectSpread$i(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$h(Object(t2), true).forEach(function(r3) {
-      _defineProperty$k(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$h(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$i(Object(t2), true).forEach(function(r3) {
+      _defineProperty$l(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$i(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$k(obj, key, value) {
-  key = _toPropertyKey$k(key);
+function _defineProperty$l(obj, key, value) {
+  key = _toPropertyKey$l(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -21228,16 +21252,16 @@ function _defineProperty$k(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$k(arg) {
-  var key = _toPrimitive$k(arg, "string");
-  return _typeof$k(key) === "symbol" ? key : String(key);
+function _toPropertyKey$l(arg) {
+  var key = _toPrimitive$l(arg, "string");
+  return _typeof$l(key) === "symbol" ? key : String(key);
 }
-function _toPrimitive$k(input, hint) {
-  if (_typeof$k(input) !== "object" || input === null) return input;
+function _toPrimitive$l(input, hint) {
+  if (_typeof$l(input) !== "object" || input === null) return input;
   var prim = input[Symbol.toPrimitive];
   if (prim !== void 0) {
     var res = prim.call(input, hint);
-    if (_typeof$k(res) !== "object") return res;
+    if (_typeof$l(res) !== "object") return res;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return (hint === "string" ? String : Number)(input);
@@ -21294,7 +21318,7 @@ var calStepperVals = function calStepperVals2(easing, preVals, steps) {
   var nextStepVals = mapObject(function(key, val) {
     if (needContinue(val)) {
       var _easing = easing(val.from, val.to, val.velocity), _easing2 = _slicedToArray$4(_easing, 2), newX = _easing2[0], newV = _easing2[1];
-      return _objectSpread$h(_objectSpread$h({}, val), {}, {
+      return _objectSpread$i(_objectSpread$i({}, val), {}, {
         from: newX,
         velocity: newV
       });
@@ -21304,7 +21328,7 @@ var calStepperVals = function calStepperVals2(easing, preVals, steps) {
   if (steps < 1) {
     return mapObject(function(key, val) {
       if (needContinue(val)) {
-        return _objectSpread$h(_objectSpread$h({}, val), {}, {
+        return _objectSpread$i(_objectSpread$i({}, val), {}, {
           velocity: alpha$1(val.velocity, nextStepVals[key].velocity, steps),
           from: alpha$1(val.from, nextStepVals[key].from, steps)
         });
@@ -21317,10 +21341,10 @@ var calStepperVals = function calStepperVals2(easing, preVals, steps) {
 const configUpdate = function(from, to, easing, duration, render) {
   var interKeys = getIntersectionKeys(from, to);
   var timingStyle = interKeys.reduce(function(res, key) {
-    return _objectSpread$h(_objectSpread$h({}, res), {}, _defineProperty$k({}, key, [from[key], to[key]]));
+    return _objectSpread$i(_objectSpread$i({}, res), {}, _defineProperty$l({}, key, [from[key], to[key]]));
   }, {});
   var stepperStyle = interKeys.reduce(function(res, key) {
-    return _objectSpread$h(_objectSpread$h({}, res), {}, _defineProperty$k({}, key, {
+    return _objectSpread$i(_objectSpread$i({}, res), {}, _defineProperty$l({}, key, {
       from: from[key],
       velocity: 0,
       to: to[key]
@@ -21347,7 +21371,7 @@ const configUpdate = function(from, to, easing, duration, render) {
     var deltaTime = now2 - preTime;
     var steps = deltaTime / easing.dt;
     stepperStyle = calStepperVals(easing, stepperStyle, steps);
-    render(_objectSpread$h(_objectSpread$h(_objectSpread$h({}, from), to), getCurrStyle()));
+    render(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, from), to), getCurrStyle()));
     preTime = now2;
     if (!shouldStopAnimation()) {
       cafId = requestAnimationFrame(update);
@@ -21361,14 +21385,14 @@ const configUpdate = function(from, to, easing, duration, render) {
     var currStyle = mapObject(function(key, val) {
       return alpha$1.apply(void 0, _toConsumableArray$3(val).concat([easing(t2)]));
     }, timingStyle);
-    render(_objectSpread$h(_objectSpread$h(_objectSpread$h({}, from), to), currStyle));
+    render(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, from), to), currStyle));
     if (t2 < 1) {
       cafId = requestAnimationFrame(update);
     } else {
       var finalStyle = mapObject(function(key, val) {
         return alpha$1.apply(void 0, _toConsumableArray$3(val).concat([easing(1)]));
       }, timingStyle);
-      render(_objectSpread$h(_objectSpread$h(_objectSpread$h({}, from), to), finalStyle));
+      render(_objectSpread$i(_objectSpread$i(_objectSpread$i({}, from), to), finalStyle));
     }
   };
   update = easing.isStepper ? stepperUpdate : timingUpdate;
@@ -21379,18 +21403,18 @@ const configUpdate = function(from, to, easing, duration, render) {
     };
   };
 };
-function _typeof$j(o) {
+function _typeof$k(o) {
   "@babel/helpers - typeof";
-  return _typeof$j = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$k = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$j(o);
+  }, _typeof$k(o);
 }
-var _excluded$6 = ["children", "begin", "duration", "attributeName", "easing", "isActive", "steps", "from", "to", "canBegin", "onAnimationEnd", "shouldReAnimate", "onAnimationReStart"];
-function _objectWithoutProperties$6(source, excluded) {
+var _excluded$7 = ["children", "begin", "duration", "attributeName", "easing", "isActive", "steps", "from", "to", "canBegin", "onAnimationEnd", "shouldReAnimate", "onAnimationReStart"];
+function _objectWithoutProperties$7(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$6(source, excluded);
+  var target = _objectWithoutPropertiesLoose$7(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -21403,7 +21427,7 @@ function _objectWithoutProperties$6(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$6(source, excluded) {
+function _objectWithoutPropertiesLoose$7(source, excluded) {
   if (source == null) return {};
   var target = {};
   var sourceKeys = Object.keys(source);
@@ -21440,7 +21464,7 @@ function _arrayLikeToArray$5(arr, len) {
   for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
   return arr2;
 }
-function ownKeys$g(e3, r2) {
+function ownKeys$h(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -21450,19 +21474,19 @@ function ownKeys$g(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$g(e3) {
+function _objectSpread$h(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$g(Object(t2), true).forEach(function(r3) {
-      _defineProperty$j(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$g(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$h(Object(t2), true).forEach(function(r3) {
+      _defineProperty$k(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$h(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$j(obj, key, value) {
-  key = _toPropertyKey$j(key);
+function _defineProperty$k(obj, key, value) {
+  key = _toPropertyKey$k(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -21481,7 +21505,7 @@ function _defineProperties$b(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$j(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$k(descriptor.key), descriptor);
   }
 }
 function _createClass$b(Constructor, protoProps, staticProps) {
@@ -21489,16 +21513,16 @@ function _createClass$b(Constructor, protoProps, staticProps) {
   Object.defineProperty(Constructor, "prototype", { writable: false });
   return Constructor;
 }
-function _toPropertyKey$j(arg) {
-  var key = _toPrimitive$j(arg, "string");
-  return _typeof$j(key) === "symbol" ? key : String(key);
+function _toPropertyKey$k(arg) {
+  var key = _toPrimitive$k(arg, "string");
+  return _typeof$k(key) === "symbol" ? key : String(key);
 }
-function _toPrimitive$j(input, hint) {
-  if (_typeof$j(input) !== "object" || input === null) return input;
+function _toPrimitive$k(input, hint) {
+  if (_typeof$k(input) !== "object" || input === null) return input;
   var prim = input[Symbol.toPrimitive];
   if (prim !== void 0) {
     var res = prim.call(input, hint);
-    if (_typeof$j(res) !== "object") return res;
+    if (_typeof$k(res) !== "object") return res;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return (hint === "string" ? String : Number)(input);
@@ -21532,7 +21556,7 @@ function _createSuper(Derived) {
   };
 }
 function _possibleConstructorReturn$9(self2, call) {
-  if (call && (_typeof$j(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$k(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -21596,7 +21620,7 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
         return _possibleConstructorReturn$9(_this);
       }
       _this.state = {
-        style: attributeName ? _defineProperty$j({}, attributeName, from) : from
+        style: attributeName ? _defineProperty$k({}, attributeName, from) : from
       };
     } else {
       _this.state = {
@@ -21625,7 +21649,7 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
       }
       if (!isActive) {
         var newState = {
-          style: attributeName ? _defineProperty$j({}, attributeName, to) : to
+          style: attributeName ? _defineProperty$k({}, attributeName, to) : to
         };
         if (this.state && style) {
           if (attributeName && style[attributeName] !== to || !attributeName && style !== to) {
@@ -21647,13 +21671,13 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
       var from = isTriggered || shouldReAnimate ? currentFrom : prevProps.to;
       if (this.state && style) {
         var _newState = {
-          style: attributeName ? _defineProperty$j({}, attributeName, from) : from
+          style: attributeName ? _defineProperty$k({}, attributeName, from) : from
         };
         if (attributeName && style[attributeName] !== from || !attributeName && style !== from) {
           this.setState(_newState);
         }
       }
-      this.runAnimation(_objectSpread$g(_objectSpread$g({}, this.props), {}, {
+      this.runAnimation(_objectSpread$h(_objectSpread$h({}, this.props), {}, {
         from,
         begin: 0
       }));
@@ -21724,7 +21748,7 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
           }), duration]);
         }
         var transition = getTransitionVal(properties, duration, easing);
-        var newStyle = _objectSpread$g(_objectSpread$g(_objectSpread$g({}, preItem.style), style), {}, {
+        var newStyle = _objectSpread$h(_objectSpread$h(_objectSpread$h({}, preItem.style), style), {}, {
           transition
         });
         return [].concat(_toConsumableArray$2(sequence), [newStyle, duration, onAnimationEnd2]).filter(identity2);
@@ -21748,9 +21772,9 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
         this.runStepAnimation(props);
         return;
       }
-      var to = attributeName ? _defineProperty$j({}, attributeName, propsTo) : propsTo;
+      var to = attributeName ? _defineProperty$k({}, attributeName, propsTo) : propsTo;
       var transition = getTransitionVal(Object.keys(to), duration, easing);
-      manager.start([onAnimationStart2, begin, _objectSpread$g(_objectSpread$g({}, to), {}, {
+      manager.start([onAnimationStart2, begin, _objectSpread$h(_objectSpread$h({}, to), {}, {
         transition
       }), duration, onAnimationEnd2]);
     }
@@ -21770,7 +21794,7 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
       _this$props4.onAnimationEnd;
       _this$props4.shouldReAnimate;
       _this$props4.onAnimationReStart;
-      var others = _objectWithoutProperties$6(_this$props4, _excluded$6);
+      var others = _objectWithoutProperties$7(_this$props4, _excluded$7);
       var count = reactExports.Children.count(children);
       var stateStyle = this.state.style;
       if (typeof children === "function") {
@@ -21781,8 +21805,8 @@ var Animate = /* @__PURE__ */ function(_PureComponent) {
       }
       var cloneContainer = function cloneContainer2(container) {
         var _container$props = container.props, _container$props$styl = _container$props.style, style = _container$props$styl === void 0 ? {} : _container$props$styl, className = _container$props.className;
-        var res = /* @__PURE__ */ reactExports.cloneElement(container, _objectSpread$g(_objectSpread$g({}, others), {}, {
-          style: _objectSpread$g(_objectSpread$g({}, style), stateStyle),
+        var res = /* @__PURE__ */ reactExports.cloneElement(container, _objectSpread$h(_objectSpread$h({}, others), {}, {
+          style: _objectSpread$h(_objectSpread$h({}, style), stateStyle),
           className
         }));
         return res;
@@ -21838,16 +21862,16 @@ Animate.propTypes = {
   onAnimationStart: PropTypes.func,
   onAnimationReStart: PropTypes.func
 };
-function _typeof$i(o) {
+function _typeof$j(o) {
   "@babel/helpers - typeof";
-  return _typeof$i = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$j = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$i(o);
+  }, _typeof$j(o);
 }
-function _extends$d() {
-  _extends$d = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$e() {
+  _extends$e = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -21858,7 +21882,7 @@ function _extends$d() {
     }
     return target;
   };
-  return _extends$d.apply(this, arguments);
+  return _extends$e.apply(this, arguments);
 }
 function _slicedToArray$3(arr, i) {
   return _arrayWithHoles$3(arr) || _iterableToArrayLimit$3(arr, i) || _unsupportedIterableToArray$4(arr, i) || _nonIterableRest$3();
@@ -21901,7 +21925,7 @@ function _iterableToArrayLimit$3(r2, l2) {
 function _arrayWithHoles$3(arr) {
   if (Array.isArray(arr)) return arr;
 }
-function ownKeys$f(e3, r2) {
+function ownKeys$g(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -21911,19 +21935,19 @@ function ownKeys$f(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$f(e3) {
+function _objectSpread$g(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$f(Object(t2), true).forEach(function(r3) {
-      _defineProperty$i(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$f(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$g(Object(t2), true).forEach(function(r3) {
+      _defineProperty$j(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$g(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$i(obj, key, value) {
-  key = _toPropertyKey$i(key);
+function _defineProperty$j(obj, key, value) {
+  key = _toPropertyKey$j(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -21931,16 +21955,16 @@ function _defineProperty$i(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$i(t2) {
-  var i = _toPrimitive$i(t2, "string");
-  return "symbol" == _typeof$i(i) ? i : i + "";
+function _toPropertyKey$j(t2) {
+  var i = _toPrimitive$j(t2, "string");
+  return "symbol" == _typeof$j(i) ? i : i + "";
 }
-function _toPrimitive$i(t2, r2) {
-  if ("object" != _typeof$i(t2) || !t2) return t2;
+function _toPrimitive$j(t2, r2) {
+  if ("object" != _typeof$j(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$i(i)) return i;
+    if ("object" != _typeof$j(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -21996,7 +22020,7 @@ var isInRectangle = function isInRectangle2(point2, rect) {
   }
   return false;
 };
-var defaultProps$1 = {
+var defaultProps$2 = {
   x: 0,
   y: 0,
   width: 0,
@@ -22012,7 +22036,7 @@ var defaultProps$1 = {
   animationEasing: "ease"
 };
 var Rectangle = function Rectangle2(rectangleProps) {
-  var props = _objectSpread$f(_objectSpread$f({}, defaultProps$1), rectangleProps);
+  var props = _objectSpread$g(_objectSpread$g({}, defaultProps$2), rectangleProps);
   var pathRef = reactExports.useRef();
   var _useState = reactExports.useState(-1), _useState2 = _slicedToArray$3(_useState, 2), totalLength = _useState2[0], setTotalLength = _useState2[1];
   reactExports.useEffect(function() {
@@ -22033,7 +22057,7 @@ var Rectangle = function Rectangle2(rectangleProps) {
   }
   var layerClass = clsx("recharts-rectangle", className);
   if (!isUpdateAnimationActive) {
-    return /* @__PURE__ */ React.createElement("path", _extends$d({}, filterProps$1(props, true), {
+    return /* @__PURE__ */ React.createElement("path", _extends$e({}, filterProps$1(props, true), {
       className: layerClass,
       d: getRectanglePath(x2, y2, width, height, radius)
     }));
@@ -22066,13 +22090,49 @@ var Rectangle = function Rectangle2(rectangleProps) {
       duration: animationDuration,
       isActive: isAnimationActive,
       easing: animationEasing
-    }, /* @__PURE__ */ React.createElement("path", _extends$d({}, filterProps$1(props, true), {
+    }, /* @__PURE__ */ React.createElement("path", _extends$e({}, filterProps$1(props, true), {
       className: layerClass,
       d: getRectanglePath(currX, currY, currWidth, currHeight, radius),
       ref: pathRef
     })));
   });
 };
+function _extends$d() {
+  _extends$d = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends$d.apply(this, arguments);
+}
+var Dot = function Dot2(props) {
+  var cx = props.cx, cy = props.cy, r2 = props.r, className = props.className;
+  var layerClass = clsx("recharts-dot", className);
+  if (cx === +cx && cy === +cy && r2 === +r2) {
+    return /* @__PURE__ */ reactExports.createElement("circle", _extends$d({}, filterProps$1(props, false), adaptEventHandlers(props), {
+      className: layerClass,
+      cx,
+      cy,
+      r: r2
+    }));
+  }
+  return null;
+};
+function _typeof$i(o) {
+  "@babel/helpers - typeof";
+  return _typeof$i = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$i(o);
+}
+var _excluded$6 = ["x", "y", "top", "left", "width", "height", "className"];
 function _extends$c() {
   _extends$c = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -22087,19 +22147,126 @@ function _extends$c() {
   };
   return _extends$c.apply(this, arguments);
 }
-var Dot = function Dot2(props) {
-  var cx = props.cx, cy = props.cy, r2 = props.r, className = props.className;
-  var layerClass = clsx("recharts-dot", className);
-  if (cx === +cx && cy === +cy && r2 === +r2) {
-    return /* @__PURE__ */ reactExports.createElement("circle", _extends$c({}, filterProps$1(props, false), adaptEventHandlers(props), {
-      className: layerClass,
-      cx,
-      cy,
-      r: r2
-    }));
+function ownKeys$f(e3, r2) {
+  var t2 = Object.keys(e3);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e3);
+    r2 && (o = o.filter(function(r3) {
+      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
+    })), t2.push.apply(t2, o);
   }
-  return null;
+  return t2;
+}
+function _objectSpread$f(e3) {
+  for (var r2 = 1; r2 < arguments.length; r2++) {
+    var t2 = null != arguments[r2] ? arguments[r2] : {};
+    r2 % 2 ? ownKeys$f(Object(t2), true).forEach(function(r3) {
+      _defineProperty$i(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$f(Object(t2)).forEach(function(r3) {
+      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
+    });
+  }
+  return e3;
+}
+function _defineProperty$i(obj, key, value) {
+  key = _toPropertyKey$i(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey$i(t2) {
+  var i = _toPrimitive$i(t2, "string");
+  return "symbol" == _typeof$i(i) ? i : i + "";
+}
+function _toPrimitive$i(t2, r2) {
+  if ("object" != _typeof$i(t2) || !t2) return t2;
+  var e3 = t2[Symbol.toPrimitive];
+  if (void 0 !== e3) {
+    var i = e3.call(t2, r2);
+    if ("object" != _typeof$i(i)) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r2 ? String : Number)(t2);
+}
+function _objectWithoutProperties$6(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$6(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose$6(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+var getPath2 = function getPath3(x2, y2, width, height, top, left) {
+  return "M".concat(x2, ",").concat(top, "v").concat(height, "M").concat(left, ",").concat(y2, "h").concat(width);
 };
+var Cross = function Cross2(_ref) {
+  var _ref$x = _ref.x, x2 = _ref$x === void 0 ? 0 : _ref$x, _ref$y = _ref.y, y2 = _ref$y === void 0 ? 0 : _ref$y, _ref$top = _ref.top, top = _ref$top === void 0 ? 0 : _ref$top, _ref$left = _ref.left, left = _ref$left === void 0 ? 0 : _ref$left, _ref$width = _ref.width, width = _ref$width === void 0 ? 0 : _ref$width, _ref$height = _ref.height, height = _ref$height === void 0 ? 0 : _ref$height, className = _ref.className, rest = _objectWithoutProperties$6(_ref, _excluded$6);
+  var props = _objectSpread$f({
+    x: x2,
+    y: y2,
+    top,
+    left,
+    width,
+    height
+  }, rest);
+  if (!isNumber(x2) || !isNumber(y2) || !isNumber(width) || !isNumber(height) || !isNumber(top) || !isNumber(left)) {
+    return null;
+  }
+  return /* @__PURE__ */ React.createElement("path", _extends$c({}, filterProps$1(props, true), {
+    className: clsx("recharts-cross", className),
+    d: getPath2(x2, y2, width, height, top, left)
+  }));
+};
+var overArg = _overArg;
+var getPrototype$1 = overArg(Object.getPrototypeOf, Object);
+var _getPrototype = getPrototype$1;
+var baseGetTag$1 = _baseGetTag, getPrototype = _getPrototype, isObjectLike$1 = isObjectLike_1;
+var objectTag = "[object Object]";
+var funcProto = Function.prototype, objectProto = Object.prototype;
+var funcToString = funcProto.toString;
+var hasOwnProperty = objectProto.hasOwnProperty;
+var objectCtorString = funcToString.call(Object);
+function isPlainObject(value) {
+  if (!isObjectLike$1(value) || baseGetTag$1(value) != objectTag) {
+    return false;
+  }
+  var proto = getPrototype(value);
+  if (proto === null) {
+    return true;
+  }
+  var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
+  return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
+}
+var isPlainObject_1 = isPlainObject;
+const isPlainObject$1 = /* @__PURE__ */ getDefaultExportFromCjs(isPlainObject_1);
+var baseGetTag = _baseGetTag, isObjectLike = isObjectLike_1;
+var boolTag = "[object Boolean]";
+function isBoolean(value) {
+  return value === true || value === false || isObjectLike(value) && baseGetTag(value) == boolTag;
+}
+var isBoolean_1 = isBoolean;
+const isBoolean$1 = /* @__PURE__ */ getDefaultExportFromCjs(isBoolean_1);
 function _typeof$h(o) {
   "@babel/helpers - typeof";
   return _typeof$h = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -22108,7 +22275,6 @@ function _typeof$h(o) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
   }, _typeof$h(o);
 }
-var _excluded$5 = ["x", "y", "top", "left", "width", "height", "className"];
 function _extends$b() {
   _extends$b = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -22122,6 +22288,47 @@ function _extends$b() {
     return target;
   };
   return _extends$b.apply(this, arguments);
+}
+function _slicedToArray$2(arr, i) {
+  return _arrayWithHoles$2(arr) || _iterableToArrayLimit$2(arr, i) || _unsupportedIterableToArray$3(arr, i) || _nonIterableRest$2();
+}
+function _nonIterableRest$2() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _unsupportedIterableToArray$3(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray$3(o, minLen);
+  var n2 = Object.prototype.toString.call(o).slice(8, -1);
+  if (n2 === "Object" && o.constructor) n2 = o.constructor.name;
+  if (n2 === "Map" || n2 === "Set") return Array.from(o);
+  if (n2 === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n2)) return _arrayLikeToArray$3(o, minLen);
+}
+function _arrayLikeToArray$3(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+  return arr2;
+}
+function _iterableToArrayLimit$2(r2, l2) {
+  var t2 = null == r2 ? null : "undefined" != typeof Symbol && r2[Symbol.iterator] || r2["@@iterator"];
+  if (null != t2) {
+    var e3, n2, i, u2, a2 = [], f2 = true, o = false;
+    try {
+      if (i = (t2 = t2.call(r2)).next, 0 === l2) ;
+      else for (; !(f2 = (e3 = i.call(t2)).done) && (a2.push(e3.value), a2.length !== l2); f2 = true) ;
+    } catch (r3) {
+      o = true, n2 = r3;
+    } finally {
+      try {
+        if (!f2 && null != t2["return"] && (u2 = t2["return"](), Object(u2) !== u2)) return;
+      } finally {
+        if (o) throw n2;
+      }
+    }
+    return a2;
+  }
+}
+function _arrayWithHoles$2(arr) {
+  if (Array.isArray(arr)) return arr;
 }
 function ownKeys$e(e3, r2) {
   var t2 = Object.keys(e3);
@@ -22167,6 +22374,99 @@ function _toPrimitive$h(t2, r2) {
   }
   return ("string" === r2 ? String : Number)(t2);
 }
+var getTrapezoidPath = function getTrapezoidPath2(x2, y2, upperWidth, lowerWidth, height) {
+  var widthGap = upperWidth - lowerWidth;
+  var path;
+  path = "M ".concat(x2, ",").concat(y2);
+  path += "L ".concat(x2 + upperWidth, ",").concat(y2);
+  path += "L ".concat(x2 + upperWidth - widthGap / 2, ",").concat(y2 + height);
+  path += "L ".concat(x2 + upperWidth - widthGap / 2 - lowerWidth, ",").concat(y2 + height);
+  path += "L ".concat(x2, ",").concat(y2, " Z");
+  return path;
+};
+var defaultProps$1 = {
+  x: 0,
+  y: 0,
+  upperWidth: 0,
+  lowerWidth: 0,
+  height: 0,
+  isUpdateAnimationActive: false,
+  animationBegin: 0,
+  animationDuration: 1500,
+  animationEasing: "ease"
+};
+var Trapezoid = function Trapezoid2(props) {
+  var trapezoidProps = _objectSpread$e(_objectSpread$e({}, defaultProps$1), props);
+  var pathRef = reactExports.useRef();
+  var _useState = reactExports.useState(-1), _useState2 = _slicedToArray$2(_useState, 2), totalLength = _useState2[0], setTotalLength = _useState2[1];
+  reactExports.useEffect(function() {
+    if (pathRef.current && pathRef.current.getTotalLength) {
+      try {
+        var pathTotalLength = pathRef.current.getTotalLength();
+        if (pathTotalLength) {
+          setTotalLength(pathTotalLength);
+        }
+      } catch (err) {
+      }
+    }
+  }, []);
+  var x2 = trapezoidProps.x, y2 = trapezoidProps.y, upperWidth = trapezoidProps.upperWidth, lowerWidth = trapezoidProps.lowerWidth, height = trapezoidProps.height, className = trapezoidProps.className;
+  var animationEasing = trapezoidProps.animationEasing, animationDuration = trapezoidProps.animationDuration, animationBegin = trapezoidProps.animationBegin, isUpdateAnimationActive = trapezoidProps.isUpdateAnimationActive;
+  if (x2 !== +x2 || y2 !== +y2 || upperWidth !== +upperWidth || lowerWidth !== +lowerWidth || height !== +height || upperWidth === 0 && lowerWidth === 0 || height === 0) {
+    return null;
+  }
+  var layerClass = clsx("recharts-trapezoid", className);
+  if (!isUpdateAnimationActive) {
+    return /* @__PURE__ */ React.createElement("g", null, /* @__PURE__ */ React.createElement("path", _extends$b({}, filterProps$1(trapezoidProps, true), {
+      className: layerClass,
+      d: getTrapezoidPath(x2, y2, upperWidth, lowerWidth, height)
+    })));
+  }
+  return /* @__PURE__ */ React.createElement(Animate, {
+    canBegin: totalLength > 0,
+    from: {
+      upperWidth: 0,
+      lowerWidth: 0,
+      height,
+      x: x2,
+      y: y2
+    },
+    to: {
+      upperWidth,
+      lowerWidth,
+      height,
+      x: x2,
+      y: y2
+    },
+    duration: animationDuration,
+    animationEasing,
+    isActive: isUpdateAnimationActive
+  }, function(_ref) {
+    var currUpperWidth = _ref.upperWidth, currLowerWidth = _ref.lowerWidth, currHeight = _ref.height, currX = _ref.x, currY = _ref.y;
+    return /* @__PURE__ */ React.createElement(Animate, {
+      canBegin: totalLength > 0,
+      from: "0px ".concat(totalLength === -1 ? 1 : totalLength, "px"),
+      to: "".concat(totalLength, "px 0px"),
+      attributeName: "strokeDasharray",
+      begin: animationBegin,
+      duration: animationDuration,
+      easing: animationEasing
+    }, /* @__PURE__ */ React.createElement("path", _extends$b({}, filterProps$1(trapezoidProps, true), {
+      className: layerClass,
+      d: getTrapezoidPath(currX, currY, currUpperWidth, currLowerWidth, currHeight),
+      ref: pathRef
+    })));
+  });
+};
+var _excluded$5 = ["option", "shapeType", "propTransformer", "activeClassName", "isActive"];
+function _typeof$g(o) {
+  "@babel/helpers - typeof";
+  return _typeof$g = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$g(o);
+}
 function _objectWithoutProperties$5(source, excluded) {
   if (source == null) return {};
   var target = _objectWithoutPropertiesLoose$5(source, excluded);
@@ -22192,119 +22492,6 @@ function _objectWithoutPropertiesLoose$5(source, excluded) {
     }
   }
   return target;
-}
-var getPath2 = function getPath3(x2, y2, width, height, top, left) {
-  return "M".concat(x2, ",").concat(top, "v").concat(height, "M").concat(left, ",").concat(y2, "h").concat(width);
-};
-var Cross = function Cross2(_ref) {
-  var _ref$x = _ref.x, x2 = _ref$x === void 0 ? 0 : _ref$x, _ref$y = _ref.y, y2 = _ref$y === void 0 ? 0 : _ref$y, _ref$top = _ref.top, top = _ref$top === void 0 ? 0 : _ref$top, _ref$left = _ref.left, left = _ref$left === void 0 ? 0 : _ref$left, _ref$width = _ref.width, width = _ref$width === void 0 ? 0 : _ref$width, _ref$height = _ref.height, height = _ref$height === void 0 ? 0 : _ref$height, className = _ref.className, rest = _objectWithoutProperties$5(_ref, _excluded$5);
-  var props = _objectSpread$e({
-    x: x2,
-    y: y2,
-    top,
-    left,
-    width,
-    height
-  }, rest);
-  if (!isNumber(x2) || !isNumber(y2) || !isNumber(width) || !isNumber(height) || !isNumber(top) || !isNumber(left)) {
-    return null;
-  }
-  return /* @__PURE__ */ React.createElement("path", _extends$b({}, filterProps$1(props, true), {
-    className: clsx("recharts-cross", className),
-    d: getPath2(x2, y2, width, height, top, left)
-  }));
-};
-var overArg = _overArg;
-var getPrototype$1 = overArg(Object.getPrototypeOf, Object);
-var _getPrototype = getPrototype$1;
-var baseGetTag$1 = _baseGetTag, getPrototype = _getPrototype, isObjectLike$1 = isObjectLike_1;
-var objectTag = "[object Object]";
-var funcProto = Function.prototype, objectProto = Object.prototype;
-var funcToString = funcProto.toString;
-var hasOwnProperty = objectProto.hasOwnProperty;
-var objectCtorString = funcToString.call(Object);
-function isPlainObject(value) {
-  if (!isObjectLike$1(value) || baseGetTag$1(value) != objectTag) {
-    return false;
-  }
-  var proto = getPrototype(value);
-  if (proto === null) {
-    return true;
-  }
-  var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
-  return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
-}
-var isPlainObject_1 = isPlainObject;
-const isPlainObject$1 = /* @__PURE__ */ getDefaultExportFromCjs(isPlainObject_1);
-var baseGetTag = _baseGetTag, isObjectLike = isObjectLike_1;
-var boolTag = "[object Boolean]";
-function isBoolean(value) {
-  return value === true || value === false || isObjectLike(value) && baseGetTag(value) == boolTag;
-}
-var isBoolean_1 = isBoolean;
-const isBoolean$1 = /* @__PURE__ */ getDefaultExportFromCjs(isBoolean_1);
-function _typeof$g(o) {
-  "@babel/helpers - typeof";
-  return _typeof$g = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-    return typeof o2;
-  } : function(o2) {
-    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$g(o);
-}
-function _extends$a() {
-  _extends$a = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends$a.apply(this, arguments);
-}
-function _slicedToArray$2(arr, i) {
-  return _arrayWithHoles$2(arr) || _iterableToArrayLimit$2(arr, i) || _unsupportedIterableToArray$3(arr, i) || _nonIterableRest$2();
-}
-function _nonIterableRest$2() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-function _unsupportedIterableToArray$3(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray$3(o, minLen);
-  var n2 = Object.prototype.toString.call(o).slice(8, -1);
-  if (n2 === "Object" && o.constructor) n2 = o.constructor.name;
-  if (n2 === "Map" || n2 === "Set") return Array.from(o);
-  if (n2 === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n2)) return _arrayLikeToArray$3(o, minLen);
-}
-function _arrayLikeToArray$3(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-  return arr2;
-}
-function _iterableToArrayLimit$2(r2, l2) {
-  var t2 = null == r2 ? null : "undefined" != typeof Symbol && r2[Symbol.iterator] || r2["@@iterator"];
-  if (null != t2) {
-    var e3, n2, i, u2, a2 = [], f2 = true, o = false;
-    try {
-      if (i = (t2 = t2.call(r2)).next, 0 === l2) ;
-      else for (; !(f2 = (e3 = i.call(t2)).done) && (a2.push(e3.value), a2.length !== l2); f2 = true) ;
-    } catch (r3) {
-      o = true, n2 = r3;
-    } finally {
-      try {
-        if (!f2 && null != t2["return"] && (u2 = t2["return"](), Object(u2) !== u2)) return;
-      } finally {
-        if (o) throw n2;
-      }
-    }
-    return a2;
-  }
-}
-function _arrayWithHoles$2(arr) {
-  if (Array.isArray(arr)) return arr;
 }
 function ownKeys$d(e3, r2) {
   var t2 = Object.keys(e3);
@@ -22350,171 +22537,8 @@ function _toPrimitive$g(t2, r2) {
   }
   return ("string" === r2 ? String : Number)(t2);
 }
-var getTrapezoidPath = function getTrapezoidPath2(x2, y2, upperWidth, lowerWidth, height) {
-  var widthGap = upperWidth - lowerWidth;
-  var path;
-  path = "M ".concat(x2, ",").concat(y2);
-  path += "L ".concat(x2 + upperWidth, ",").concat(y2);
-  path += "L ".concat(x2 + upperWidth - widthGap / 2, ",").concat(y2 + height);
-  path += "L ".concat(x2 + upperWidth - widthGap / 2 - lowerWidth, ",").concat(y2 + height);
-  path += "L ".concat(x2, ",").concat(y2, " Z");
-  return path;
-};
-var defaultProps = {
-  x: 0,
-  y: 0,
-  upperWidth: 0,
-  lowerWidth: 0,
-  height: 0,
-  isUpdateAnimationActive: false,
-  animationBegin: 0,
-  animationDuration: 1500,
-  animationEasing: "ease"
-};
-var Trapezoid = function Trapezoid2(props) {
-  var trapezoidProps = _objectSpread$d(_objectSpread$d({}, defaultProps), props);
-  var pathRef = reactExports.useRef();
-  var _useState = reactExports.useState(-1), _useState2 = _slicedToArray$2(_useState, 2), totalLength = _useState2[0], setTotalLength = _useState2[1];
-  reactExports.useEffect(function() {
-    if (pathRef.current && pathRef.current.getTotalLength) {
-      try {
-        var pathTotalLength = pathRef.current.getTotalLength();
-        if (pathTotalLength) {
-          setTotalLength(pathTotalLength);
-        }
-      } catch (err) {
-      }
-    }
-  }, []);
-  var x2 = trapezoidProps.x, y2 = trapezoidProps.y, upperWidth = trapezoidProps.upperWidth, lowerWidth = trapezoidProps.lowerWidth, height = trapezoidProps.height, className = trapezoidProps.className;
-  var animationEasing = trapezoidProps.animationEasing, animationDuration = trapezoidProps.animationDuration, animationBegin = trapezoidProps.animationBegin, isUpdateAnimationActive = trapezoidProps.isUpdateAnimationActive;
-  if (x2 !== +x2 || y2 !== +y2 || upperWidth !== +upperWidth || lowerWidth !== +lowerWidth || height !== +height || upperWidth === 0 && lowerWidth === 0 || height === 0) {
-    return null;
-  }
-  var layerClass = clsx("recharts-trapezoid", className);
-  if (!isUpdateAnimationActive) {
-    return /* @__PURE__ */ React.createElement("g", null, /* @__PURE__ */ React.createElement("path", _extends$a({}, filterProps$1(trapezoidProps, true), {
-      className: layerClass,
-      d: getTrapezoidPath(x2, y2, upperWidth, lowerWidth, height)
-    })));
-  }
-  return /* @__PURE__ */ React.createElement(Animate, {
-    canBegin: totalLength > 0,
-    from: {
-      upperWidth: 0,
-      lowerWidth: 0,
-      height,
-      x: x2,
-      y: y2
-    },
-    to: {
-      upperWidth,
-      lowerWidth,
-      height,
-      x: x2,
-      y: y2
-    },
-    duration: animationDuration,
-    animationEasing,
-    isActive: isUpdateAnimationActive
-  }, function(_ref) {
-    var currUpperWidth = _ref.upperWidth, currLowerWidth = _ref.lowerWidth, currHeight = _ref.height, currX = _ref.x, currY = _ref.y;
-    return /* @__PURE__ */ React.createElement(Animate, {
-      canBegin: totalLength > 0,
-      from: "0px ".concat(totalLength === -1 ? 1 : totalLength, "px"),
-      to: "".concat(totalLength, "px 0px"),
-      attributeName: "strokeDasharray",
-      begin: animationBegin,
-      duration: animationDuration,
-      easing: animationEasing
-    }, /* @__PURE__ */ React.createElement("path", _extends$a({}, filterProps$1(trapezoidProps, true), {
-      className: layerClass,
-      d: getTrapezoidPath(currX, currY, currUpperWidth, currLowerWidth, currHeight),
-      ref: pathRef
-    })));
-  });
-};
-var _excluded$4 = ["option", "shapeType", "propTransformer", "activeClassName", "isActive"];
-function _typeof$f(o) {
-  "@babel/helpers - typeof";
-  return _typeof$f = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-    return typeof o2;
-  } : function(o2) {
-    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$f(o);
-}
-function _objectWithoutProperties$4(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$4(source, excluded);
-  var key, i;
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _objectWithoutPropertiesLoose$4(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  for (var key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function ownKeys$c(e3, r2) {
-  var t2 = Object.keys(e3);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e3);
-    r2 && (o = o.filter(function(r3) {
-      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
-    })), t2.push.apply(t2, o);
-  }
-  return t2;
-}
-function _objectSpread$c(e3) {
-  for (var r2 = 1; r2 < arguments.length; r2++) {
-    var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$c(Object(t2), true).forEach(function(r3) {
-      _defineProperty$f(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$c(Object(t2)).forEach(function(r3) {
-      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
-    });
-  }
-  return e3;
-}
-function _defineProperty$f(obj, key, value) {
-  key = _toPropertyKey$f(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey$f(t2) {
-  var i = _toPrimitive$f(t2, "string");
-  return "symbol" == _typeof$f(i) ? i : i + "";
-}
-function _toPrimitive$f(t2, r2) {
-  if ("object" != _typeof$f(t2) || !t2) return t2;
-  var e3 = t2[Symbol.toPrimitive];
-  if (void 0 !== e3) {
-    var i = e3.call(t2, r2);
-    if ("object" != _typeof$f(i)) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r2 ? String : Number)(t2);
-}
 function defaultPropTransformer(option, props) {
-  return _objectSpread$c(_objectSpread$c({}, props), option);
+  return _objectSpread$d(_objectSpread$d({}, props), option);
 }
 function isSymbolsProps(shapeType, _elementProps) {
   return shapeType === "symbols";
@@ -22544,10 +22568,10 @@ function getPropsFromShapeOption(option) {
   return option;
 }
 function Shape(_ref2) {
-  var option = _ref2.option, shapeType = _ref2.shapeType, _ref2$propTransformer = _ref2.propTransformer, propTransformer = _ref2$propTransformer === void 0 ? defaultPropTransformer : _ref2$propTransformer, _ref2$activeClassName = _ref2.activeClassName, activeClassName = _ref2$activeClassName === void 0 ? "recharts-active-shape" : _ref2$activeClassName, isActive = _ref2.isActive, props = _objectWithoutProperties$4(_ref2, _excluded$4);
+  var option = _ref2.option, shapeType = _ref2.shapeType, _ref2$propTransformer = _ref2.propTransformer, propTransformer = _ref2$propTransformer === void 0 ? defaultPropTransformer : _ref2$propTransformer, _ref2$activeClassName = _ref2.activeClassName, activeClassName = _ref2$activeClassName === void 0 ? "recharts-active-shape" : _ref2$activeClassName, isActive = _ref2.isActive, props = _objectWithoutProperties$5(_ref2, _excluded$5);
   var shape;
   if (/* @__PURE__ */ reactExports.isValidElement(option)) {
-    shape = /* @__PURE__ */ reactExports.cloneElement(option, _objectSpread$c(_objectSpread$c({}, props), getPropsFromShapeOption(option)));
+    shape = /* @__PURE__ */ reactExports.cloneElement(option, _objectSpread$d(_objectSpread$d({}, props), getPropsFromShapeOption(option)));
   } else if (isFunction$3(option)) {
     shape = option(props);
   } else if (isPlainObject$1(option) && !isBoolean$1(option)) {
@@ -22649,9 +22673,9 @@ function getActiveShapeIndexForTooltip(_ref3) {
   var activeIndex = itemData.indexOf(activeItemMatches[activeItemMatches.length - 1]);
   return activeIndex;
 }
-var nativeCeil = Math.ceil, nativeMax = Math.max;
+var nativeCeil = Math.ceil, nativeMax$1 = Math.max;
 function baseRange$1(start, end, step, fromRight) {
-  var index = -1, length = nativeMax(nativeCeil((end - start) / (step || 1)), 0), result = Array(length);
+  var index = -1, length = nativeMax$1(nativeCeil((end - start) / (step || 1)), 0), result = Array(length);
   while (length--) {
     result[fromRight ? length : ++index] = start;
     start += step;
@@ -22661,7 +22685,7 @@ function baseRange$1(start, end, step, fromRight) {
 var _baseRange = baseRange$1;
 var toNumber = toNumber_1;
 var INFINITY = 1 / 0, MAX_INTEGER = 17976931348623157e292;
-function toFinite$1(value) {
+function toFinite$2(value) {
   if (!value) {
     return value === 0 ? value : 0;
   }
@@ -22672,21 +22696,21 @@ function toFinite$1(value) {
   }
   return value === value ? value : 0;
 }
-var toFinite_1 = toFinite$1;
-var baseRange = _baseRange, isIterateeCall$2 = _isIterateeCall, toFinite = toFinite_1;
+var toFinite_1 = toFinite$2;
+var baseRange = _baseRange, isIterateeCall$2 = _isIterateeCall, toFinite$1 = toFinite_1;
 function createRange$1(fromRight) {
   return function(start, end, step) {
     if (step && typeof step != "number" && isIterateeCall$2(start, end, step)) {
       end = step = void 0;
     }
-    start = toFinite(start);
+    start = toFinite$1(start);
     if (end === void 0) {
       end = start;
       start = 0;
     } else {
-      end = toFinite(end);
+      end = toFinite$1(end);
     }
-    step = step === void 0 ? start < end ? 1 : -1 : toFinite(step);
+    step = step === void 0 ? start < end ? 1 : -1 : toFinite$1(step);
     return baseRange(start, end, step, fromRight);
   };
 }
@@ -22695,6 +22719,69 @@ var createRange = _createRange;
 var range2 = createRange();
 var range_1 = range2;
 const range$1 = /* @__PURE__ */ getDefaultExportFromCjs(range_1);
+function _typeof$f(o) {
+  "@babel/helpers - typeof";
+  return _typeof$f = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$f(o);
+}
+function ownKeys$c(e3, r2) {
+  var t2 = Object.keys(e3);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e3);
+    r2 && (o = o.filter(function(r3) {
+      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
+    })), t2.push.apply(t2, o);
+  }
+  return t2;
+}
+function _objectSpread$c(e3) {
+  for (var r2 = 1; r2 < arguments.length; r2++) {
+    var t2 = null != arguments[r2] ? arguments[r2] : {};
+    r2 % 2 ? ownKeys$c(Object(t2), true).forEach(function(r3) {
+      _defineProperty$f(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$c(Object(t2)).forEach(function(r3) {
+      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
+    });
+  }
+  return e3;
+}
+function _defineProperty$f(obj, key, value) {
+  key = _toPropertyKey$f(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey$f(t2) {
+  var i = _toPrimitive$f(t2, "string");
+  return "symbol" == _typeof$f(i) ? i : i + "";
+}
+function _toPrimitive$f(t2, r2) {
+  if ("object" != _typeof$f(t2) || !t2) return t2;
+  var e3 = t2[Symbol.toPrimitive];
+  if (void 0 !== e3) {
+    var i = e3.call(t2, r2);
+    if ("object" != _typeof$f(i)) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r2 ? String : Number)(t2);
+}
+var PREFIX_LIST = ["Webkit", "Moz", "O", "ms"];
+var generatePrefixStyle = function generatePrefixStyle2(name, value) {
+  var camelName = name.replace(/(\w)/, function(v2) {
+    return v2.toUpperCase();
+  });
+  var result = PREFIX_LIST.reduce(function(res, entry) {
+    return _objectSpread$c(_objectSpread$c({}, res), {}, _defineProperty$f({}, entry + camelName, value));
+  }, {});
+  result[name] = value;
+  return result;
+};
 function _typeof$e(o) {
   "@babel/helpers - typeof";
   return _typeof$e = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -22702,6 +22789,20 @@ function _typeof$e(o) {
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
   }, _typeof$e(o);
+}
+function _extends$a() {
+  _extends$a = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends$a.apply(this, arguments);
 }
 function ownKeys$b(e3, r2) {
   var t2 = Object.keys(e3);
@@ -22724,83 +22825,6 @@ function _objectSpread$b(e3) {
   }
   return e3;
 }
-function _defineProperty$e(obj, key, value) {
-  key = _toPropertyKey$e(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey$e(t2) {
-  var i = _toPrimitive$e(t2, "string");
-  return "symbol" == _typeof$e(i) ? i : i + "";
-}
-function _toPrimitive$e(t2, r2) {
-  if ("object" != _typeof$e(t2) || !t2) return t2;
-  var e3 = t2[Symbol.toPrimitive];
-  if (void 0 !== e3) {
-    var i = e3.call(t2, r2);
-    if ("object" != _typeof$e(i)) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r2 ? String : Number)(t2);
-}
-var PREFIX_LIST = ["Webkit", "Moz", "O", "ms"];
-var generatePrefixStyle = function generatePrefixStyle2(name, value) {
-  var camelName = name.replace(/(\w)/, function(v2) {
-    return v2.toUpperCase();
-  });
-  var result = PREFIX_LIST.reduce(function(res, entry) {
-    return _objectSpread$b(_objectSpread$b({}, res), {}, _defineProperty$e({}, entry + camelName, value));
-  }, {});
-  result[name] = value;
-  return result;
-};
-function _typeof$d(o) {
-  "@babel/helpers - typeof";
-  return _typeof$d = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-    return typeof o2;
-  } : function(o2) {
-    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$d(o);
-}
-function _extends$9() {
-  _extends$9 = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends$9.apply(this, arguments);
-}
-function ownKeys$a(e3, r2) {
-  var t2 = Object.keys(e3);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e3);
-    r2 && (o = o.filter(function(r3) {
-      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
-    })), t2.push.apply(t2, o);
-  }
-  return t2;
-}
-function _objectSpread$a(e3) {
-  for (var r2 = 1; r2 < arguments.length; r2++) {
-    var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$a(Object(t2), true).forEach(function(r3) {
-      _defineProperty$d(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$a(Object(t2)).forEach(function(r3) {
-      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
-    });
-  }
-  return e3;
-}
 function _classCallCheck$a(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -22812,7 +22836,7 @@ function _defineProperties$a(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$d(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$e(descriptor.key), descriptor);
   }
 }
 function _createClass$a(Constructor, protoProps, staticProps) {
@@ -22825,7 +22849,7 @@ function _callSuper$8(t2, o, e3) {
   return o = _getPrototypeOf$8(o), _possibleConstructorReturn$8(t2, _isNativeReflectConstruct$8() ? Reflect.construct(o, e3 || [], _getPrototypeOf$8(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$8(self2, call) {
-  if (call && (_typeof$d(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$e(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -22869,8 +22893,8 @@ function _setPrototypeOf$8(o, p2) {
   };
   return _setPrototypeOf$8(o, p2);
 }
-function _defineProperty$d(obj, key, value) {
-  key = _toPropertyKey$d(key);
+function _defineProperty$e(obj, key, value) {
+  key = _toPropertyKey$e(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -22878,16 +22902,16 @@ function _defineProperty$d(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$d(t2) {
-  var i = _toPrimitive$d(t2, "string");
-  return "symbol" == _typeof$d(i) ? i : i + "";
+function _toPropertyKey$e(t2) {
+  var i = _toPrimitive$e(t2, "string");
+  return "symbol" == _typeof$e(i) ? i : i + "";
 }
-function _toPrimitive$d(t2, r2) {
-  if ("object" != _typeof$d(t2) || !t2) return t2;
+function _toPrimitive$e(t2, r2) {
+  if ("object" != _typeof$e(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$d(i)) return i;
+    if ("object" != _typeof$e(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -22921,7 +22945,7 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
     var _this;
     _classCallCheck$a(this, Brush2);
     _this = _callSuper$8(this, Brush2, [props]);
-    _defineProperty$d(_this, "handleDrag", function(e3) {
+    _defineProperty$e(_this, "handleDrag", function(e3) {
       if (_this.leaveTimer) {
         clearTimeout(_this.leaveTimer);
         _this.leaveTimer = null;
@@ -22932,12 +22956,12 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
         _this.handleSlideDrag(e3);
       }
     });
-    _defineProperty$d(_this, "handleTouchMove", function(e3) {
+    _defineProperty$e(_this, "handleTouchMove", function(e3) {
       if (e3.changedTouches != null && e3.changedTouches.length > 0) {
         _this.handleDrag(e3.changedTouches[0]);
       }
     });
-    _defineProperty$d(_this, "handleDragEnd", function() {
+    _defineProperty$e(_this, "handleDragEnd", function() {
       _this.setState({
         isTravellerMoving: false,
         isSlideMoving: false
@@ -22950,22 +22974,22 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
       });
       _this.detachDragEndListener();
     });
-    _defineProperty$d(_this, "handleLeaveWrapper", function() {
+    _defineProperty$e(_this, "handleLeaveWrapper", function() {
       if (_this.state.isTravellerMoving || _this.state.isSlideMoving) {
         _this.leaveTimer = window.setTimeout(_this.handleDragEnd, _this.props.leaveTimeOut);
       }
     });
-    _defineProperty$d(_this, "handleEnterSlideOrTraveller", function() {
+    _defineProperty$e(_this, "handleEnterSlideOrTraveller", function() {
       _this.setState({
         isTextActive: true
       });
     });
-    _defineProperty$d(_this, "handleLeaveSlideOrTraveller", function() {
+    _defineProperty$e(_this, "handleLeaveSlideOrTraveller", function() {
       _this.setState({
         isTextActive: false
       });
     });
-    _defineProperty$d(_this, "handleSlideDragStart", function(e3) {
+    _defineProperty$e(_this, "handleSlideDragStart", function(e3) {
       var event = isTouch(e3) ? e3.changedTouches[0] : e3;
       _this.setState({
         isTravellerMoving: false,
@@ -23090,7 +23114,7 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
         }
         return false;
       };
-      this.setState(_defineProperty$d(_defineProperty$d({}, movingTravellerId, prevValue + delta), "brushMoveStartX", e3.pageX), function() {
+      this.setState(_defineProperty$e(_defineProperty$e({}, movingTravellerId, prevValue + delta), "brushMoveStartX", e3.pageX), function() {
         if (onChange) {
           if (isFullGap()) {
             onChange(newIndex);
@@ -23116,7 +23140,7 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
       if (id2 === "startX" && newScaleValue >= endX || id2 === "endX" && newScaleValue <= startX) {
         return;
       }
-      this.setState(_defineProperty$d({}, id2, newScaleValue), function() {
+      this.setState(_defineProperty$e({}, id2, newScaleValue), function() {
         _this2.props.onChange(_this2.getIndex({
           startX: _this2.state.startX,
           endX: _this2.state.endX
@@ -23160,7 +23184,7 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
       var _data$startIndex, _data$endIndex, _this3 = this;
       var _this$props8 = this.props, y2 = _this$props8.y, travellerWidth = _this$props8.travellerWidth, height = _this$props8.height, traveller = _this$props8.traveller, ariaLabel = _this$props8.ariaLabel, data = _this$props8.data, startIndex = _this$props8.startIndex, endIndex = _this$props8.endIndex;
       var x2 = Math.max(travellerX, this.props.x);
-      var travellerProps = _objectSpread$a(_objectSpread$a({}, filterProps$1(this.props, false)), {}, {
+      var travellerProps = _objectSpread$b(_objectSpread$b({}, filterProps$1(this.props, false)), {}, {
         x: x2,
         y: y2,
         width: travellerWidth,
@@ -23236,12 +23260,12 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
       };
       return /* @__PURE__ */ React.createElement(Layer, {
         className: "recharts-brush-texts"
-      }, /* @__PURE__ */ React.createElement(Text, _extends$9({
+      }, /* @__PURE__ */ React.createElement(Text, _extends$a({
         textAnchor: "end",
         verticalAnchor: "middle",
         x: Math.min(startX, endX) - offset,
         y: y2 + height / 2
-      }, attrs), this.getTextOfTick(startIndex)), /* @__PURE__ */ React.createElement(Text, _extends$9({
+      }, attrs), this.getTextOfTick(startIndex)), /* @__PURE__ */ React.createElement(Text, _extends$a({
         textAnchor: "start",
         verticalAnchor: "middle",
         x: Math.max(startX, endX) + travellerWidth + offset,
@@ -23312,7 +23336,7 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
     value: function getDerivedStateFromProps(nextProps, prevState) {
       var data = nextProps.data, width = nextProps.width, x2 = nextProps.x, travellerWidth = nextProps.travellerWidth, updateId = nextProps.updateId, startIndex = nextProps.startIndex, endIndex = nextProps.endIndex;
       if (data !== prevState.prevData || updateId !== prevState.prevUpdateId) {
-        return _objectSpread$a({
+        return _objectSpread$b({
           prevData: data,
           prevTravellerWidth: travellerWidth,
           prevUpdateId: updateId,
@@ -23366,8 +23390,8 @@ var Brush = /* @__PURE__ */ function(_PureComponent) {
     }
   }]);
 }(reactExports.PureComponent);
-_defineProperty$d(Brush, "displayName", "Brush");
-_defineProperty$d(Brush, "defaultProps", {
+_defineProperty$e(Brush, "displayName", "Brush");
+_defineProperty$e(Brush, "defaultProps", {
   height: 40,
   travellerWidth: 5,
   gap: 1,
@@ -23392,13 +23416,13 @@ function baseSome$1(collection, predicate) {
   return !!result;
 }
 var _baseSome = baseSome$1;
-var arraySome = _arraySome, baseIteratee$2 = _baseIteratee, baseSome = _baseSome, isArray$1 = isArray_1, isIterateeCall$1 = _isIterateeCall;
+var arraySome = _arraySome, baseIteratee$4 = _baseIteratee, baseSome = _baseSome, isArray$1 = isArray_1, isIterateeCall$1 = _isIterateeCall;
 function some(collection, predicate, guard) {
   var func = isArray$1(collection) ? arraySome : baseSome;
   if (guard && isIterateeCall$1(collection, predicate, guard)) {
     predicate = void 0;
   }
-  return func(collection, baseIteratee$2(predicate));
+  return func(collection, baseIteratee$4(predicate));
 }
 var some_1 = some;
 const some$1 = /* @__PURE__ */ getDefaultExportFromCjs(some_1);
@@ -23410,7 +23434,7 @@ var ifOverflowMatches = function ifOverflowMatches2(props, value) {
   }
   return ifOverflow === value;
 };
-var defineProperty = _defineProperty$A;
+var defineProperty = _defineProperty$B;
 function baseAssignValue$1(object2, key, value) {
   if (key == "__proto__" && defineProperty) {
     defineProperty(object2, key, {
@@ -23424,10 +23448,10 @@ function baseAssignValue$1(object2, key, value) {
   }
 }
 var _baseAssignValue = baseAssignValue$1;
-var baseAssignValue = _baseAssignValue, baseForOwn = _baseForOwn, baseIteratee$1 = _baseIteratee;
+var baseAssignValue = _baseAssignValue, baseForOwn = _baseForOwn, baseIteratee$3 = _baseIteratee;
 function mapValues(object2, iteratee) {
   var result = {};
-  iteratee = baseIteratee$1(iteratee);
+  iteratee = baseIteratee$3(iteratee);
   baseForOwn(object2, function(value, key, object3) {
     baseAssignValue(result, key, iteratee(value, key, object3));
   });
@@ -23455,27 +23479,27 @@ function baseEvery$1(collection, predicate) {
   return result;
 }
 var _baseEvery = baseEvery$1;
-var arrayEvery = _arrayEvery, baseEvery = _baseEvery, baseIteratee = _baseIteratee, isArray = isArray_1, isIterateeCall = _isIterateeCall;
+var arrayEvery = _arrayEvery, baseEvery = _baseEvery, baseIteratee$2 = _baseIteratee, isArray = isArray_1, isIterateeCall = _isIterateeCall;
 function every(collection, predicate, guard) {
   var func = isArray(collection) ? arrayEvery : baseEvery;
   if (guard && isIterateeCall(collection, predicate, guard)) {
     predicate = void 0;
   }
-  return func(collection, baseIteratee(predicate));
+  return func(collection, baseIteratee$2(predicate));
 }
 var every_1 = every;
 const every$1 = /* @__PURE__ */ getDefaultExportFromCjs(every_1);
-var _excluded$3 = ["x", "y"];
-function _typeof$c(o) {
+var _excluded$4 = ["x", "y"];
+function _typeof$d(o) {
   "@babel/helpers - typeof";
-  return _typeof$c = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$d = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$c(o);
+  }, _typeof$d(o);
 }
-function _extends$8() {
-  _extends$8 = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$9() {
+  _extends$9 = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -23486,9 +23510,9 @@ function _extends$8() {
     }
     return target;
   };
-  return _extends$8.apply(this, arguments);
+  return _extends$9.apply(this, arguments);
 }
-function ownKeys$9(e3, r2) {
+function ownKeys$a(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -23498,19 +23522,19 @@ function ownKeys$9(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$9(e3) {
+function _objectSpread$a(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$9(Object(t2), true).forEach(function(r22) {
-      _defineProperty$c(e3, r22, t2[r22]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$9(Object(t2)).forEach(function(r22) {
+    r2 % 2 ? ownKeys$a(Object(t2), true).forEach(function(r22) {
+      _defineProperty$d(e3, r22, t2[r22]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$a(Object(t2)).forEach(function(r22) {
       Object.defineProperty(e3, r22, Object.getOwnPropertyDescriptor(t2, r22));
     });
   }
   return e3;
 }
-function _defineProperty$c(obj, key, value) {
-  key = _toPropertyKey$c(key);
+function _defineProperty$d(obj, key, value) {
+  key = _toPropertyKey$d(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -23518,19 +23542,95 @@ function _defineProperty$c(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$c(t2) {
-  var i = _toPrimitive$c(t2, "string");
-  return "symbol" == _typeof$c(i) ? i : i + "";
+function _toPropertyKey$d(t2) {
+  var i = _toPrimitive$d(t2, "string");
+  return "symbol" == _typeof$d(i) ? i : i + "";
 }
-function _toPrimitive$c(t2, r2) {
-  if ("object" != _typeof$c(t2) || !t2) return t2;
+function _toPrimitive$d(t2, r2) {
+  if ("object" != _typeof$d(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$c(i)) return i;
+    if ("object" != _typeof$d(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
+}
+function _objectWithoutProperties$4(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$4(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose$4(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function typeguardBarRectangleProps(_ref, props) {
+  var xProp = _ref.x, yProp = _ref.y, option = _objectWithoutProperties$4(_ref, _excluded$4);
+  var xValue = "".concat(xProp);
+  var x2 = parseInt(xValue, 10);
+  var yValue = "".concat(yProp);
+  var y2 = parseInt(yValue, 10);
+  var heightValue = "".concat(props.height || option.height);
+  var height = parseInt(heightValue, 10);
+  var widthValue = "".concat(props.width || option.width);
+  var width = parseInt(widthValue, 10);
+  return _objectSpread$a(_objectSpread$a(_objectSpread$a(_objectSpread$a(_objectSpread$a({}, props), option), x2 ? {
+    x: x2
+  } : {}), y2 ? {
+    y: y2
+  } : {}), {}, {
+    height,
+    width,
+    name: props.name,
+    radius: props.radius
+  });
+}
+function BarRectangle(props) {
+  return /* @__PURE__ */ React.createElement(Shape, _extends$9({
+    shapeType: "rectangle",
+    propTransformer: typeguardBarRectangleProps,
+    activeClassName: "recharts-active-bar"
+  }, props));
+}
+var minPointSizeCallback = function minPointSizeCallback2(minPointSize) {
+  var defaultValue = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
+  return function(value, index) {
+    if (typeof minPointSize === "number") return minPointSize;
+    var isValueNumberOrNil = isNumber(value) || isNullish$1(value);
+    if (isValueNumberOrNil) {
+      return minPointSize(value, index);
+    }
+    !isValueNumberOrNil ? invariant$1() : void 0;
+    return defaultValue;
+  };
+};
+var _excluded$3 = ["value", "background"];
+var _Bar;
+function _typeof$c(o) {
+  "@babel/helpers - typeof";
+  return _typeof$c = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$c(o);
 }
 function _objectWithoutProperties$3(source, excluded) {
   if (source == null) return {};
@@ -23558,84 +23658,8 @@ function _objectWithoutPropertiesLoose$3(source, excluded) {
   }
   return target;
 }
-function typeguardBarRectangleProps(_ref, props) {
-  var xProp = _ref.x, yProp = _ref.y, option = _objectWithoutProperties$3(_ref, _excluded$3);
-  var xValue = "".concat(xProp);
-  var x2 = parseInt(xValue, 10);
-  var yValue = "".concat(yProp);
-  var y2 = parseInt(yValue, 10);
-  var heightValue = "".concat(props.height || option.height);
-  var height = parseInt(heightValue, 10);
-  var widthValue = "".concat(props.width || option.width);
-  var width = parseInt(widthValue, 10);
-  return _objectSpread$9(_objectSpread$9(_objectSpread$9(_objectSpread$9(_objectSpread$9({}, props), option), x2 ? {
-    x: x2
-  } : {}), y2 ? {
-    y: y2
-  } : {}), {}, {
-    height,
-    width,
-    name: props.name,
-    radius: props.radius
-  });
-}
-function BarRectangle(props) {
-  return /* @__PURE__ */ React.createElement(Shape, _extends$8({
-    shapeType: "rectangle",
-    propTransformer: typeguardBarRectangleProps,
-    activeClassName: "recharts-active-bar"
-  }, props));
-}
-var minPointSizeCallback = function minPointSizeCallback2(minPointSize) {
-  var defaultValue = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-  return function(value, index) {
-    if (typeof minPointSize === "number") return minPointSize;
-    var isValueNumberOrNil = isNumber(value) || isNullish$1(value);
-    if (isValueNumberOrNil) {
-      return minPointSize(value, index);
-    }
-    !isValueNumberOrNil ? invariant$1() : void 0;
-    return defaultValue;
-  };
-};
-var _excluded$2 = ["value", "background"];
-var _Bar;
-function _typeof$b(o) {
-  "@babel/helpers - typeof";
-  return _typeof$b = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-    return typeof o2;
-  } : function(o2) {
-    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$b(o);
-}
-function _objectWithoutProperties$2(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$2(source, excluded);
-  var key, i;
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _objectWithoutPropertiesLoose$2(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  for (var key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _extends$7() {
-  _extends$7 = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$8() {
+  _extends$8 = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -23646,9 +23670,9 @@ function _extends$7() {
     }
     return target;
   };
-  return _extends$7.apply(this, arguments);
+  return _extends$8.apply(this, arguments);
 }
-function ownKeys$8(e3, r2) {
+function ownKeys$9(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -23658,12 +23682,12 @@ function ownKeys$8(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$8(e3) {
+function _objectSpread$9(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$8(Object(t2), true).forEach(function(r3) {
-      _defineProperty$b(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$8(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$9(Object(t2), true).forEach(function(r3) {
+      _defineProperty$c(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$9(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -23680,7 +23704,7 @@ function _defineProperties$9(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$b(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$c(descriptor.key), descriptor);
   }
 }
 function _createClass$9(Constructor, protoProps, staticProps) {
@@ -23693,7 +23717,7 @@ function _callSuper$7(t2, o, e3) {
   return o = _getPrototypeOf$7(o), _possibleConstructorReturn$7(t2, _isNativeReflectConstruct$7() ? Reflect.construct(o, e3 || [], _getPrototypeOf$7(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$7(self2, call) {
-  if (call && (_typeof$b(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$c(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -23737,8 +23761,8 @@ function _setPrototypeOf$7(o, p2) {
   };
   return _setPrototypeOf$7(o, p2);
 }
-function _defineProperty$b(obj, key, value) {
-  key = _toPropertyKey$b(key);
+function _defineProperty$c(obj, key, value) {
+  key = _toPropertyKey$c(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -23746,16 +23770,16 @@ function _defineProperty$b(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$b(t2) {
-  var i = _toPrimitive$b(t2, "string");
-  return "symbol" == _typeof$b(i) ? i : i + "";
+function _toPropertyKey$c(t2) {
+  var i = _toPrimitive$c(t2, "string");
+  return "symbol" == _typeof$c(i) ? i : i + "";
 }
-function _toPrimitive$b(t2, r2) {
-  if ("object" != _typeof$b(t2) || !t2) return t2;
+function _toPrimitive$c(t2, r2) {
+  if ("object" != _typeof$c(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$b(i)) return i;
+    if ("object" != _typeof$c(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -23768,11 +23792,11 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
       args[_key] = arguments[_key];
     }
     _this = _callSuper$7(this, Bar2, [].concat(args));
-    _defineProperty$b(_this, "state", {
+    _defineProperty$c(_this, "state", {
       isAnimationFinished: false
     });
-    _defineProperty$b(_this, "id", uniqueId("recharts-bar-"));
-    _defineProperty$b(_this, "handleAnimationEnd", function() {
+    _defineProperty$c(_this, "id", uniqueId("recharts-bar-"));
+    _defineProperty$c(_this, "handleAnimationEnd", function() {
       var onAnimationEnd2 = _this.props.onAnimationEnd;
       _this.setState({
         isAnimationFinished: true
@@ -23781,7 +23805,7 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
         onAnimationEnd2();
       }
     });
-    _defineProperty$b(_this, "handleAnimationStart", function() {
+    _defineProperty$c(_this, "handleAnimationStart", function() {
       var onAnimationStart2 = _this.props.onAnimationStart;
       _this.setState({
         isAnimationFinished: false
@@ -23802,7 +23826,7 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
       return data && data.map(function(entry, i) {
         var isActive = i === activeIndex;
         var option = isActive ? activeBar : shape;
-        var props = _objectSpread$8(_objectSpread$8(_objectSpread$8({}, baseProps), entry), {}, {
+        var props = _objectSpread$9(_objectSpread$9(_objectSpread$9({}, baseProps), entry), {}, {
           isActive,
           option,
           index: i,
@@ -23810,7 +23834,7 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
           onAnimationStart: _this2.handleAnimationStart,
           onAnimationEnd: _this2.handleAnimationEnd
         });
-        return /* @__PURE__ */ React.createElement(Layer, _extends$7({
+        return /* @__PURE__ */ React.createElement(Layer, _extends$8({
           className: "recharts-bar-rectangle"
         }, adaptEventsOfChild(_this2.props, entry, i), {
           // https://github.com/recharts/recharts/issues/5415
@@ -23848,7 +23872,7 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
             var interpolatorY = interpolateNumber$2(prev.y, entry.y);
             var interpolatorWidth = interpolateNumber$2(prev.width, entry.width);
             var interpolatorHeight = interpolateNumber$2(prev.height, entry.height);
-            return _objectSpread$8(_objectSpread$8({}, entry), {}, {
+            return _objectSpread$9(_objectSpread$9({}, entry), {}, {
               x: interpolatorX(t2),
               y: interpolatorY(t2),
               width: interpolatorWidth(t2),
@@ -23858,14 +23882,14 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
           if (layout2 === "horizontal") {
             var _interpolatorHeight = interpolateNumber$2(0, entry.height);
             var h2 = _interpolatorHeight(t2);
-            return _objectSpread$8(_objectSpread$8({}, entry), {}, {
+            return _objectSpread$9(_objectSpread$9({}, entry), {}, {
               y: entry.y + entry.height - h2,
               height: h2
             });
           }
           var interpolator = interpolateNumber$2(0, entry.width);
           var w2 = interpolator(t2);
-          return _objectSpread$8(_objectSpread$8({}, entry), {}, {
+          return _objectSpread$9(_objectSpread$9({}, entry), {}, {
             width: w2
           });
         });
@@ -23890,11 +23914,11 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
       var backgroundProps = filterProps$1(this.props.background, false);
       return data.map(function(entry, i) {
         entry.value;
-        var background = entry.background, rest = _objectWithoutProperties$2(entry, _excluded$2);
+        var background = entry.background, rest = _objectWithoutProperties$3(entry, _excluded$3);
         if (!background) {
           return null;
         }
-        var props = _objectSpread$8(_objectSpread$8(_objectSpread$8(_objectSpread$8(_objectSpread$8({}, rest), {}, {
+        var props = _objectSpread$9(_objectSpread$9(_objectSpread$9(_objectSpread$9(_objectSpread$9({}, rest), {}, {
           fill: "#eee"
         }, background), backgroundProps), adaptEventsOfChild(_this4.props, entry, i)), {}, {
           onAnimationStart: _this4.handleAnimationStart,
@@ -23903,7 +23927,7 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
           index: i,
           className: "recharts-bar-background-rectangle"
         });
-        return /* @__PURE__ */ React.createElement(BarRectangle, _extends$7({
+        return /* @__PURE__ */ React.createElement(BarRectangle, _extends$8({
           key: "background-bar-".concat(i),
           option: _this4.props.background,
           isActive: i === activeIndex
@@ -23993,8 +24017,8 @@ var Bar = /* @__PURE__ */ function(_PureComponent) {
   }]);
 }(reactExports.PureComponent);
 _Bar = Bar;
-_defineProperty$b(Bar, "displayName", "Bar");
-_defineProperty$b(Bar, "defaultProps", {
+_defineProperty$c(Bar, "displayName", "Bar");
+_defineProperty$c(Bar, "defaultProps", {
   xAxisId: 0,
   yAxisId: 0,
   legendType: "rect",
@@ -24008,7 +24032,7 @@ _defineProperty$b(Bar, "defaultProps", {
   animationDuration: 400,
   animationEasing: "ease"
 });
-_defineProperty$b(Bar, "getComposedData", function(_ref2) {
+_defineProperty$c(Bar, "getComposedData", function(_ref2) {
   var props = _ref2.props, item = _ref2.item, barPosition = _ref2.barPosition, bandSize = _ref2.bandSize, xAxis = _ref2.xAxis, yAxis = _ref2.yAxis, xAxisTicks = _ref2.xAxisTicks, yAxisTicks = _ref2.yAxisTicks, stackedData = _ref2.stackedData, dataStartIndex = _ref2.dataStartIndex, displayedData = _ref2.displayedData, offset = _ref2.offset;
   var pos = findPositionOfBar(barPosition, item);
   if (!pos) {
@@ -24016,7 +24040,7 @@ _defineProperty$b(Bar, "getComposedData", function(_ref2) {
   }
   var layout2 = props.layout;
   var itemDefaultProps = item.type.defaultProps;
-  var itemProps = itemDefaultProps !== void 0 ? _objectSpread$8(_objectSpread$8({}, itemDefaultProps), item.props) : item.props;
+  var itemProps = itemDefaultProps !== void 0 ? _objectSpread$9(_objectSpread$9({}, itemDefaultProps), item.props) : item.props;
   var dataKey = itemProps.dataKey, children = itemProps.children, minPointSizeProp = itemProps.minPointSize;
   var numericAxis = layout2 === "horizontal" ? yAxis : xAxis;
   var stackedDomain = stackedData ? numericAxis.scale.domain() : null;
@@ -24085,7 +24109,7 @@ _defineProperty$b(Bar, "getComposedData", function(_ref2) {
         width += _delta;
       }
     }
-    return _objectSpread$8(_objectSpread$8(_objectSpread$8({}, entry), {}, {
+    return _objectSpread$9(_objectSpread$9(_objectSpread$9({}, entry), {}, {
       x: x2,
       y: y2,
       width,
@@ -24101,18 +24125,18 @@ _defineProperty$b(Bar, "getComposedData", function(_ref2) {
       }
     });
   });
-  return _objectSpread$8({
+  return _objectSpread$9({
     data: rects,
     layout: layout2
   }, offset);
 });
-function _typeof$a(o) {
+function _typeof$b(o) {
   "@babel/helpers - typeof";
-  return _typeof$a = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$b = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$a(o);
+  }, _typeof$b(o);
 }
 function _classCallCheck$8(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -24125,7 +24149,7 @@ function _defineProperties$8(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$a(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$b(descriptor.key), descriptor);
   }
 }
 function _createClass$8(Constructor, protoProps, staticProps) {
@@ -24134,7 +24158,7 @@ function _createClass$8(Constructor, protoProps, staticProps) {
   Object.defineProperty(Constructor, "prototype", { writable: false });
   return Constructor;
 }
-function ownKeys$7(e3, r2) {
+function ownKeys$8(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -24144,19 +24168,19 @@ function ownKeys$7(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$7(e3) {
+function _objectSpread$8(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$7(Object(t2), true).forEach(function(r3) {
-      _defineProperty$a(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$7(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$8(Object(t2), true).forEach(function(r3) {
+      _defineProperty$b(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$8(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$a(obj, key, value) {
-  key = _toPropertyKey$a(key);
+function _defineProperty$b(obj, key, value) {
+  key = _toPropertyKey$b(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -24164,16 +24188,16 @@ function _defineProperty$a(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$a(t2) {
-  var i = _toPrimitive$a(t2, "string");
-  return "symbol" == _typeof$a(i) ? i : i + "";
+function _toPropertyKey$b(t2) {
+  var i = _toPrimitive$b(t2, "string");
+  return "symbol" == _typeof$b(i) ? i : i + "";
 }
-function _toPrimitive$a(t2, r2) {
-  if ("object" != _typeof$a(t2) || !t2) return t2;
+function _toPrimitive$b(t2, r2) {
+  if ("object" != _typeof$b(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$a(i)) return i;
+    if ("object" != _typeof$b(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -24232,7 +24256,7 @@ var formatAxisMap = function formatAxisMap2(props, axisMap, offset, axisType, ch
     var _parseScale = parseScale(axis, chartName, hasBar), scale2 = _parseScale.scale, realScaleType = _parseScale.realScaleType;
     scale2.domain(domain).range(range3);
     checkDomainOfScale(scale2);
-    var ticks2 = getTicksOfScale(scale2, _objectSpread$7(_objectSpread$7({}, axis), {}, {
+    var ticks2 = getTicksOfScale(scale2, _objectSpread$8(_objectSpread$8({}, axis), {}, {
       realScaleType
     }));
     if (axisType === "xAxis") {
@@ -24244,7 +24268,7 @@ var formatAxisMap = function formatAxisMap2(props, axisMap, offset, axisType, ch
       x2 = steps[offsetKey] - needSpace * axis.width;
       y2 = offset.top;
     }
-    var finalAxis = _objectSpread$7(_objectSpread$7(_objectSpread$7({}, axis), ticks2), {}, {
+    var finalAxis = _objectSpread$8(_objectSpread$8(_objectSpread$8({}, axis), ticks2), {}, {
       realScaleType,
       x: x2,
       y: y2,
@@ -24258,7 +24282,7 @@ var formatAxisMap = function formatAxisMap2(props, axisMap, offset, axisType, ch
     } else if (!axis.hide) {
       steps[offsetKey] += (needSpace ? -1 : 1) * finalAxis.width;
     }
-    return _objectSpread$7(_objectSpread$7({}, result), {}, _defineProperty$a({}, id2, finalAxis));
+    return _objectSpread$8(_objectSpread$8({}, result), {}, _defineProperty$b({}, id2, finalAxis));
   }, {});
 };
 var rectWithPoints = function rectWithPoints2(_ref, _ref2) {
@@ -24357,12 +24381,12 @@ var ScaleHelper = /* @__PURE__ */ function() {
     }
   }]);
 }();
-_defineProperty$a(ScaleHelper, "EPS", 1e-4);
+_defineProperty$b(ScaleHelper, "EPS", 1e-4);
 var createLabeledScales = function createLabeledScales2(options) {
   var scales = Object.keys(options).reduce(function(res, key) {
-    return _objectSpread$7(_objectSpread$7({}, res), {}, _defineProperty$a({}, key, ScaleHelper.create(options[key])));
+    return _objectSpread$8(_objectSpread$8({}, res), {}, _defineProperty$b({}, key, ScaleHelper.create(options[key])));
   }, {});
-  return _objectSpread$7(_objectSpread$7({}, scales), {}, {
+  return _objectSpread$8(_objectSpread$8({}, scales), {}, {
     apply: function apply2(coord) {
       var _ref5 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, bandAware = _ref5.bandAware, position = _ref5.position;
       return mapValues$1(coord, function(value, label) {
@@ -24391,6 +24415,46 @@ var getAngledRectangleWidth = function getAngledRectangleWidth2(_ref6) {
   var angledWidth = angleRadians > angleThreshold && angleRadians < Math.PI - angleThreshold ? height / Math.sin(angleRadians) : width / Math.cos(angleRadians);
   return Math.abs(angledWidth);
 };
+var baseIteratee$1 = _baseIteratee, isArrayLike = isArrayLike_1, keys = keys_1;
+function createFind$1(findIndexFunc) {
+  return function(collection, predicate, fromIndex) {
+    var iterable = Object(collection);
+    if (!isArrayLike(collection)) {
+      var iteratee = baseIteratee$1(predicate);
+      collection = keys(collection);
+      predicate = function(key) {
+        return iteratee(iterable[key], key, iterable);
+      };
+    }
+    var index = findIndexFunc(collection, predicate, fromIndex);
+    return index > -1 ? iterable[iteratee ? collection[index] : index] : void 0;
+  };
+}
+var _createFind = createFind$1;
+var toFinite = toFinite_1;
+function toInteger$1(value) {
+  var result = toFinite(value), remainder = result % 1;
+  return result === result ? remainder ? result - remainder : result : 0;
+}
+var toInteger_1 = toInteger$1;
+var baseFindIndex = _baseFindIndex, baseIteratee = _baseIteratee, toInteger = toInteger_1;
+var nativeMax = Math.max;
+function findIndex$1(array2, predicate, fromIndex) {
+  var length = array2 == null ? 0 : array2.length;
+  if (!length) {
+    return -1;
+  }
+  var index = fromIndex == null ? 0 : toInteger(fromIndex);
+  if (index < 0) {
+    index = nativeMax(length + index, 0);
+  }
+  return baseFindIndex(array2, baseIteratee(predicate), index);
+}
+var findIndex_1 = findIndex$1;
+var createFind = _createFind, findIndex = findIndex_1;
+var find = createFind(findIndex);
+var find_1 = find;
+const find$1 = /* @__PURE__ */ getDefaultExportFromCjs(find_1);
 var calculateViewBox = memoize$3(function(offset) {
   return {
     x: offset.left,
@@ -24437,6 +24501,17 @@ var useXAxisOrThrow = function useXAxisOrThrow2(xAxisId) {
   !(xAxis != null) ? invariant$1() : void 0;
   return xAxis;
 };
+var useArbitraryXAxis = function useArbitraryXAxis2() {
+  var xAxisMap = reactExports.useContext(XAxisContext);
+  return getAnyElementOfObject(xAxisMap);
+};
+var useYAxisWithFiniteDomainOrRandom = function useYAxisWithFiniteDomainOrRandom2() {
+  var yAxisMap = reactExports.useContext(YAxisContext);
+  var yAxisWithFiniteDomain = find$1(yAxisMap, function(axis) {
+    return every$1(axis.domain, Number.isFinite);
+  });
+  return yAxisWithFiniteDomain || getAnyElementOfObject(yAxisMap);
+};
 var useYAxisOrThrow = function useYAxisOrThrow2(yAxisId) {
   var yAxisMap = reactExports.useContext(YAxisContext);
   !(yAxisMap != null) ? invariant$1() : void 0;
@@ -24448,19 +24523,22 @@ var useViewBox = function useViewBox2() {
   var viewBox = reactExports.useContext(ViewBoxContext);
   return viewBox;
 };
+var useOffset = function useOffset2() {
+  return reactExports.useContext(OffsetContext);
+};
 var useChartWidth = function useChartWidth2() {
   return reactExports.useContext(ChartWidthContext);
 };
 var useChartHeight = function useChartHeight2() {
   return reactExports.useContext(ChartHeightContext);
 };
-function _typeof$9(o) {
+function _typeof$a(o) {
   "@babel/helpers - typeof";
-  return _typeof$9 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$a = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$9(o);
+  }, _typeof$a(o);
 }
 function _classCallCheck$7(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -24473,7 +24551,7 @@ function _defineProperties$7(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$9(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$a(descriptor.key), descriptor);
   }
 }
 function _createClass$7(Constructor, protoProps, staticProps) {
@@ -24485,7 +24563,7 @@ function _callSuper$6(t2, o, e3) {
   return o = _getPrototypeOf$6(o), _possibleConstructorReturn$6(t2, _isNativeReflectConstruct$6() ? Reflect.construct(o, e3 || [], _getPrototypeOf$6(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$6(self2, call) {
-  if (call && (_typeof$9(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$a(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -24529,7 +24607,7 @@ function _setPrototypeOf$6(o, p2) {
   };
   return _setPrototypeOf$6(o, p2);
 }
-function ownKeys$6(e3, r2) {
+function ownKeys$7(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -24539,19 +24617,19 @@ function ownKeys$6(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$6(e3) {
+function _objectSpread$7(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$6(Object(t2), true).forEach(function(r3) {
-      _defineProperty$9(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$6(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$7(Object(t2), true).forEach(function(r3) {
+      _defineProperty$a(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$7(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$9(obj, key, value) {
-  key = _toPropertyKey$9(key);
+function _defineProperty$a(obj, key, value) {
+  key = _toPropertyKey$a(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -24559,16 +24637,16 @@ function _defineProperty$9(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$9(t2) {
-  var i = _toPrimitive$9(t2, "string");
-  return "symbol" == _typeof$9(i) ? i : i + "";
+function _toPropertyKey$a(t2) {
+  var i = _toPrimitive$a(t2, "string");
+  return "symbol" == _typeof$a(i) ? i : i + "";
 }
-function _toPrimitive$9(t2, r2) {
-  if ("object" != _typeof$9(t2) || !t2) return t2;
+function _toPrimitive$a(t2, r2) {
+  if ("object" != _typeof$a(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$9(i)) return i;
+    if ("object" != _typeof$a(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -24614,8 +24692,8 @@ function _iterableToArrayLimit$1(r2, l2) {
 function _arrayWithHoles$1(arr) {
   if (Array.isArray(arr)) return arr;
 }
-function _extends$6() {
-  _extends$6 = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$7() {
+  _extends$7 = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -24626,7 +24704,7 @@ function _extends$6() {
     }
     return target;
   };
-  return _extends$6.apply(this, arguments);
+  return _extends$7.apply(this, arguments);
 }
 var renderLine = function renderLine2(option, props) {
   var line;
@@ -24635,7 +24713,7 @@ var renderLine = function renderLine2(option, props) {
   } else if (isFunction$3(option)) {
     line = option(props);
   } else {
-    line = /* @__PURE__ */ React.createElement("line", _extends$6({}, props, {
+    line = /* @__PURE__ */ React.createElement("line", _extends$7({}, props, {
       className: "recharts-reference-line-line"
     }));
   }
@@ -24716,7 +24794,7 @@ function ReferenceLineImpl(props) {
   }
   var _endPoints = _slicedToArray$1(endPoints, 2), _endPoints$ = _endPoints[0], x1 = _endPoints$.x, y1 = _endPoints$.y, _endPoints$2 = _endPoints[1], x2 = _endPoints$2.x, y2 = _endPoints$2.y;
   var clipPath = ifOverflowMatches(props, "hidden") ? "url(#".concat(clipPathId, ")") : void 0;
-  var lineProps = _objectSpread$6(_objectSpread$6({
+  var lineProps = _objectSpread$7(_objectSpread$7({
     clipPath
   }, filterProps$1(props, true)), {}, {
     x1,
@@ -24746,8 +24824,8 @@ var ReferenceLine = /* @__PURE__ */ function(_React$Component) {
     }
   }]);
 }(React.Component);
-_defineProperty$9(ReferenceLine, "displayName", "ReferenceLine");
-_defineProperty$9(ReferenceLine, "defaultProps", {
+_defineProperty$a(ReferenceLine, "displayName", "ReferenceLine");
+_defineProperty$a(ReferenceLine, "defaultProps", {
   isFront: false,
   ifOverflow: "discard",
   xAxisId: 0,
@@ -24758,8 +24836,8 @@ _defineProperty$9(ReferenceLine, "defaultProps", {
   strokeWidth: 1,
   position: "middle"
 });
-function _extends$5() {
-  _extends$5 = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$6() {
+  _extends$6 = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -24770,17 +24848,17 @@ function _extends$5() {
     }
     return target;
   };
-  return _extends$5.apply(this, arguments);
+  return _extends$6.apply(this, arguments);
 }
-function _typeof$8(o) {
+function _typeof$9(o) {
   "@babel/helpers - typeof";
-  return _typeof$8 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$9 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$8(o);
+  }, _typeof$9(o);
 }
-function ownKeys$5(e3, r2) {
+function ownKeys$6(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -24790,12 +24868,12 @@ function ownKeys$5(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$5(e3) {
+function _objectSpread$6(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$5(Object(t2), true).forEach(function(r3) {
-      _defineProperty$8(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$5(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$6(Object(t2), true).forEach(function(r3) {
+      _defineProperty$9(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$6(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -24812,7 +24890,7 @@ function _defineProperties$6(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$8(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$9(descriptor.key), descriptor);
   }
 }
 function _createClass$6(Constructor, protoProps, staticProps) {
@@ -24824,7 +24902,7 @@ function _callSuper$5(t2, o, e3) {
   return o = _getPrototypeOf$5(o), _possibleConstructorReturn$5(t2, _isNativeReflectConstruct$5() ? Reflect.construct(o, e3 || [], _getPrototypeOf$5(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$5(self2, call) {
-  if (call && (_typeof$8(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$9(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -24868,8 +24946,8 @@ function _setPrototypeOf$5(o, p2) {
   };
   return _setPrototypeOf$5(o, p2);
 }
-function _defineProperty$8(obj, key, value) {
-  key = _toPropertyKey$8(key);
+function _defineProperty$9(obj, key, value) {
+  key = _toPropertyKey$9(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -24877,16 +24955,16 @@ function _defineProperty$8(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$8(t2) {
-  var i = _toPrimitive$8(t2, "string");
-  return "symbol" == _typeof$8(i) ? i : i + "";
+function _toPropertyKey$9(t2) {
+  var i = _toPrimitive$9(t2, "string");
+  return "symbol" == _typeof$9(i) ? i : i + "";
 }
-function _toPrimitive$8(t2, r2) {
-  if ("object" != _typeof$8(t2) || !t2) return t2;
+function _toPrimitive$9(t2, r2) {
+  if ("object" != _typeof$9(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$8(i)) return i;
+    if ("object" != _typeof$9(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -24931,7 +25009,7 @@ var ReferenceDot = /* @__PURE__ */ function(_React$Component) {
       var cx = coordinate.x, cy = coordinate.y;
       var _this$props2 = this.props, shape = _this$props2.shape, className = _this$props2.className;
       var clipPath = ifOverflowMatches(this.props, "hidden") ? "url(#".concat(clipPathId, ")") : void 0;
-      var dotProps = _objectSpread$5(_objectSpread$5({
+      var dotProps = _objectSpread$6(_objectSpread$6({
         clipPath
       }, filterProps$1(this.props, true)), {}, {
         cx,
@@ -24948,8 +25026,8 @@ var ReferenceDot = /* @__PURE__ */ function(_React$Component) {
     }
   }]);
 }(React.Component);
-_defineProperty$8(ReferenceDot, "displayName", "ReferenceDot");
-_defineProperty$8(ReferenceDot, "defaultProps", {
+_defineProperty$9(ReferenceDot, "displayName", "ReferenceDot");
+_defineProperty$9(ReferenceDot, "defaultProps", {
   isFront: false,
   ifOverflow: "discard",
   xAxisId: 0,
@@ -24960,14 +25038,14 @@ _defineProperty$8(ReferenceDot, "defaultProps", {
   fillOpacity: 1,
   strokeWidth: 1
 });
-_defineProperty$8(ReferenceDot, "renderDot", function(option, props) {
+_defineProperty$9(ReferenceDot, "renderDot", function(option, props) {
   var dot;
   if (/* @__PURE__ */ React.isValidElement(option)) {
     dot = /* @__PURE__ */ React.cloneElement(option, props);
   } else if (isFunction$3(option)) {
     dot = option(props);
   } else {
-    dot = /* @__PURE__ */ React.createElement(Dot, _extends$5({}, props, {
+    dot = /* @__PURE__ */ React.createElement(Dot, _extends$6({}, props, {
       cx: props.cx,
       cy: props.cy,
       className: "recharts-reference-dot-dot"
@@ -24975,8 +25053,8 @@ _defineProperty$8(ReferenceDot, "renderDot", function(option, props) {
   }
   return dot;
 });
-function _extends$4() {
-  _extends$4 = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$5() {
+  _extends$5 = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -24987,17 +25065,17 @@ function _extends$4() {
     }
     return target;
   };
-  return _extends$4.apply(this, arguments);
+  return _extends$5.apply(this, arguments);
 }
-function _typeof$7(o) {
+function _typeof$8(o) {
   "@babel/helpers - typeof";
-  return _typeof$7 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$8 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$7(o);
+  }, _typeof$8(o);
 }
-function ownKeys$4(e3, r2) {
+function ownKeys$5(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -25007,12 +25085,12 @@ function ownKeys$4(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$4(e3) {
+function _objectSpread$5(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$4(Object(t2), true).forEach(function(r3) {
-      _defineProperty$7(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$4(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$5(Object(t2), true).forEach(function(r3) {
+      _defineProperty$8(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$5(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
@@ -25029,7 +25107,7 @@ function _defineProperties$5(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$7(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$8(descriptor.key), descriptor);
   }
 }
 function _createClass$5(Constructor, protoProps, staticProps) {
@@ -25041,7 +25119,7 @@ function _callSuper$4(t2, o, e3) {
   return o = _getPrototypeOf$4(o), _possibleConstructorReturn$4(t2, _isNativeReflectConstruct$4() ? Reflect.construct(o, e3 || [], _getPrototypeOf$4(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$4(self2, call) {
-  if (call && (_typeof$7(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$8(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -25085,8 +25163,8 @@ function _setPrototypeOf$4(o, p2) {
   };
   return _setPrototypeOf$4(o, p2);
 }
-function _defineProperty$7(obj, key, value) {
-  key = _toPropertyKey$7(key);
+function _defineProperty$8(obj, key, value) {
+  key = _toPropertyKey$8(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -25094,16 +25172,16 @@ function _defineProperty$7(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$7(t2) {
-  var i = _toPrimitive$7(t2, "string");
-  return "symbol" == _typeof$7(i) ? i : i + "";
+function _toPropertyKey$8(t2) {
+  var i = _toPrimitive$8(t2, "string");
+  return "symbol" == _typeof$8(i) ? i : i + "";
 }
-function _toPrimitive$7(t2, r2) {
-  if ("object" != _typeof$7(t2) || !t2) return t2;
+function _toPrimitive$8(t2, r2) {
+  if ("object" != _typeof$8(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$7(i)) return i;
+    if ("object" != _typeof$8(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -25162,14 +25240,14 @@ var ReferenceArea = /* @__PURE__ */ function(_React$Component) {
       var clipPath = ifOverflowMatches(this.props, "hidden") ? "url(#".concat(clipPathId, ")") : void 0;
       return /* @__PURE__ */ React.createElement(Layer, {
         className: clsx("recharts-reference-area", className)
-      }, ReferenceArea2.renderRect(shape, _objectSpread$4(_objectSpread$4({
+      }, ReferenceArea2.renderRect(shape, _objectSpread$5(_objectSpread$5({
         clipPath
       }, filterProps$1(this.props, true)), rect)), Label.renderCallByParent(this.props, rect));
     }
   }]);
 }(React.Component);
-_defineProperty$7(ReferenceArea, "displayName", "ReferenceArea");
-_defineProperty$7(ReferenceArea, "defaultProps", {
+_defineProperty$8(ReferenceArea, "displayName", "ReferenceArea");
+_defineProperty$8(ReferenceArea, "defaultProps", {
   isFront: false,
   ifOverflow: "discard",
   xAxisId: 0,
@@ -25180,14 +25258,14 @@ _defineProperty$7(ReferenceArea, "defaultProps", {
   stroke: "none",
   strokeWidth: 1
 });
-_defineProperty$7(ReferenceArea, "renderRect", function(option, props) {
+_defineProperty$8(ReferenceArea, "renderRect", function(option, props) {
   var rect;
   if (/* @__PURE__ */ React.isValidElement(option)) {
     rect = /* @__PURE__ */ React.cloneElement(option, props);
   } else if (isFunction$3(option)) {
     rect = option(props);
   } else {
-    rect = /* @__PURE__ */ React.createElement(Rectangle, _extends$4({}, props, {
+    rect = /* @__PURE__ */ React.createElement(Rectangle, _extends$5({}, props, {
       className: "recharts-reference-area-rect"
     }));
   }
@@ -25278,15 +25356,15 @@ function getEquidistantTicks(sign2, boundaries, getTickSize, ticks2, minTickGap)
   }
   return [];
 }
-function _typeof$6(o) {
+function _typeof$7(o) {
   "@babel/helpers - typeof";
-  return _typeof$6 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$7 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$6(o);
+  }, _typeof$7(o);
 }
-function ownKeys$3(e3, r2) {
+function ownKeys$4(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -25296,19 +25374,19 @@ function ownKeys$3(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$3(e3) {
+function _objectSpread$4(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$3(Object(t2), true).forEach(function(r3) {
-      _defineProperty$6(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$3(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$4(Object(t2), true).forEach(function(r3) {
+      _defineProperty$7(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$4(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _defineProperty$6(obj, key, value) {
-  key = _toPropertyKey$6(key);
+function _defineProperty$7(obj, key, value) {
+  key = _toPropertyKey$7(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -25316,16 +25394,16 @@ function _defineProperty$6(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$6(t2) {
-  var i = _toPrimitive$6(t2, "string");
-  return "symbol" == _typeof$6(i) ? i : i + "";
+function _toPropertyKey$7(t2) {
+  var i = _toPrimitive$7(t2, "string");
+  return "symbol" == _typeof$7(i) ? i : i + "";
 }
-function _toPrimitive$6(t2, r2) {
-  if ("object" != _typeof$6(t2) || !t2) return t2;
+function _toPrimitive$7(t2, r2) {
+  if ("object" != _typeof$7(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$6(i)) return i;
+    if ("object" != _typeof$7(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return ("string" === r2 ? String : Number)(t2);
@@ -25346,18 +25424,18 @@ function getTicksEnd(sign2, boundaries, getTickSize, ticks2, minTickGap) {
     };
     if (i2 === len - 1) {
       var gap = sign2 * (entry.coordinate + sign2 * getSize2() / 2 - end);
-      result[i2] = entry = _objectSpread$3(_objectSpread$3({}, entry), {}, {
+      result[i2] = entry = _objectSpread$4(_objectSpread$4({}, entry), {}, {
         tickCoord: gap > 0 ? entry.coordinate - gap * sign2 : entry.coordinate
       });
     } else {
-      result[i2] = entry = _objectSpread$3(_objectSpread$3({}, entry), {}, {
+      result[i2] = entry = _objectSpread$4(_objectSpread$4({}, entry), {}, {
         tickCoord: entry.coordinate
       });
     }
     var isShow = isVisible(sign2, entry.tickCoord, getSize2, start, end);
     if (isShow) {
       end = entry.tickCoord - sign2 * (getSize2() / 2 + minTickGap);
-      result[i2] = _objectSpread$3(_objectSpread$3({}, entry), {}, {
+      result[i2] = _objectSpread$4(_objectSpread$4({}, entry), {}, {
         isShow: true
       });
     }
@@ -25375,7 +25453,7 @@ function getTicksStart(sign2, boundaries, getTickSize, ticks2, minTickGap, prese
     var tail = ticks2[len - 1];
     var tailSize = getTickSize(tail, len - 1);
     var tailGap = sign2 * (tail.coordinate + sign2 * tailSize / 2 - end);
-    result[len - 1] = tail = _objectSpread$3(_objectSpread$3({}, tail), {}, {
+    result[len - 1] = tail = _objectSpread$4(_objectSpread$4({}, tail), {}, {
       tickCoord: tailGap > 0 ? tail.coordinate - tailGap * sign2 : tail.coordinate
     });
     var isTailShow = isVisible(sign2, tail.tickCoord, function() {
@@ -25383,7 +25461,7 @@ function getTicksStart(sign2, boundaries, getTickSize, ticks2, minTickGap, prese
     }, start, end);
     if (isTailShow) {
       end = tail.tickCoord - sign2 * (tailSize / 2 + minTickGap);
-      result[len - 1] = _objectSpread$3(_objectSpread$3({}, tail), {}, {
+      result[len - 1] = _objectSpread$4(_objectSpread$4({}, tail), {}, {
         isShow: true
       });
     }
@@ -25400,18 +25478,18 @@ function getTicksStart(sign2, boundaries, getTickSize, ticks2, minTickGap, prese
     };
     if (i2 === 0) {
       var gap = sign2 * (entry.coordinate - sign2 * getSize2() / 2 - start);
-      result[i2] = entry = _objectSpread$3(_objectSpread$3({}, entry), {}, {
+      result[i2] = entry = _objectSpread$4(_objectSpread$4({}, entry), {}, {
         tickCoord: gap < 0 ? entry.coordinate - gap * sign2 : entry.coordinate
       });
     } else {
-      result[i2] = entry = _objectSpread$3(_objectSpread$3({}, entry), {}, {
+      result[i2] = entry = _objectSpread$4(_objectSpread$4({}, entry), {}, {
         tickCoord: entry.coordinate
       });
     }
     var isShow = isVisible(sign2, entry.tickCoord, getSize2, start, end);
     if (isShow) {
       start = entry.tickCoord + sign2 * (getSize2() / 2 + minTickGap);
-      result[i2] = _objectSpread$3(_objectSpread$3({}, entry), {}, {
+      result[i2] = _objectSpread$4(_objectSpread$4({}, entry), {}, {
         isShow: true
       });
     }
@@ -25462,17 +25540,17 @@ function getTicks(props, fontSize, letterSpacing) {
     return entry.isShow;
   });
 }
-var _excluded$1 = ["viewBox"], _excluded2$1 = ["viewBox"], _excluded3 = ["ticks"];
-function _typeof$5(o) {
+var _excluded$2 = ["viewBox"], _excluded2$2 = ["viewBox"], _excluded3 = ["ticks"];
+function _typeof$6(o) {
   "@babel/helpers - typeof";
-  return _typeof$5 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+  return _typeof$6 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
     return typeof o2;
   } : function(o2) {
     return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-  }, _typeof$5(o);
+  }, _typeof$6(o);
 }
-function _extends$3() {
-  _extends$3 = Object.assign ? Object.assign.bind() : function(target) {
+function _extends$4() {
+  _extends$4 = Object.assign ? Object.assign.bind() : function(target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
       for (var key in source) {
@@ -25483,9 +25561,9 @@ function _extends$3() {
     }
     return target;
   };
-  return _extends$3.apply(this, arguments);
+  return _extends$4.apply(this, arguments);
 }
-function ownKeys$2(e3, r2) {
+function ownKeys$3(e3, r2) {
   var t2 = Object.keys(e3);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e3);
@@ -25495,20 +25573,20 @@ function ownKeys$2(e3, r2) {
   }
   return t2;
 }
-function _objectSpread$2(e3) {
+function _objectSpread$3(e3) {
   for (var r2 = 1; r2 < arguments.length; r2++) {
     var t2 = null != arguments[r2] ? arguments[r2] : {};
-    r2 % 2 ? ownKeys$2(Object(t2), true).forEach(function(r3) {
-      _defineProperty$5(e3, r3, t2[r3]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$2(Object(t2)).forEach(function(r3) {
+    r2 % 2 ? ownKeys$3(Object(t2), true).forEach(function(r3) {
+      _defineProperty$6(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$3(Object(t2)).forEach(function(r3) {
       Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
     });
   }
   return e3;
 }
-function _objectWithoutProperties$1(source, excluded) {
+function _objectWithoutProperties$2(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$1(source, excluded);
+  var target = _objectWithoutPropertiesLoose$2(source, excluded);
   var key, i;
   if (Object.getOwnPropertySymbols) {
     var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
@@ -25521,7 +25599,7 @@ function _objectWithoutProperties$1(source, excluded) {
   }
   return target;
 }
-function _objectWithoutPropertiesLoose$1(source, excluded) {
+function _objectWithoutPropertiesLoose$2(source, excluded) {
   if (source == null) return {};
   var target = {};
   for (var key in source) {
@@ -25543,7 +25621,7 @@ function _defineProperties$4(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey$5(descriptor.key), descriptor);
+    Object.defineProperty(target, _toPropertyKey$6(descriptor.key), descriptor);
   }
 }
 function _createClass$4(Constructor, protoProps, staticProps) {
@@ -25556,7 +25634,7 @@ function _callSuper$3(t2, o, e3) {
   return o = _getPrototypeOf$3(o), _possibleConstructorReturn$3(t2, _isNativeReflectConstruct$3() ? Reflect.construct(o, e3 || [], _getPrototypeOf$3(t2).constructor) : o.apply(t2, e3));
 }
 function _possibleConstructorReturn$3(self2, call) {
-  if (call && (_typeof$5(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$6(call) === "object" || typeof call === "function")) {
     return call;
   } else if (call !== void 0) {
     throw new TypeError("Derived constructors may only return object or undefined");
@@ -25600,8 +25678,8 @@ function _setPrototypeOf$3(o, p2) {
   };
   return _setPrototypeOf$3(o, p2);
 }
-function _defineProperty$5(obj, key, value) {
-  key = _toPropertyKey$5(key);
+function _defineProperty$6(obj, key, value) {
+  key = _toPropertyKey$6(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
   } else {
@@ -25609,16 +25687,16 @@ function _defineProperty$5(obj, key, value) {
   }
   return obj;
 }
-function _toPropertyKey$5(t2) {
-  var i = _toPrimitive$5(t2, "string");
-  return "symbol" == _typeof$5(i) ? i : i + "";
+function _toPropertyKey$6(t2) {
+  var i = _toPrimitive$6(t2, "string");
+  return "symbol" == _typeof$6(i) ? i : i + "";
 }
-function _toPrimitive$5(t2, r2) {
-  if ("object" != _typeof$5(t2) || !t2) return t2;
+function _toPrimitive$6(t2, r2) {
+  if ("object" != _typeof$6(t2) || !t2) return t2;
   var e3 = t2[Symbol.toPrimitive];
   if (void 0 !== e3) {
     var i = e3.call(t2, r2);
-    if ("object" != _typeof$5(i)) return i;
+    if ("object" != _typeof$6(i)) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
   return String(t2);
@@ -25638,8 +25716,8 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
   return _createClass$4(CartesianAxis2, [{
     key: "shouldComponentUpdate",
     value: function shouldComponentUpdate(_ref, nextState) {
-      var viewBox = _ref.viewBox, restProps = _objectWithoutProperties$1(_ref, _excluded$1);
-      var _this$props = this.props, viewBoxOld = _this$props.viewBox, restPropsOld = _objectWithoutProperties$1(_this$props, _excluded2$1);
+      var viewBox = _ref.viewBox, restProps = _objectWithoutProperties$2(_ref, _excluded$2);
+      var _this$props = this.props, viewBoxOld = _this$props.viewBox, restPropsOld = _objectWithoutProperties$2(_this$props, _excluded2$2);
       return !shallowEqual(viewBox, viewBoxOld) || !shallowEqual(restProps, restPropsOld) || !shallowEqual(nextState, this.state);
     }
   }, {
@@ -25753,12 +25831,12 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
     key: "renderAxisLine",
     value: function renderAxisLine() {
       var _this$props5 = this.props, x2 = _this$props5.x, y2 = _this$props5.y, width = _this$props5.width, height = _this$props5.height, orientation = _this$props5.orientation, mirror = _this$props5.mirror, axisLine = _this$props5.axisLine;
-      var props = _objectSpread$2(_objectSpread$2(_objectSpread$2({}, filterProps$1(this.props, false)), filterProps$1(axisLine, false)), {}, {
+      var props = _objectSpread$3(_objectSpread$3(_objectSpread$3({}, filterProps$1(this.props, false)), filterProps$1(axisLine, false)), {}, {
         fill: "none"
       });
       if (orientation === "top" || orientation === "bottom") {
         var needHeight = +(orientation === "top" && !mirror || orientation === "bottom" && mirror);
-        props = _objectSpread$2(_objectSpread$2({}, props), {}, {
+        props = _objectSpread$3(_objectSpread$3({}, props), {}, {
           x1: x2,
           y1: y2 + needHeight * height,
           x2: x2 + width,
@@ -25766,14 +25844,14 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
         });
       } else {
         var needWidth = +(orientation === "left" && !mirror || orientation === "right" && mirror);
-        props = _objectSpread$2(_objectSpread$2({}, props), {}, {
+        props = _objectSpread$3(_objectSpread$3({}, props), {}, {
           x1: x2 + needWidth * width,
           y1: y2,
           x2: x2 + needWidth * width,
           y2: y2 + height
         });
       }
-      return /* @__PURE__ */ React.createElement("line", _extends$3({}, props, {
+      return /* @__PURE__ */ React.createElement("line", _extends$4({}, props, {
         className: clsx("recharts-cartesian-axis-line", get$2(axisLine, "className"))
       }));
     }
@@ -25790,19 +25868,19 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
       function renderTicks(ticks2, fontSize, letterSpacing) {
         var _this2 = this;
         var _this$props6 = this.props, tickLine = _this$props6.tickLine, stroke = _this$props6.stroke, tick = _this$props6.tick, tickFormatter = _this$props6.tickFormatter, unit2 = _this$props6.unit;
-        var finalTicks = getTicks(_objectSpread$2(_objectSpread$2({}, this.props), {}, {
+        var finalTicks = getTicks(_objectSpread$3(_objectSpread$3({}, this.props), {}, {
           ticks: ticks2
         }), fontSize, letterSpacing);
         var textAnchor = this.getTickTextAnchor();
         var verticalAnchor = this.getTickVerticalAnchor();
         var axisProps = filterProps$1(this.props, false);
         var customTickProps = filterProps$1(tick, false);
-        var tickLineProps = _objectSpread$2(_objectSpread$2({}, axisProps), {}, {
+        var tickLineProps = _objectSpread$3(_objectSpread$3({}, axisProps), {}, {
           fill: "none"
         }, filterProps$1(tickLine, false));
         var items = finalTicks.map(function(entry, i) {
           var _this2$getTickLineCoo = _this2.getTickLineCoord(entry), lineCoord = _this2$getTickLineCoo.line, tickCoord = _this2$getTickLineCoo.tick;
-          var tickProps = _objectSpread$2(_objectSpread$2(_objectSpread$2(_objectSpread$2({
+          var tickProps = _objectSpread$3(_objectSpread$3(_objectSpread$3(_objectSpread$3({
             textAnchor,
             verticalAnchor
           }, axisProps), {}, {
@@ -25814,10 +25892,10 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
             visibleTicksCount: finalTicks.length,
             tickFormatter
           });
-          return /* @__PURE__ */ React.createElement(Layer, _extends$3({
+          return /* @__PURE__ */ React.createElement(Layer, _extends$4({
             className: "recharts-cartesian-axis-tick",
             key: "tick-".concat(entry.value, "-").concat(entry.coordinate, "-").concat(entry.tickCoord)
-          }, adaptEventsOfChild(_this2.props, entry, i)), tickLine && /* @__PURE__ */ React.createElement("line", _extends$3({}, tickLineProps, lineCoord, {
+          }, adaptEventsOfChild(_this2.props, entry, i)), tickLine && /* @__PURE__ */ React.createElement("line", _extends$4({}, tickLineProps, lineCoord, {
             className: clsx("recharts-cartesian-axis-tick-line", get$2(tickLine, "className"))
           })), tick && CartesianAxis2.renderTickItem(tick, tickProps, "".concat(isFunction$3(tickFormatter) ? tickFormatter(entry.value, i) : entry.value).concat(unit2 || "")));
         });
@@ -25834,7 +25912,7 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
       if (hide) {
         return null;
       }
-      var _this$props8 = this.props, ticks2 = _this$props8.ticks, noTicksProps = _objectWithoutProperties$1(_this$props8, _excluded3);
+      var _this$props8 = this.props, ticks2 = _this$props8.ticks, noTicksProps = _objectWithoutProperties$2(_this$props8, _excluded3);
       var finalTicks = ticks2;
       if (isFunction$3(ticksGenerator)) {
         finalTicks = ticks2 && ticks2.length > 0 ? ticksGenerator(this.props) : ticksGenerator(noTicksProps);
@@ -25855,15 +25933,15 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
       var tickItem;
       var combinedClassName = clsx(props.className, "recharts-cartesian-axis-tick-value");
       if (/* @__PURE__ */ React.isValidElement(option)) {
-        tickItem = /* @__PURE__ */ React.cloneElement(option, _objectSpread$2(_objectSpread$2({}, props), {}, {
+        tickItem = /* @__PURE__ */ React.cloneElement(option, _objectSpread$3(_objectSpread$3({}, props), {}, {
           className: combinedClassName
         }));
       } else if (isFunction$3(option)) {
-        tickItem = option(_objectSpread$2(_objectSpread$2({}, props), {}, {
+        tickItem = option(_objectSpread$3(_objectSpread$3({}, props), {}, {
           className: combinedClassName
         }));
       } else {
-        tickItem = /* @__PURE__ */ React.createElement(Text, _extends$3({}, props, {
+        tickItem = /* @__PURE__ */ React.createElement(Text, _extends$4({}, props, {
           className: "recharts-cartesian-axis-tick-value"
         }), value);
       }
@@ -25871,8 +25949,8 @@ var CartesianAxis = /* @__PURE__ */ function(_Component) {
     }
   }]);
 }(reactExports.Component);
-_defineProperty$5(CartesianAxis, "displayName", "CartesianAxis");
-_defineProperty$5(CartesianAxis, "defaultProps", {
+_defineProperty$6(CartesianAxis, "displayName", "CartesianAxis");
+_defineProperty$6(CartesianAxis, "defaultProps", {
   x: 0,
   y: 0,
   width: 0,
@@ -25898,6 +25976,367 @@ _defineProperty$5(CartesianAxis, "defaultProps", {
   tickMargin: 2,
   interval: "preserveEnd"
 });
+var _excluded$1 = ["x1", "y1", "x2", "y2", "key"], _excluded2$1 = ["offset"];
+function _typeof$5(o) {
+  "@babel/helpers - typeof";
+  return _typeof$5 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
+    return typeof o2;
+  } : function(o2) {
+    return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
+  }, _typeof$5(o);
+}
+function ownKeys$2(e3, r2) {
+  var t2 = Object.keys(e3);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e3);
+    r2 && (o = o.filter(function(r3) {
+      return Object.getOwnPropertyDescriptor(e3, r3).enumerable;
+    })), t2.push.apply(t2, o);
+  }
+  return t2;
+}
+function _objectSpread$2(e3) {
+  for (var r2 = 1; r2 < arguments.length; r2++) {
+    var t2 = null != arguments[r2] ? arguments[r2] : {};
+    r2 % 2 ? ownKeys$2(Object(t2), true).forEach(function(r3) {
+      _defineProperty$5(e3, r3, t2[r3]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e3, Object.getOwnPropertyDescriptors(t2)) : ownKeys$2(Object(t2)).forEach(function(r3) {
+      Object.defineProperty(e3, r3, Object.getOwnPropertyDescriptor(t2, r3));
+    });
+  }
+  return e3;
+}
+function _defineProperty$5(obj, key, value) {
+  key = _toPropertyKey$5(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey$5(t2) {
+  var i = _toPrimitive$5(t2, "string");
+  return "symbol" == _typeof$5(i) ? i : i + "";
+}
+function _toPrimitive$5(t2, r2) {
+  if ("object" != _typeof$5(t2) || !t2) return t2;
+  var e3 = t2[Symbol.toPrimitive];
+  if (void 0 !== e3) {
+    var i = e3.call(t2, r2);
+    if ("object" != _typeof$5(i)) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r2 ? String : Number)(t2);
+}
+function _extends$3() {
+  _extends$3 = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends$3.apply(this, arguments);
+}
+function _objectWithoutProperties$1(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$1(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose$1(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+var Background = function Background2(props) {
+  var fill = props.fill;
+  if (!fill || fill === "none") {
+    return null;
+  }
+  var fillOpacity = props.fillOpacity, x2 = props.x, y2 = props.y, width = props.width, height = props.height, ry = props.ry;
+  return /* @__PURE__ */ React.createElement("rect", {
+    x: x2,
+    y: y2,
+    ry,
+    width,
+    height,
+    stroke: "none",
+    fill,
+    fillOpacity,
+    className: "recharts-cartesian-grid-bg"
+  });
+};
+function renderLineItem(option, props) {
+  var lineItem;
+  if (/* @__PURE__ */ React.isValidElement(option)) {
+    lineItem = /* @__PURE__ */ React.cloneElement(option, props);
+  } else if (isFunction$3(option)) {
+    lineItem = option(props);
+  } else {
+    var x1 = props.x1, y1 = props.y1, x2 = props.x2, y2 = props.y2, key = props.key, others = _objectWithoutProperties$1(props, _excluded$1);
+    var _filterProps = filterProps$1(others, false);
+    _filterProps.offset;
+    var restOfFilteredProps = _objectWithoutProperties$1(_filterProps, _excluded2$1);
+    lineItem = /* @__PURE__ */ React.createElement("line", _extends$3({}, restOfFilteredProps, {
+      x1,
+      y1,
+      x2,
+      y2,
+      fill: "none",
+      key
+    }));
+  }
+  return lineItem;
+}
+function HorizontalGridLines(props) {
+  var x2 = props.x, width = props.width, _props$horizontal = props.horizontal, horizontal = _props$horizontal === void 0 ? true : _props$horizontal, horizontalPoints = props.horizontalPoints;
+  if (!horizontal || !horizontalPoints || !horizontalPoints.length) {
+    return null;
+  }
+  var items = horizontalPoints.map(function(entry, i) {
+    var lineItemProps = _objectSpread$2(_objectSpread$2({}, props), {}, {
+      x1: x2,
+      y1: entry,
+      x2: x2 + width,
+      y2: entry,
+      key: "line-".concat(i),
+      index: i
+    });
+    return renderLineItem(horizontal, lineItemProps);
+  });
+  return /* @__PURE__ */ React.createElement("g", {
+    className: "recharts-cartesian-grid-horizontal"
+  }, items);
+}
+function VerticalGridLines(props) {
+  var y2 = props.y, height = props.height, _props$vertical = props.vertical, vertical = _props$vertical === void 0 ? true : _props$vertical, verticalPoints = props.verticalPoints;
+  if (!vertical || !verticalPoints || !verticalPoints.length) {
+    return null;
+  }
+  var items = verticalPoints.map(function(entry, i) {
+    var lineItemProps = _objectSpread$2(_objectSpread$2({}, props), {}, {
+      x1: entry,
+      y1: y2,
+      x2: entry,
+      y2: y2 + height,
+      key: "line-".concat(i),
+      index: i
+    });
+    return renderLineItem(vertical, lineItemProps);
+  });
+  return /* @__PURE__ */ React.createElement("g", {
+    className: "recharts-cartesian-grid-vertical"
+  }, items);
+}
+function HorizontalStripes(props) {
+  var horizontalFill = props.horizontalFill, fillOpacity = props.fillOpacity, x2 = props.x, y2 = props.y, width = props.width, height = props.height, horizontalPoints = props.horizontalPoints, _props$horizontal2 = props.horizontal, horizontal = _props$horizontal2 === void 0 ? true : _props$horizontal2;
+  if (!horizontal || !horizontalFill || !horizontalFill.length) {
+    return null;
+  }
+  var roundedSortedHorizontalPoints = horizontalPoints.map(function(e3) {
+    return Math.round(e3 + y2 - y2);
+  }).sort(function(a2, b2) {
+    return a2 - b2;
+  });
+  if (y2 !== roundedSortedHorizontalPoints[0]) {
+    roundedSortedHorizontalPoints.unshift(0);
+  }
+  var items = roundedSortedHorizontalPoints.map(function(entry, i) {
+    var lastStripe = !roundedSortedHorizontalPoints[i + 1];
+    var lineHeight = lastStripe ? y2 + height - entry : roundedSortedHorizontalPoints[i + 1] - entry;
+    if (lineHeight <= 0) {
+      return null;
+    }
+    var colorIndex = i % horizontalFill.length;
+    return /* @__PURE__ */ React.createElement("rect", {
+      key: "react-".concat(i),
+      y: entry,
+      x: x2,
+      height: lineHeight,
+      width,
+      stroke: "none",
+      fill: horizontalFill[colorIndex],
+      fillOpacity,
+      className: "recharts-cartesian-grid-bg"
+    });
+  });
+  return /* @__PURE__ */ React.createElement("g", {
+    className: "recharts-cartesian-gridstripes-horizontal"
+  }, items);
+}
+function VerticalStripes(props) {
+  var _props$vertical2 = props.vertical, vertical = _props$vertical2 === void 0 ? true : _props$vertical2, verticalFill = props.verticalFill, fillOpacity = props.fillOpacity, x2 = props.x, y2 = props.y, width = props.width, height = props.height, verticalPoints = props.verticalPoints;
+  if (!vertical || !verticalFill || !verticalFill.length) {
+    return null;
+  }
+  var roundedSortedVerticalPoints = verticalPoints.map(function(e3) {
+    return Math.round(e3 + x2 - x2);
+  }).sort(function(a2, b2) {
+    return a2 - b2;
+  });
+  if (x2 !== roundedSortedVerticalPoints[0]) {
+    roundedSortedVerticalPoints.unshift(0);
+  }
+  var items = roundedSortedVerticalPoints.map(function(entry, i) {
+    var lastStripe = !roundedSortedVerticalPoints[i + 1];
+    var lineWidth = lastStripe ? x2 + width - entry : roundedSortedVerticalPoints[i + 1] - entry;
+    if (lineWidth <= 0) {
+      return null;
+    }
+    var colorIndex = i % verticalFill.length;
+    return /* @__PURE__ */ React.createElement("rect", {
+      key: "react-".concat(i),
+      x: entry,
+      y: y2,
+      width: lineWidth,
+      height,
+      stroke: "none",
+      fill: verticalFill[colorIndex],
+      fillOpacity,
+      className: "recharts-cartesian-grid-bg"
+    });
+  });
+  return /* @__PURE__ */ React.createElement("g", {
+    className: "recharts-cartesian-gridstripes-vertical"
+  }, items);
+}
+var defaultVerticalCoordinatesGenerator = function defaultVerticalCoordinatesGenerator2(_ref, syncWithTicks) {
+  var xAxis = _ref.xAxis, width = _ref.width, height = _ref.height, offset = _ref.offset;
+  return getCoordinatesOfGrid(getTicks(_objectSpread$2(_objectSpread$2(_objectSpread$2({}, CartesianAxis.defaultProps), xAxis), {}, {
+    ticks: getTicksOfAxis(xAxis, true),
+    viewBox: {
+      x: 0,
+      y: 0,
+      width,
+      height
+    }
+  })), offset.left, offset.left + offset.width, syncWithTicks);
+};
+var defaultHorizontalCoordinatesGenerator = function defaultHorizontalCoordinatesGenerator2(_ref2, syncWithTicks) {
+  var yAxis = _ref2.yAxis, width = _ref2.width, height = _ref2.height, offset = _ref2.offset;
+  return getCoordinatesOfGrid(getTicks(_objectSpread$2(_objectSpread$2(_objectSpread$2({}, CartesianAxis.defaultProps), yAxis), {}, {
+    ticks: getTicksOfAxis(yAxis, true),
+    viewBox: {
+      x: 0,
+      y: 0,
+      width,
+      height
+    }
+  })), offset.top, offset.top + offset.height, syncWithTicks);
+};
+var defaultProps = {
+  horizontal: true,
+  vertical: true,
+  stroke: "#ccc",
+  fill: "none",
+  // The fill of colors of grid lines
+  verticalFill: [],
+  horizontalFill: []
+};
+function CartesianGrid(props) {
+  var _props$stroke, _props$fill, _props$horizontal3, _props$horizontalFill, _props$vertical3, _props$verticalFill;
+  var chartWidth = useChartWidth();
+  var chartHeight = useChartHeight();
+  var offset = useOffset();
+  var propsIncludingDefaults = _objectSpread$2(_objectSpread$2({}, props), {}, {
+    stroke: (_props$stroke = props.stroke) !== null && _props$stroke !== void 0 ? _props$stroke : defaultProps.stroke,
+    fill: (_props$fill = props.fill) !== null && _props$fill !== void 0 ? _props$fill : defaultProps.fill,
+    horizontal: (_props$horizontal3 = props.horizontal) !== null && _props$horizontal3 !== void 0 ? _props$horizontal3 : defaultProps.horizontal,
+    horizontalFill: (_props$horizontalFill = props.horizontalFill) !== null && _props$horizontalFill !== void 0 ? _props$horizontalFill : defaultProps.horizontalFill,
+    vertical: (_props$vertical3 = props.vertical) !== null && _props$vertical3 !== void 0 ? _props$vertical3 : defaultProps.vertical,
+    verticalFill: (_props$verticalFill = props.verticalFill) !== null && _props$verticalFill !== void 0 ? _props$verticalFill : defaultProps.verticalFill,
+    x: isNumber(props.x) ? props.x : offset.left,
+    y: isNumber(props.y) ? props.y : offset.top,
+    width: isNumber(props.width) ? props.width : offset.width,
+    height: isNumber(props.height) ? props.height : offset.height
+  });
+  var x2 = propsIncludingDefaults.x, y2 = propsIncludingDefaults.y, width = propsIncludingDefaults.width, height = propsIncludingDefaults.height, syncWithTicks = propsIncludingDefaults.syncWithTicks, horizontalValues = propsIncludingDefaults.horizontalValues, verticalValues = propsIncludingDefaults.verticalValues;
+  var xAxis = useArbitraryXAxis();
+  var yAxis = useYAxisWithFiniteDomainOrRandom();
+  if (!isNumber(width) || width <= 0 || !isNumber(height) || height <= 0 || !isNumber(x2) || x2 !== +x2 || !isNumber(y2) || y2 !== +y2) {
+    return null;
+  }
+  var verticalCoordinatesGenerator = propsIncludingDefaults.verticalCoordinatesGenerator || defaultVerticalCoordinatesGenerator;
+  var horizontalCoordinatesGenerator = propsIncludingDefaults.horizontalCoordinatesGenerator || defaultHorizontalCoordinatesGenerator;
+  var horizontalPoints = propsIncludingDefaults.horizontalPoints, verticalPoints = propsIncludingDefaults.verticalPoints;
+  if ((!horizontalPoints || !horizontalPoints.length) && isFunction$3(horizontalCoordinatesGenerator)) {
+    var isHorizontalValues = horizontalValues && horizontalValues.length;
+    var generatorResult = horizontalCoordinatesGenerator({
+      yAxis: yAxis ? _objectSpread$2(_objectSpread$2({}, yAxis), {}, {
+        ticks: isHorizontalValues ? horizontalValues : yAxis.ticks
+      }) : void 0,
+      width: chartWidth,
+      height: chartHeight,
+      offset
+    }, isHorizontalValues ? true : syncWithTicks);
+    warn$1(Array.isArray(generatorResult), "horizontalCoordinatesGenerator should return Array but instead it returned [".concat(_typeof$5(generatorResult), "]"));
+    if (Array.isArray(generatorResult)) {
+      horizontalPoints = generatorResult;
+    }
+  }
+  if ((!verticalPoints || !verticalPoints.length) && isFunction$3(verticalCoordinatesGenerator)) {
+    var isVerticalValues = verticalValues && verticalValues.length;
+    var _generatorResult = verticalCoordinatesGenerator({
+      xAxis: xAxis ? _objectSpread$2(_objectSpread$2({}, xAxis), {}, {
+        ticks: isVerticalValues ? verticalValues : xAxis.ticks
+      }) : void 0,
+      width: chartWidth,
+      height: chartHeight,
+      offset
+    }, isVerticalValues ? true : syncWithTicks);
+    warn$1(Array.isArray(_generatorResult), "verticalCoordinatesGenerator should return Array but instead it returned [".concat(_typeof$5(_generatorResult), "]"));
+    if (Array.isArray(_generatorResult)) {
+      verticalPoints = _generatorResult;
+    }
+  }
+  return /* @__PURE__ */ React.createElement("g", {
+    className: "recharts-cartesian-grid"
+  }, /* @__PURE__ */ React.createElement(Background, {
+    fill: propsIncludingDefaults.fill,
+    fillOpacity: propsIncludingDefaults.fillOpacity,
+    x: propsIncludingDefaults.x,
+    y: propsIncludingDefaults.y,
+    width: propsIncludingDefaults.width,
+    height: propsIncludingDefaults.height,
+    ry: propsIncludingDefaults.ry
+  }), /* @__PURE__ */ React.createElement(HorizontalGridLines, _extends$3({}, propsIncludingDefaults, {
+    offset,
+    horizontalPoints,
+    xAxis,
+    yAxis
+  })), /* @__PURE__ */ React.createElement(VerticalGridLines, _extends$3({}, propsIncludingDefaults, {
+    offset,
+    verticalPoints,
+    xAxis,
+    yAxis
+  })), /* @__PURE__ */ React.createElement(HorizontalStripes, _extends$3({}, propsIncludingDefaults, {
+    horizontalPoints
+  })), /* @__PURE__ */ React.createElement(VerticalStripes, _extends$3({}, propsIncludingDefaults, {
+    verticalPoints
+  })));
+}
+CartesianGrid.displayName = "CartesianGrid";
 function _typeof$4(o) {
   "@babel/helpers - typeof";
   return _typeof$4 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
@@ -28585,73 +29024,667 @@ var BarChart = generateCategoricalChart({
   formatAxisMap
 });
 const Card = React.memo(({ children, className = "", title }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-5 ${className}`, children: [
-    title && /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4", children: title }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl shadow-[0_1px_2px_rgba(15,23,42,0.04)] p-4 sm:p-5 ${className}`, children: [
+    title && /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100 mb-3.5", children: title }),
     children
   ] });
 });
 Card.displayName = "Card";
 const IllustrationCard = React.memo(({ inchargeName, inchargeContact }) => {
-  const showInchargeDetails = inchargeName && inchargeName.trim() !== "";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "!p-0 overflow-hidden relative bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-slate-900 dark:to-indigo-950 shadow-md", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-5 relative z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-start", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-bold text-white tracking-tight", children: "Welcome!" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-indigo-100 dark:text-slate-300 max-w-xs mt-1 font-medium", children: "Nourishing the Future, One Meal at a Time." })
-      ] }),
-      showInchargeDetails && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-right text-xs flex-shrink-0 ml-4 bg-white/10 dark:bg-slate-900/50 backdrop-blur-sm p-2 rounded-lg border border-white/20 dark:border-slate-700/50", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-white truncate", children: inchargeName }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-indigo-200 dark:text-slate-400", children: "MDM Incharge" }),
-        inchargeContact && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-indigo-200 dark:text-slate-400", children: inchargeContact })
-      ] })
-    ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 z-0 opacity-20 dark:opacity-30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "100%", height: "100%", viewBox: "0 0 300 120", preserveAspectRatio: "xMidYMid slice", xmlns: "http://www.w3.org/2000/svg", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("defs", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("linearGradient", { id: "skyGradient", x1: "0%", y1: "0%", x2: "100%", y2: "100%", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "0%", style: { stopColor: "#818cf8", stopOpacity: 1 } }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("stop", { offset: "100%", style: { stopColor: "#c084fc", stopOpacity: 0.2 } })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("filter", { id: "glow", x: "-50%", y: "-50%", width: "200%", height: "200%", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("feGaussianBlur", { stdDeviation: "3", result: "coloredBlur" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("feMerge", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("feMergeNode", { in: "coloredBlur" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("feMergeNode", { in: "SourceGraphic" })
-          ] })
+  const showInchargeDetails = Boolean(inchargeName && inchargeName.trim() !== "");
+  const { greeting, dateSubtitle } = reactExports.useMemo(() => {
+    const now2 = /* @__PURE__ */ new Date();
+    const hour = now2.getHours();
+    const greet = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+    const formatted = now2.toLocaleDateString("en-IN", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+    return { greeting: greet, dateSubtitle: formatted };
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3 px-1 pt-0.5 pb-1", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold tracking-tight text-slate-900 dark:text-white truncate", children: showInchargeDetails ? `${greeting}, ${inchargeName}` : `${greeting}` }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-slate-500 dark:text-slate-400 mt-0.5", children: [
+        dateSubtitle,
+        showInchargeDetails && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { "aria-hidden": "true", className: "mx-1.5", children: "·" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "MDM Incharge" })
         ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "250", cy: "50", r: "70", fill: "url(#skyGradient)", filter: "url(#glow)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M -10 120 Q 150 90, 310 120", fill: "#0f172a", opacity: "0.5" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: "translate(40, 60)", fill: "#e0f2fe", opacity: "0.8", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M 0 60 L 0 20 L 25 0 L 50 20 L 50 60 Z" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "15", y: "35", width: "20", height: "25", fill: "#0ea5e9" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: "translate(130, 75)", fill: "#67e8f9", opacity: "0.9", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "10", cy: "10", r: "6" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M 10 16 A 10 10 0 0 1 10 35 A 10 10 0 0 1 10 16 Z" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: "translate(160, 80)", fill: "#e0f2fe", opacity: "0.8", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "10", cy: "10", r: "5" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M 10 15 A 8 8 0 0 1 10 30 A 8 8 0 0 1 10 15 Z" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("g", { transform: "translate(200, 85) scale(0.3)", fill: "#f0f9ff", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M2,2 L2,28 L15,24 L28,28 L28,2 L15,6 L2,2 Z M15,6 L15,24", stroke: "#93c5fd", strokeWidth: "3" }) })
-    ] }) })
+      ] })
+    ] }),
+    showInchargeDetails && inchargeContact && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-right text-xs text-slate-500 dark:text-slate-400 shrink-0 hidden sm:block tabular-nums", children: inchargeContact })
   ] });
 });
 IllustrationCard.displayName = "IllustrationCard";
 const Skeleton = ({ className = "" }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `animate-pulse bg-slate-200 dark:bg-slate-800 rounded-xl ${className}` });
 };
-const Button = ({ children, variant = "primary", className = "", isLoading = false, ...props }) => {
-  const baseClasses = "inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const mergeClasses = (...classes) => classes.filter((className, index, array2) => {
+  return Boolean(className) && className.trim() !== "" && array2.indexOf(className) === index;
+}).join(" ").trim();
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const toKebabCase = (string2) => string2.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const toCamelCase = (string2) => string2.replace(
+  /^([A-Z])|[\s-_]+(\w)/g,
+  (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
+);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const toPascalCase = (string2) => {
+  const camelCase = toCamelCase(string2);
+  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+};
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+var defaultAttributes = {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: 24,
+  height: 24,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+};
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const hasA11yProp = (props) => {
+  for (const prop in props) {
+    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+      return true;
+    }
+  }
+  return false;
+};
+const LucideContext = reactExports.createContext({});
+const useLucideContext = () => reactExports.useContext(LucideContext);
+const Icon = reactExports.forwardRef(
+  ({ color: color2, size, strokeWidth, absoluteStrokeWidth, className = "", children, iconNode, ...rest }, ref) => {
+    const {
+      size: contextSize = 24,
+      strokeWidth: contextStrokeWidth = 2,
+      absoluteStrokeWidth: contextAbsoluteStrokeWidth = false,
+      color: contextColor = "currentColor",
+      className: contextClass = ""
+    } = useLucideContext() ?? {};
+    const calculatedStrokeWidth = absoluteStrokeWidth ?? contextAbsoluteStrokeWidth ? Number(strokeWidth ?? contextStrokeWidth) * 24 / Number(size ?? contextSize) : strokeWidth ?? contextStrokeWidth;
+    return reactExports.createElement(
+      "svg",
+      {
+        ref,
+        ...defaultAttributes,
+        width: size ?? contextSize ?? defaultAttributes.width,
+        height: size ?? contextSize ?? defaultAttributes.height,
+        stroke: color2 ?? contextColor,
+        strokeWidth: calculatedStrokeWidth,
+        className: mergeClasses("lucide", contextClass, className),
+        ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
+        ...rest
+      },
+      [
+        ...iconNode.map(([tag, attrs]) => reactExports.createElement(tag, attrs)),
+        ...Array.isArray(children) ? children : [children]
+      ]
+    );
+  }
+);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const createLucideIcon = (iconName, iconNode) => {
+  const Component = reactExports.forwardRef(
+    ({ className, ...props }, ref) => reactExports.createElement(Icon, {
+      ref,
+      iconNode,
+      className: mergeClasses(
+        `lucide-${toKebabCase(toPascalCase(iconName))}`,
+        `lucide-${iconName}`,
+        className
+      ),
+      ...props
+    })
+  );
+  Component.displayName = toPascalCase(iconName);
+  return Component;
+};
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$A = [
+  ["path", { d: "M12 17V3", key: "1cwfxf" }],
+  ["path", { d: "m6 11 6 6 6-6", key: "12ii2o" }],
+  ["path", { d: "M19 21H5", key: "150jfl" }]
+];
+const ArrowDownToLine = createLucideIcon("arrow-down-to-line", __iconNode$A);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$z = [
+  ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+  [
+    "path",
+    {
+      d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+      key: "11g9vi"
+    }
+  ]
+];
+const Bell = createLucideIcon("bell", __iconNode$z);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$y = [
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
+  ["path", { d: "M3 10h18", key: "8toen8" }],
+  ["path", { d: "M8 14h.01", key: "6423bh" }],
+  ["path", { d: "M12 14h.01", key: "1etili" }],
+  ["path", { d: "M16 14h.01", key: "1gbofw" }],
+  ["path", { d: "M8 18h.01", key: "lrp35t" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }],
+  ["path", { d: "M16 18h.01", key: "kzsmim" }]
+];
+const CalendarDays = createLucideIcon("calendar-days", __iconNode$y);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$x = [
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
+  ["path", { d: "M3 10h18", key: "8toen8" }]
+];
+const Calendar = createLucideIcon("calendar", __iconNode$x);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$w = [
+  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
+  ["path", { d: "M18 17V9", key: "2bz60n" }],
+  ["path", { d: "M13 17V5", key: "1frdt8" }],
+  ["path", { d: "M8 17v-3", key: "17ska0" }]
+];
+const ChartColumn = createLucideIcon("chart-column", __iconNode$w);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$v = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$v);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$u = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$u);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$t = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$t);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$s = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$s);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$r = [
+  ["path", { d: "M12 13v8l-4-4", key: "1f5nwf" }],
+  ["path", { d: "m12 21 4-4", key: "1lfcce" }],
+  ["path", { d: "M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284", key: "ui1hmy" }]
+];
+const CloudDownload = createLucideIcon("cloud-download", __iconNode$r);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$q = [
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+];
+const CloudUpload = createLucideIcon("cloud-upload", __iconNode$q);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$p = [
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+];
+const Cloud = createLucideIcon("cloud", __iconNode$p);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$o = [
+  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
+  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
+];
+const CreditCard = createLucideIcon("credit-card", __iconNode$o);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$n = [
+  ["path", { d: "M12 15V3", key: "m9g1x1" }],
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
+];
+const Download = createLucideIcon("download", __iconNode$n);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$m = [
+  [
+    "path",
+    {
+      d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
+      key: "1oefj6"
+    }
+  ],
+  ["path", { d: "M14 2v5a1 1 0 0 0 1 1h5", key: "wfsgrz" }],
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+];
+const FileText = createLucideIcon("file-text", __iconNode$m);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$l = [
+  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
+  [
+    "path",
+    {
+      d: "M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+      key: "r6nss1"
+    }
+  ]
+];
+const House = createLucideIcon("house", __iconNode$l);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$k = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+];
+const Info = createLucideIcon("info", __iconNode$k);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$j = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$j);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$i = [
+  ["path", { d: "m16 17 5-5-5-5", key: "1bji2h" }],
+  ["path", { d: "M21 12H9", key: "dn1m92" }],
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }]
+];
+const LogOut = createLucideIcon("log-out", __iconNode$i);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$h = [
+  ["path", { d: "m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7", key: "132q7q" }],
+  ["rect", { x: "2", y: "4", width: "20", height: "16", rx: "2", key: "izxlao" }]
+];
+const Mail = createLucideIcon("mail", __iconNode$h);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$g = [["path", { d: "M5 12h14", key: "1ays0h" }]];
+const Minus = createLucideIcon("minus", __iconNode$g);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$f = [
+  ["rect", { width: "20", height: "14", x: "2", y: "3", rx: "2", key: "48i651" }],
+  ["line", { x1: "8", x2: "16", y1: "21", y2: "21", key: "1svkeh" }],
+  ["line", { x1: "12", x2: "12", y1: "17", y2: "21", key: "vw1qmm" }]
+];
+const Monitor = createLucideIcon("monitor", __iconNode$f);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$e = [
+  [
+    "path",
+    {
+      d: "M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401",
+      key: "kfwtm"
+    }
+  ]
+];
+const Moon = createLucideIcon("moon", __iconNode$e);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$d = [
+  [
+    "path",
+    {
+      d: "M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384",
+      key: "9njp5v"
+    }
+  ]
+];
+const Phone = createLucideIcon("phone", __iconNode$d);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$c = [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
+];
+const Plus = createLucideIcon("plus", __iconNode$c);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$b = [
+  [
+    "path",
+    {
+      d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2",
+      key: "143wyd"
+    }
+  ],
+  ["path", { d: "M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6", key: "1itne7" }],
+  ["rect", { x: "6", y: "14", width: "12", height: "8", rx: "1", key: "1ue0tg" }]
+];
+const Printer = createLucideIcon("printer", __iconNode$b);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$a = [
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+];
+const RefreshCw = createLucideIcon("refresh-cw", __iconNode$a);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [
+  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+];
+const Search = createLucideIcon("search", __iconNode$9);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [
+  [
+    "path",
+    {
+      d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
+      key: "1i5ecw"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+];
+const Settings = createLucideIcon("settings", __iconNode$8);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  [
+    "path",
+    {
+      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+      key: "oel41y"
+    }
+  ],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+];
+const ShieldCheck = createLucideIcon("shield-check", __iconNode$7);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$6 = [
+  ["path", { d: "M10 5H3", key: "1qgfaw" }],
+  ["path", { d: "M12 19H3", key: "yhmn1j" }],
+  ["path", { d: "M14 3v4", key: "1sua03" }],
+  ["path", { d: "M16 17v4", key: "1q0r14" }],
+  ["path", { d: "M21 12h-9", key: "1o4lsq" }],
+  ["path", { d: "M21 19h-5", key: "1rlt1p" }],
+  ["path", { d: "M21 5h-7", key: "1oszz2" }],
+  ["path", { d: "M8 10v4", key: "tgpxqk" }],
+  ["path", { d: "M8 12H3", key: "a7s4jb" }]
+];
+const SlidersHorizontal = createLucideIcon("sliders-horizontal", __iconNode$6);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  [
+    "path",
+    {
+      d: "M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z",
+      key: "1s2grr"
+    }
+  ],
+  ["path", { d: "M20 2v4", key: "1rf3ol" }],
+  ["path", { d: "M22 4h-4", key: "gwowj6" }],
+  ["circle", { cx: "4", cy: "20", r: "2", key: "6kqj1y" }]
+];
+const Sparkles = createLucideIcon("sparkles", __iconNode$5);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
+  ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "m4.93 4.93 1.41 1.41", key: "149t6j" }],
+  ["path", { d: "m17.66 17.66 1.41 1.41", key: "ptbguv" }],
+  ["path", { d: "M2 12h2", key: "1t8f8n" }],
+  ["path", { d: "M20 12h2", key: "1q8mjw" }],
+  ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
+  ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
+];
+const Sun = createLucideIcon("sun", __iconNode$4);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  ["path", { d: "M10 11v6", key: "nco0om" }],
+  ["path", { d: "M14 11v6", key: "outv1u" }],
+  ["path", { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6", key: "miytrc" }],
+  ["path", { d: "M3 6h18", key: "d0wm0j" }],
+  ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
+];
+const Trash2 = createLucideIcon("trash-2", __iconNode$3);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$2 = [
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
+];
+const X = createLucideIcon("x", __iconNode$2);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+  ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
+  ["line", { x1: "11", x2: "11", y1: "8", y2: "14", key: "1vmskp" }],
+  ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
+];
+const ZoomIn = createLucideIcon("zoom-in", __iconNode$1);
+/**
+ * @license lucide-react v1.14.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode = [
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+  ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
+  ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
+];
+const ZoomOut = createLucideIcon("zoom-out", __iconNode);
+const Button = ({ children, variant = "primary", size = "md", className = "", isLoading = false, ...props }) => {
+  const baseClasses = "inline-flex items-center justify-center gap-1.5 font-medium rounded-xl whitespace-nowrap transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950";
+  const sizeClasses = {
+    sm: "px-3 py-1.5 text-xs",
+    md: "px-4 py-2.5 text-sm"
+  };
   const variantClasses = {
-    primary: "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900",
-    secondary: "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-300 dark:border-slate-800 shadow-sm focus:ring-2 focus:ring-slate-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900",
-    danger: "bg-rose-500 hover:bg-rose-600 text-white shadow-sm focus:ring-2 focus:ring-rose-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+    primary: "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm focus-visible:ring-indigo-500/60",
+    secondary: "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-200 dark:border-slate-700/80 shadow-sm focus-visible:ring-slate-400/60",
+    danger: "bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus-visible:ring-rose-500/60"
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "button",
     {
-      className: `${baseClasses} ${variantClasses[variant]} ${className}`,
+      className: `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`,
       disabled: isLoading || props.disabled,
       ...props,
       children: isLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
@@ -28666,13 +29699,36 @@ const Button = ({ children, variant = "primary", className = "", isLoading = fal
 };
 const Modal = ({ isOpen, onClose, title, children, zIndex = "z-50" }) => {
   if (!isOpen) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `fixed inset-0 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm ${zIndex}`, onClick: onClose, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-sm m-4 overflow-hidden", onClick: (e3) => e3.stopPropagation(), children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-5 py-4 border-b border-slate-100 dark:border-slate-800/60 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-base font-semibold text-slate-800 dark:text-slate-200", children: title }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClose, className: "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }) }) })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-5", children })
-  ] }) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: `fixed inset-0 flex items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4 ${zIndex}`,
+      onClick: onClose,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          className: "bg-white dark:bg-slate-950 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-md max-h-[88vh] flex flex-col overflow-hidden modal-enter",
+          onClick: (e3) => e3.stopPropagation(),
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-5 py-3.5 border-b border-slate-100 dark:border-slate-800/80 flex justify-between items-center bg-slate-50/70 dark:bg-slate-900/60 shrink-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100 pr-2 truncate", children: title }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  onClick: onClose,
+                  "aria-label": "Close modal",
+                  className: "h-9 w-9 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800 shrink-0",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 18 })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-5 overflow-y-auto", children })
+          ]
+        }
+      )
+    }
+  );
 };
 const NumberInput = ({ label, id: id2, value, onChange, min: min2 = 0, max: max2, step = 1, disabled = false }) => {
   const handleIncrement = () => {
@@ -28699,17 +29755,17 @@ const NumberInput = ({ label, id: id2, value, onChange, min: min2 = 0, max: max2
     onChange(finalValue);
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5", children: label }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center shadow-sm rounded-xl", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5 ml-0.5 truncate", children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-stretch shadow-sm rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 dark:focus-within:border-indigo-400 transition-all", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
           onClick: handleDecrement,
           disabled: disabled || value <= min2,
-          className: "px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 border-r-0 rounded-l-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
+          className: "min-w-[38px] min-h-[42px] px-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border-r border-slate-200 dark:border-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center shrink-0",
           "aria-label": `Decrease ${label}`,
-          children: "-"
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Minus, { size: 14 })
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -28723,7 +29779,7 @@ const NumberInput = ({ label, id: id2, value, onChange, min: min2 = 0, max: max2
           max: max2,
           step,
           disabled,
-          className: "w-full bg-white dark:bg-slate-950 border-y border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm text-center focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 placeholder-slate-400 disabled:opacity-50 disabled:cursor-not-allowed z-10"
+          className: "w-full min-w-0 bg-transparent text-slate-900 dark:text-slate-100 text-sm font-medium text-center tabular-nums px-1.5 py-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -28732,19 +29788,361 @@ const NumberInput = ({ label, id: id2, value, onChange, min: min2 = 0, max: max2
           type: "button",
           onClick: handleIncrement,
           disabled: disabled || max2 !== void 0 && value >= max2,
-          className: "px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 border-l-0 rounded-r-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
+          className: "min-w-[38px] min-h-[42px] px-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border-l border-slate-200 dark:border-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center shrink-0",
           "aria-label": `Increase ${label}`,
-          children: "+"
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 14 })
         }
       )
     ] })
   ] });
 };
-const Input = ({ label, id: id2, containerClassName = "", className, ...props }) => {
-  const baseClasses = "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-500 block p-2.5 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-200 shadow-sm";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: containerClassName, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5", children: label }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("input", { id: id2, className: `${baseClasses} ${className || ""}`, ...props })
+const MONTH_NAMES$1 = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const formatDateKey = (year, monthIndex, day) => `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+const DatePicker = ({
+  id: id2,
+  label,
+  value,
+  onChange,
+  min: min2,
+  max: max2,
+  className = "",
+  containerClassName = "",
+  placeholder = "Select Date",
+  disabled = false
+}) => {
+  const [isOpen, setIsOpen] = reactExports.useState(false);
+  const pickerRef = reactExports.useRef(null);
+  const todayKey = reactExports.useMemo(() => {
+    const now2 = /* @__PURE__ */ new Date();
+    return formatDateKey(now2.getFullYear(), now2.getMonth(), now2.getDate());
+  }, []);
+  const [selectedYear, selectedMonthIndex] = reactExports.useMemo(() => {
+    if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      const [y2, m2] = value.split("-").map(Number);
+      if (y2 && m2 >= 1 && m2 <= 12) return [y2, m2 - 1];
+    }
+    const now2 = /* @__PURE__ */ new Date();
+    return [now2.getFullYear(), now2.getMonth()];
+  }, [value]);
+  const [viewingYear, setViewingYear] = reactExports.useState(selectedYear);
+  const [viewingMonth, setViewingMonth] = reactExports.useState(selectedMonthIndex);
+  reactExports.useEffect(() => {
+    setViewingYear(selectedYear);
+    setViewingMonth(selectedMonthIndex);
+  }, [selectedYear, selectedMonthIndex]);
+  reactExports.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+  const displayLabel = reactExports.useMemo(() => {
+    if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return placeholder;
+    const parsed = /* @__PURE__ */ new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return parsed.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+  }, [value, placeholder]);
+  const calendarDays = reactExports.useMemo(() => {
+    const firstDayOfMonth = new Date(viewingYear, viewingMonth, 1).getDay();
+    const daysInMonth = new Date(viewingYear, viewingMonth + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      cells.push(null);
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateKey = formatDateKey(viewingYear, viewingMonth, day);
+      const dayOfWeek = (firstDayOfMonth + day - 1) % 7;
+      cells.push({ day, dateKey, isSunday: dayOfWeek === 0 });
+    }
+    return cells;
+  }, [viewingYear, viewingMonth]);
+  const handlePrevMonth = () => {
+    if (viewingMonth === 0) {
+      setViewingMonth(11);
+      setViewingYear((y2) => y2 - 1);
+    } else {
+      setViewingMonth((m2) => m2 - 1);
+    }
+  };
+  const handleNextMonth = () => {
+    if (viewingMonth === 11) {
+      setViewingMonth(0);
+      setViewingYear((y2) => y2 + 1);
+    } else {
+      setViewingMonth((m2) => m2 + 1);
+    }
+  };
+  const handleSelectDate = (dateKey) => {
+    onChange(dateKey);
+    setIsOpen(false);
+  };
+  const isTodayDisabled = Boolean(min2 && todayKey < min2 || max2 && todayKey > max2);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `relative ${containerClassName}`, ref: pickerRef, children: [
+    label && /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5 ml-0.5", children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        type: "button",
+        id: id2,
+        disabled,
+        onClick: () => setIsOpen((prev) => !prev),
+        className: `w-full min-h-[42px] bg-white dark:bg-slate-950 border text-left text-sm rounded-xl px-3 py-2 flex items-center justify-between transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 ${isOpen ? "border-indigo-500 ring-2 ring-indigo-500/20 dark:border-indigo-400" : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${className}`,
+        "aria-haspopup": "dialog",
+        "aria-expanded": isOpen,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 truncate", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { size: 16, className: "text-indigo-600 dark:text-indigo-400 shrink-0" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `truncate tabular-nums ${value ? "text-slate-900 dark:text-slate-100 font-medium" : "text-slate-400 dark:text-slate-500"}`, children: displayLabel })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ChevronDown,
+            {
+              size: 16,
+              className: `ml-2 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? "rotate-180 text-indigo-500" : ""}`
+            }
+          )
+        ]
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        className: "absolute left-0 z-50 mt-1.5 w-[296px] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-3.5 modal-enter",
+        role: "dialog",
+        "aria-label": "Date Picker",
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-3 px-0.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: handlePrevMonth,
+                className: "p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                "aria-label": "Previous Month",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { size: 16 })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm font-semibold text-slate-800 dark:text-slate-100 tracking-tight", children: [
+              MONTH_NAMES$1[viewingMonth],
+              " ",
+              viewingYear
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: handleNextMonth,
+                className: "p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+                "aria-label": "Next Month",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 16 })
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-7 gap-1 mb-1 text-center", children: WEEKDAYS.map((wd2, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: `text-[11px] font-semibold py-1 ${i === 0 ? "text-rose-500 dark:text-rose-400" : "text-slate-400 dark:text-slate-500"}`,
+              children: wd2
+            },
+            wd2
+          )) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-7 gap-1", children: calendarDays.map((cell, idx) => {
+            if (!cell) {
+              return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-9" }, `empty-${idx}`);
+            }
+            const isSelected = cell.dateKey === value;
+            const isToday = cell.dateKey === todayKey;
+            const isDisabled = Boolean(min2 && cell.dateKey < min2 || max2 && cell.dateKey > max2);
+            return /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                disabled: isDisabled,
+                onClick: () => handleSelectDate(cell.dateKey),
+                className: `h-9 w-full text-xs rounded-xl font-medium tabular-nums transition-colors flex items-center justify-center ${isSelected ? "bg-indigo-600 text-white font-semibold shadow-sm" : isToday ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100" : cell.isSunday ? "text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30" : "text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"} ${isDisabled ? "opacity-30 cursor-not-allowed hover:bg-transparent" : "cursor-pointer"}`,
+                children: cell.day
+              },
+              cell.dateKey
+            );
+          }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                disabled: isTodayDisabled,
+                onClick: () => handleSelectDate(todayKey),
+                className: "text-indigo-600 dark:text-indigo-400 hover:underline font-medium disabled:opacity-40 disabled:cursor-not-allowed",
+                children: "Today"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "button",
+              {
+                type: "button",
+                onClick: () => setIsOpen(false),
+                className: "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200",
+                children: "Cancel"
+              }
+            )
+          ] })
+        ]
+      }
+    )
+  ] });
+};
+const Select = ({
+  id: id2,
+  label,
+  value,
+  onChange,
+  options,
+  className = "",
+  containerClassName = "",
+  placeholder = "Select an option",
+  disabled = false,
+  searchable = false
+}) => {
+  const [isOpen, setIsOpen] = reactExports.useState(false);
+  const [query, setQuery] = reactExports.useState("");
+  const dropdownRef = reactExports.useRef(null);
+  const searchInputRef = reactExports.useRef(null);
+  const selectedOption = options.find((opt) => opt.value === value);
+  const filteredOptions = reactExports.useMemo(() => {
+    if (!searchable || !query.trim()) return options;
+    const q2 = query.trim().toLowerCase();
+    return options.filter((opt) => opt.label.toLowerCase().includes(q2));
+  }, [options, searchable, query]);
+  reactExports.useEffect(() => {
+    if (isOpen && searchable) {
+      setTimeout(() => {
+        var _a2;
+        return (_a2 = searchInputRef.current) == null ? void 0 : _a2.focus();
+      }, 30);
+    }
+    if (!isOpen) {
+      setQuery("");
+    }
+  }, [isOpen, searchable]);
+  reactExports.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `relative ${containerClassName}`, ref: dropdownRef, children: [
+    label && /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5 ml-0.5", children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        type: "button",
+        id: id2,
+        disabled,
+        onClick: () => setIsOpen((prev) => !prev),
+        className: `w-full min-h-[42px] bg-white dark:bg-slate-950 border text-left text-sm rounded-xl px-3 py-2 flex items-center justify-between transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 ${isOpen ? "border-indigo-500 ring-2 ring-indigo-500/20 dark:border-indigo-400" : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${className}`,
+        "aria-haspopup": "listbox",
+        "aria-expanded": isOpen,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `truncate ${selectedOption ? "text-slate-900 dark:text-slate-100 font-medium" : "text-slate-400 dark:text-slate-500"}`, children: selectedOption ? selectedOption.label : placeholder }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ChevronDown,
+            {
+              size: 16,
+              className: `ml-2 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? "rotate-180 text-indigo-500" : ""}`
+            }
+          )
+        ]
+      }
+    ),
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        className: "absolute z-50 mt-1.5 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden modal-enter",
+        role: "listbox",
+        children: [
+          searchable && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2 border-b border-slate-100 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 14, className: "absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                ref: searchInputRef,
+                type: "text",
+                value: query,
+                onChange: (e3) => setQuery(e3.target.value),
+                placeholder: "Search...",
+                className: "w-full pl-8 pr-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+              }
+            )
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "py-1 max-h-60 overflow-y-auto", children: filteredOptions.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-3 text-xs text-center text-slate-400 dark:text-slate-500", children: "No matching options" }) : filteredOptions.map((option) => {
+            const isSelected = option.value === value;
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                type: "button",
+                onClick: () => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                },
+                className: `w-full text-left px-3 py-2.5 text-sm flex items-center justify-between transition-colors ${isSelected ? "bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-medium" : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60"}`,
+                role: "option",
+                "aria-selected": isSelected,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "truncate pr-2", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "truncate", children: option.label }),
+                    option.description && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate", children: option.description })
+                  ] }),
+                  isSelected && /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 16, className: "text-indigo-600 dark:text-indigo-400 shrink-0" })
+                ]
+              },
+              option.value
+            );
+          }) })
+        ]
+      }
+    )
   ] });
 };
 const NO_MEAL_REASONS_STRUCTURED = {
@@ -28933,122 +30331,155 @@ const DailyEntryPage = React.memo(() => {
   const currentSubReasons = mainReason ? NO_MEAL_REASONS_STRUCTURED[mainReason] : [];
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Modal, { isOpen: isEntryModalOpen, onClose: () => setEntryModalOpen(false), title: `Entry for ${(/* @__PURE__ */ new Date(selectedDate + "T00:00:00")).toLocaleDateString("en-IN")}`, zIndex: "z-40", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("fieldset", { className: "border border-slate-200 dark:border-slate-800 rounded-xl p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("legend", { className: "text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2", children: "Students Present" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-2.5", children: "Students Present" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-3", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(NumberInput, { label: `Balvatika (${onRoll.balvatika})`, id: "balvatika", value: present.balvatika, onChange: (val) => handlePresentChange("balvatika", val), min: 0, max: onRoll.balvatika }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(NumberInput, { label: `Primary (${onRoll.primary})`, id: "primary", value: present.primary, onChange: (val) => handlePresentChange("primary", val), min: 0, max: onRoll.primary }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(NumberInput, { label: `Middle (${onRoll.middle})`, id: "middle", value: present.middle, onChange: (val) => handlePresentChange("middle", val), min: 0, max: onRoll.middle })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("fieldset", { className: "border border-slate-200 dark:border-slate-800 rounded-xl p-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("legend", { className: "text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2", children: "Auto-calculated Consumption" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm", children: Object.entries(consumption).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 capitalize mb-1", children: key === "dalVeg" ? "Dal & Veg" : key === "oilCond" ? "Oil & Cond." : key }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-900 dark:text-white", children: key === "rice" ? `${value} kg` : `₹${value}` })
-        ] }, key)) })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-3 border-t border-slate-100 dark:border-slate-800/80", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2.5", children: "Auto-calculated Consumption" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-sm", children: Object.entries(consumption).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            className: `p-2.5 rounded-xl border ${key === "total" ? "bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-200/70 dark:border-indigo-800/60" : "bg-slate-50 dark:bg-slate-900/60 border-slate-200/70 dark:border-slate-800"}`,
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 capitalize", children: key === "dalVeg" ? "Dal & Veg" : key === "oilCond" ? "Oil & Cond." : key }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: `font-semibold tabular-nums mt-0.5 ${key === "total" ? "text-indigo-700 dark:text-indigo-300" : "text-slate-900 dark:text-white"}`, children: key === "rice" ? `${value} kg` : `₹${value}` })
+            ]
+          },
+          key
+        )) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSave, className: "w-full", children: entryExists ? "Update Entry" : "Save Entry" })
     ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Modal, { isOpen: isOverwriteModalOpen, onClose: () => setOverwriteModalOpen(false), title: "Confirm Overwrite", zIndex: "z-50", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300 mb-4", children: "An entry for this date already exists. Do you want to overwrite it?" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => setOverwriteModalOpen(false), children: "Cancel" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", onClick: confirmOverwrite, children: "Overwrite" })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Modal, { isOpen: isReasonModalOpen, onClose: () => setReasonModalOpen(false), title: "Reason for No Meal", zIndex: "z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300", children: "Please provide a reason for not serving the meal today." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "main-reason-select", className: "block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5", children: "Main Reason" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "select",
-          {
-            id: "main-reason-select",
-            value: mainReason,
-            onChange: (e3) => {
-              setMainReason(e3.target.value);
-              setSubReason("");
-            },
-            className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 shadow-sm transition-all outline-none",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select a reason..." }),
-              MAIN_REASONS.map((reason) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: reason, children: reason }, reason))
-            ]
-          }
-        )
-      ] }),
-      currentSubReasons.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "sub-reason-select", className: "block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5", children: "Sub-Reason" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "select",
-          {
-            id: "sub-reason-select",
-            value: subReason,
-            onChange: (e3) => setSubReason(e3.target.value),
-            className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 shadow-sm transition-all outline-none",
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select a sub-reason..." }),
-              currentSubReasons.map((reason) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: reason, children: reason }, reason))
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300", children: "Select a reason for not serving the meal on this date." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Select,
+        {
+          id: "main-reason-select",
+          label: "Main Reason",
+          value: mainReason,
+          onChange: (val) => {
+            setMainReason(val);
+            setSubReason("");
+          },
+          placeholder: "Select a reason...",
+          options: MAIN_REASONS.map((reason) => ({ value: reason, label: reason }))
+        }
+      ),
+      currentSubReasons.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Select,
+        {
+          id: "sub-reason-select",
+          label: "Sub-Reason",
+          value: subReason,
+          onChange: setSubReason,
+          placeholder: "Select a sub-reason...",
+          options: currentSubReasons.map((reason) => ({ value: reason, label: reason }))
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2 pt-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => setReasonModalOpen(false), children: "Cancel" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSaveZeroEntry, children: "Save Entry" })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "Daily Meal Entry", className: "relative overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "aria-hidden": "true", className: "absolute -bottom-4 -right-4 text-indigo-500/10 dark:text-indigo-500/5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "120", height: "120", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1", strokeLinecap: "round", strokeLinejoin: "round", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M2 12.2c0-3.3 2.9-6.2 6.5-6.2h7c3.6 0 6.5 2.9 6.5 6.2c0 1.9-1.2 3.6-2.7 4.5l-1.5 1c-1.1.7-2.3 1.3-3.3 1.3H9.5c-1 0-2.2-.6-3.3-1.3l-1.5-1C3.2 15.8 2 14.1 2 12.2Z" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M6 6s.5 2.2 2.2 2.2" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M15.8 6s.5 2.2 2.2 2.2" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M10.9 6s.5 2.2 2.2 2.2" })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative", children: showDatePicker ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Select Date", id: "entry-date", type: "date", value: selectedDate, onChange: (e3) => setSelectedDate(e3.target.value), max: today }),
-        isSunday && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center p-2 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-600 dark:text-red-400 text-xs border border-red-100 dark:border-red-900/50", children: "Entries are disabled for Sundays." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex space-x-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => setEntryModalOpen(true), className: "w-full", disabled: isSunday, children: "Load & Edit Entry" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => {
-            setShowDatePicker(false);
-            setSelectedDate(today);
-          }, className: "w-full", children: "Cancel" })
-        ] })
-      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-900 dark:text-slate-100", children: (/* @__PURE__ */ new Date(today + "T00:00:00")).toLocaleDateString("en-IN", { weekday: "long" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-500 dark:text-slate-400", children: (/* @__PURE__ */ new Date(today + "T00:00:00")).toLocaleDateString("en-IN", { day: "numeric", month: "long" }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-right", children: [
-            isSunday && selectedDate === today ? /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleMarkAsSunday, variant: "secondary", children: "Mark as Sunday" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => {
-              setSelectedDate(today);
-              setEntryModalOpen(true);
-            }, disabled: isSunday, children: "Add / Edit" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setShowDatePicker(true), className: "block w-full text-center text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs pt-2 font-medium transition-colors", children: "Edit another..." })
-          ] })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { className: "border-indigo-200/70 dark:border-indigo-900/60", children: showDatePicker ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3.5", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-sm font-semibold text-slate-900 dark:text-slate-100", children: "Edit Another Date" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        DatePicker,
+        {
+          id: "entry-date",
+          label: "Select Date",
+          value: selectedDate,
+          onChange: setSelectedDate,
+          max: today
+        }
+      ),
+      isSunday && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center p-2.5 bg-rose-50 dark:bg-rose-950/30 rounded-xl text-rose-600 dark:text-rose-400 text-xs border border-rose-200/70 dark:border-rose-900/50", children: "Entries are disabled for Sundays." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => setEntryModalOpen(true), className: "flex-1", disabled: isSunday, children: "Load & Edit Entry" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => {
+          setShowDatePicker(false);
+          setSelectedDate(today);
+        }, className: "flex-1", children: "Cancel" })
+      ] })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-0.5", children: "Daily Meal Entry" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-base font-semibold tracking-tight text-slate-900 dark:text-white", children: (/* @__PURE__ */ new Date(today + "T00:00:00")).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mt-0.5", children: entryExists && selectedDate === today ? "Entry recorded for today" : "No entry recorded yet" })
         ] }),
-        isSunday && selectedDate === today && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `text-center mt-4 p-3 rounded-xl text-xs font-medium ${entryExists ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 text-green-700 dark:text-green-400" : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 text-red-700 dark:text-red-400"}`, children: entryExists ? "Today has been marked as a non-meal day." : "Entries are disabled for today (Sunday)." })
-      ] }) })
-    ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "shrink-0", children: isSunday && selectedDate === today ? /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleMarkAsSunday, variant: "secondary", children: "Mark Sunday" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => {
+          setSelectedDate(today);
+          setEntryModalOpen(true);
+        }, disabled: isSunday, children: entryExists && selectedDate === today ? "Edit Today" : "Add Entry" }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3.5 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: () => setShowDatePicker(true),
+            className: "inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors",
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(CalendarDays, { size: 14 }),
+              "Edit another date"
+            ]
+          }
+        ),
+        isSunday && selectedDate === today && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs font-medium ${entryExists ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`, children: entryExists ? "Marked non-meal day" : "Sunday" })
+      ] })
+    ] }) })
   ] });
 });
 DailyEntryPage.displayName = "DailyEntryPage";
 const CustomTooltip = React.memo(({ active, payload, label }) => {
-  var _a2, _b, _c;
+  var _a2, _b, _c, _d, _e, _f, _g, _h;
   if (active && payload && payload.length) {
     const isSunday = ((_c = (_b = (_a2 = payload[0]) == null ? void 0 : _a2.payload) == null ? void 0 : _b.date) == null ? void 0 : _c.getDay()) === 0;
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/80 dark:bg-slate-800/80 p-2 border border-slate-200/50 dark:border-slate-600 rounded text-xs shadow-lg backdrop-blur-sm", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "label text-slate-700 dark:text-slate-300 font-semibold", children: [
-        `Date: ${label}`,
-        isSunday && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-red-500 ml-1", children: "(Sunday)" })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white/95 dark:bg-slate-900/95 px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-xs shadow-lg backdrop-blur-sm space-y-0.5", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-slate-900 dark:text-slate-100 font-semibold mb-1", children: [
+        "Day ",
+        label,
+        isSunday && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-rose-500 ml-1.5 font-medium", children: "(Sunday)" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { color: "#94a3b8" }, children: `Balvatika: ${payload[0].value}` }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { color: "#0ea5e9" }, children: `Primary: ${payload[1].value}` }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { color: "#2dd4bf" }, children: `Middle: ${payload[2].value}` }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-bold text-slate-800 dark:text-white", children: `Total: ${payload[0].payload.total}` })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex items-center justify-between gap-4 text-slate-600 dark:text-slate-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-slate-400" }),
+          "Balvatika"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium tabular-nums", children: ((_d = payload[0]) == null ? void 0 : _d.value) ?? 0 })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex items-center justify-between gap-4 text-slate-600 dark:text-slate-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-indigo-500" }),
+          "Primary"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium tabular-nums", children: ((_e = payload[1]) == null ? void 0 : _e.value) ?? 0 })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex items-center justify-between gap-4 text-slate-600 dark:text-slate-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2 h-2 rounded-full bg-violet-500" }),
+          "Middle"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium tabular-nums", children: ((_f = payload[2]) == null ? void 0 : _f.value) ?? 0 })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "flex items-center justify-between gap-4 pt-1 mt-1 border-t border-slate-100 dark:border-slate-800 font-semibold text-slate-900 dark:text-white", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Total" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tabular-nums", children: ((_h = (_g = payload[0]) == null ? void 0 : _g.payload) == null ? void 0 : _h.total) ?? 0 })
+      ] })
     ] });
   }
   return null;
@@ -29056,10 +30487,16 @@ const CustomTooltip = React.memo(({ active, payload, label }) => {
 CustomTooltip.displayName = "CustomTooltip";
 const Dashboard = React.memo(() => {
   const { data } = useData();
+  const { theme } = useTheme();
   const { showToast: showToast2 } = useToast();
   const { settings } = data;
   const { mdmIncharge } = settings;
   const [isLoading, setIsLoading] = reactExports.useState(true);
+  const isDarkMode = reactExports.useMemo(() => {
+    if (theme === "dark") return true;
+    if (theme === "light") return false;
+    return typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }, [theme]);
   reactExports.useEffect(() => {
     const now2 = /* @__PURE__ */ new Date();
     const todayStr = `${now2.getFullYear()}-${String(now2.getMonth() + 1).padStart(2, "0")}-${String(now2.getDate()).padStart(2, "0")}`;
@@ -29109,529 +30546,109 @@ const Dashboard = React.memo(() => {
       setIsLoading(false);
     }
   }, [dashboardData]);
+  const axisTickColor = isDarkMode ? "#94a3b8" : "#64748b";
+  const axisLineColor = isDarkMode ? "#1e293b" : "#e2e8f0";
+  const gridStrokeColor = isDarkMode ? "#1e293b" : "#f1f5f9";
   if (isLoading) {
     return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-32" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-14" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-28" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-72" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-64" })
     ] });
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(IllustrationCard, { inchargeName: mdmIncharge == null ? void 0 : mdmIncharge.name, inchargeContact: mdmIncharge == null ? void 0 : mdmIncharge.contact }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(DailyEntryPage, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "This Month's Totals", className: "relative overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "aria-hidden": "true", className: "absolute -bottom-2 -right-2 text-indigo-500/10 dark:text-indigo-500/5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "100", height: "100", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1", strokeLinecap: "round", strokeLinejoin: "round", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M10 20.5c0 .8.6 1.5 1.5 1.5h1c.8 0 1.5-.7 1.5-1.5v-1c0-.8-.7-1.5-1.5-1.5h-1c-.8 0-1.5.7-1.5 1.5v1Z" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M8 12h.01" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M19.1 7.4c-1-1.5-2.6-2.4-4.3-2.4H9.2C6 5 5 8 5 9.2c0 .8 0 1.2.1 1.5" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M21 12c-1.2-1-2.9-1.2-4.2-.8" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M5.3 12.8c-1.2.4-2.1 1.4-2.3 2.7-1.3 7.1 5.3 10.5 7 10.5h1.2c1.5 0 2.8-.4 4-1.2 1.3-1 2.3-2.4 2.8-4" })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative grid grid-cols-3 gap-4 text-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Meal Days" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-bold text-indigo-600 dark:text-indigo-400", children: dashboardData.mealDays })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Total Expenditure" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-bold text-indigo-600 dark:text-indigo-400", children: [
-            "₹",
-            dashboardData.totalExpenditure.toFixed(2)
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Total Rice" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-bold text-indigo-600 dark:text-indigo-400", children: [
-            dashboardData.totalRice.toFixed(3),
-            " kg"
-          ] })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "This Month's Totals", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 divide-x divide-slate-200/80 dark:divide-slate-800/80 text-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Meal Days" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white mt-1 tabular-nums", children: dashboardData.mealDays })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Expenditure" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg sm:text-xl font-bold tracking-tight text-indigo-600 dark:text-indigo-400 mt-1 tabular-nums", children: [
+          "₹",
+          dashboardData.totalExpenditure.toFixed(2)
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Rice Used" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white mt-1 tabular-nums", children: [
+          dashboardData.totalRice.toFixed(3),
+          " ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "kg" })
         ] })
       ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "Daily Attendance", className: "relative overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "aria-hidden": "true", className: "absolute -bottom-2 -right-2 text-indigo-500/10 dark:text-indigo-500/5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "100", height: "100", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1", strokeLinecap: "round", strokeLinejoin: "round", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "9", cy: "7", r: "4" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M22 21v-2a4 4 0 0 0-3-3.87" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M16 3.13a4 4 0 0 1 0 7.75" })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { width: "100%", height: 200 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(BarChart, { data: dashboardData.monthlyData, margin: { top: 5, right: 10, left: -20, bottom: 5 }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "name", interval: 0, tick: { fill: "#64748b", fontSize: 8 }, axisLine: { stroke: "#e2e8f0" }, tickLine: { stroke: "#e2e8f0" }, className: "dark:tick={{ fill: '#9ca3af' }} dark:axisLine={{ stroke: '#475569' }} dark:tickLine={{ stroke: '#475569' }}" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { tick: { fill: "#64748b", fontSize: 10 }, axisLine: { stroke: "#e2e8f0" }, tickLine: { stroke: "#e2e8f0" }, className: "dark:tick={{ fill: '#9ca3af' }} dark:axisLine={{ stroke: '#475569' }} dark:tickLine={{ stroke: '#475569' }}" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}), cursor: { fill: "rgba(99, 102, 241, 0.1)" } }),
-          dashboardData.monthlyData.map((entry, index) => {
-            if (entry.date.getDay() === 0 && entry.total === 0) {
-              return /* @__PURE__ */ jsxRuntimeExports.jsx(ReferenceLine, { x: entry.name, stroke: "rgba(239, 68, 68, 0.5)", strokeDasharray: "2 2" }, `sunday-ref-${index}`);
-            }
-            return null;
-          }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "balvatika", stackId: "a", fill: "#cbd5e1", radius: [5, 5, 0, 0], barSize: 10, children: dashboardData.monthlyData.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.date.getDay() === 0 ? "#f87171" : "#cbd5e1" }, `cell-${index}`)) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "primary", stackId: "a", fill: "#6366f1", barSize: 10, children: dashboardData.monthlyData.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.date.getDay() === 0 ? "#f87171" : "#6366f1" }, `cell-${index}`)) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "middle", stackId: "a", fill: "#8b5cf6", radius: [5, 5, 0, 0], barSize: 10, children: dashboardData.monthlyData.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.date.getDay() === 0 ? "#f87171" : "#8b5cf6" }, `cell-${index}`)) })
-        ] }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-center items-center space-x-4 mt-2 text-xs text-slate-600 dark:text-slate-300", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-3 h-3 rounded-full bg-[#cbd5e1] mr-1" }),
-            "Balvatika"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-3 h-3 rounded-full bg-[#6366f1] mr-1" }),
-            "Primary"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-3 h-3 rounded-full bg-[#8b5cf6] mr-1" }),
-            "Middle"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-3 h-3 rounded-full bg-[#f87171] mr-1" }),
-            "Sunday"
-          ] })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "Daily Attendance", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { width: "100%", height: 210 }, children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(BarChart, { data: dashboardData.monthlyData, margin: { top: 8, right: 6, left: -22, bottom: 0 }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", vertical: false, stroke: gridStrokeColor }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          XAxis,
+          {
+            dataKey: "name",
+            ticks: ["1", "5", "10", "15", "20", "25", "30"],
+            tick: { fill: axisTickColor, fontSize: 10 },
+            axisLine: { stroke: axisLineColor },
+            tickLine: false
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          YAxis,
+          {
+            tick: { fill: axisTickColor, fontSize: 10 },
+            axisLine: false,
+            tickLine: false
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Tooltip,
+          {
+            content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}),
+            cursor: { fill: isDarkMode ? "rgba(99, 102, 241, 0.12)" : "rgba(99, 102, 241, 0.07)" }
+          }
+        ),
+        dashboardData.monthlyData.map((entry, index) => {
+          if (entry.date.getDay() === 0 && entry.total === 0) {
+            return /* @__PURE__ */ jsxRuntimeExports.jsx(
+              ReferenceLine,
+              {
+                x: entry.name,
+                stroke: "rgba(244, 63, 94, 0.35)",
+                strokeDasharray: "2 2"
+              },
+              `sunday-ref-${index}`
+            );
+          }
+          return null;
+        }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "balvatika", stackId: "a", fill: "#94a3b8", barSize: 9, children: dashboardData.monthlyData.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.date.getDay() === 0 ? "#f43f5e" : "#94a3b8" }, `cell-bal-${index}`)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "primary", stackId: "a", fill: "#6366f1", barSize: 9, children: dashboardData.monthlyData.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.date.getDay() === 0 ? "#f43f5e" : "#6366f1" }, `cell-pri-${index}`)) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "middle", stackId: "a", fill: "#8b5cf6", radius: [4, 4, 0, 0], barSize: 9, children: dashboardData.monthlyData.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.date.getDay() === 0 ? "#f43f5e" : "#8b5cf6" }, `cell-mid-${index}`)) })
+      ] }) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap justify-center items-center gap-x-5 gap-y-1.5 mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-xs text-slate-600 dark:text-slate-400", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2.5 h-2.5 rounded-full bg-slate-400" }),
+          "Balvatika"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2.5 h-2.5 rounded-full bg-indigo-500" }),
+          "Primary"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2.5 h-2.5 rounded-full bg-violet-500" }),
+          "Middle"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "w-2.5 h-2.5 rounded-full bg-rose-500" }),
+          "Sunday"
         ] })
       ] })
     ] })
   ] });
 });
 Dashboard.displayName = "Dashboard";
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const mergeClasses = (...classes) => classes.filter((className, index, array2) => {
-  return Boolean(className) && className.trim() !== "" && array2.indexOf(className) === index;
-}).join(" ").trim();
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const toKebabCase = (string2) => string2.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const toCamelCase = (string2) => string2.replace(
-  /^([A-Z])|[\s-_]+(\w)/g,
-  (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
-);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const toPascalCase = (string2) => {
-  const camelCase = toCamelCase(string2);
-  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
-};
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-var defaultAttributes = {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: 24,
-  height: 24,
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 2,
-  strokeLinecap: "round",
-  strokeLinejoin: "round"
-};
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const hasA11yProp = (props) => {
-  for (const prop in props) {
-    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
-      return true;
-    }
-  }
-  return false;
-};
-const LucideContext = reactExports.createContext({});
-const useLucideContext = () => reactExports.useContext(LucideContext);
-const Icon = reactExports.forwardRef(
-  ({ color: color2, size, strokeWidth, absoluteStrokeWidth, className = "", children, iconNode, ...rest }, ref) => {
-    const {
-      size: contextSize = 24,
-      strokeWidth: contextStrokeWidth = 2,
-      absoluteStrokeWidth: contextAbsoluteStrokeWidth = false,
-      color: contextColor = "currentColor",
-      className: contextClass = ""
-    } = useLucideContext() ?? {};
-    const calculatedStrokeWidth = absoluteStrokeWidth ?? contextAbsoluteStrokeWidth ? Number(strokeWidth ?? contextStrokeWidth) * 24 / Number(size ?? contextSize) : strokeWidth ?? contextStrokeWidth;
-    return reactExports.createElement(
-      "svg",
-      {
-        ref,
-        ...defaultAttributes,
-        width: size ?? contextSize ?? defaultAttributes.width,
-        height: size ?? contextSize ?? defaultAttributes.height,
-        stroke: color2 ?? contextColor,
-        strokeWidth: calculatedStrokeWidth,
-        className: mergeClasses("lucide", contextClass, className),
-        ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
-        ...rest
-      },
-      [
-        ...iconNode.map(([tag, attrs]) => reactExports.createElement(tag, attrs)),
-        ...Array.isArray(children) ? children : [children]
-      ]
-    );
-  }
-);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const createLucideIcon = (iconName, iconNode) => {
-  const Component = reactExports.forwardRef(
-    ({ className, ...props }, ref) => reactExports.createElement(Icon, {
-      ref,
-      iconNode,
-      className: mergeClasses(
-        `lucide-${toKebabCase(toPascalCase(iconName))}`,
-        `lucide-${iconName}`,
-        className
-      ),
-      ...props
-    })
-  );
-  Component.displayName = toPascalCase(iconName);
-  return Component;
-};
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$i = [
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
-  ["path", { d: "M3 10h18", key: "8toen8" }]
-];
-const Calendar = createLucideIcon("calendar", __iconNode$i);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$h = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$h);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$g = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$g);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$f = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$f);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$e = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$e);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$d = [
-  ["path", { d: "M12 13v8l-4-4", key: "1f5nwf" }],
-  ["path", { d: "m12 21 4-4", key: "1lfcce" }],
-  ["path", { d: "M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284", key: "ui1hmy" }]
-];
-const CloudDownload = createLucideIcon("cloud-download", __iconNode$d);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$c = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
-];
-const CloudUpload = createLucideIcon("cloud-upload", __iconNode$c);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$b = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
-];
-const Cloud = createLucideIcon("cloud", __iconNode$b);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$a = [
-  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
-  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
-];
-const CreditCard = createLucideIcon("credit-card", __iconNode$a);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$9 = [
-  ["path", { d: "M12 15V3", key: "m9g1x1" }],
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
-];
-const Download = createLucideIcon("download", __iconNode$9);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$8 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
-];
-const Info = createLucideIcon("info", __iconNode$8);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$7 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$7);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$6 = [
-  [
-    "path",
-    {
-      d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2",
-      key: "143wyd"
-    }
-  ],
-  ["path", { d: "M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6", key: "1itne7" }],
-  ["rect", { x: "6", y: "14", width: "12", height: "8", rx: "1", key: "1ue0tg" }]
-];
-const Printer = createLucideIcon("printer", __iconNode$6);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$5 = [
-  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
-  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
-  ["path", { d: "M8 16H3v5", key: "1cv678" }]
-];
-const RefreshCw = createLucideIcon("refresh-cw", __iconNode$5);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$4 = [
-  [
-    "path",
-    {
-      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
-      key: "oel41y"
-    }
-  ],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
-];
-const ShieldCheck = createLucideIcon("shield-check", __iconNode$4);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$3 = [
-  [
-    "path",
-    {
-      d: "M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z",
-      key: "1s2grr"
-    }
-  ],
-  ["path", { d: "M20 2v4", key: "1rf3ol" }],
-  ["path", { d: "M22 4h-4", key: "gwowj6" }],
-  ["circle", { cx: "4", cy: "20", r: "2", key: "6kqj1y" }]
-];
-const Sparkles = createLucideIcon("sparkles", __iconNode$3);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$2 = [
-  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
-  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
-];
-const X = createLucideIcon("x", __iconNode$2);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$1 = [
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
-  ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
-  ["line", { x1: "11", x2: "11", y1: "8", y2: "14", key: "1vmskp" }],
-  ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
-];
-const ZoomIn = createLucideIcon("zoom-in", __iconNode$1);
-/**
- * @license lucide-react v1.14.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode = [
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
-  ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
-  ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
-];
-const ZoomOut = createLucideIcon("zoom-out", __iconNode);
-const Select = ({
-  id: id2,
-  label,
-  value,
-  onChange,
-  options,
-  className = "",
-  containerClassName = "",
-  placeholder = "Select an option",
-  disabled = false
-}) => {
-  const [isOpen, setIsOpen] = reactExports.useState(false);
-  const dropdownRef = reactExports.useRef(null);
-  const selectedOption = options.find((opt) => opt.value === value);
-  reactExports.useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("keydown", handleKeyDown);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `relative ${containerClassName}`, ref: dropdownRef, children: [
-    label && /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 ml-0.5", children: label }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "button",
-      {
-        type: "button",
-        id: id2,
-        disabled,
-        onClick: () => setIsOpen((prev) => !prev),
-        className: `w-full bg-white dark:bg-slate-950 border text-left text-sm rounded-xl p-2.5 flex items-center justify-between transition-all duration-150 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 ${isOpen ? "border-indigo-500 ring-2 ring-indigo-500/20 dark:border-indigo-400" : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"} ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} ${className}`,
-        "aria-haspopup": "listbox",
-        "aria-expanded": isOpen,
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `truncate ${selectedOption ? "text-slate-900 dark:text-slate-100 font-medium" : "text-slate-400 dark:text-slate-500"}`, children: selectedOption ? selectedOption.label : placeholder }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            ChevronDown,
-            {
-              size: 16,
-              className: `ml-2 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? "rotate-180 text-indigo-500" : ""}`
-            }
-          )
-        ]
-      }
-    ),
-    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
-      {
-        className: "absolute z-50 mt-1.5 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto",
-        role: "listbox",
-        children: options.map((option) => {
-          const isSelected = option.value === value;
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "button",
-            {
-              type: "button",
-              onClick: () => {
-                onChange(option.value);
-                setIsOpen(false);
-              },
-              className: `w-full text-left px-3 py-2 text-sm flex items-center justify-between transition-colors ${isSelected ? "bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-medium" : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60"}`,
-              role: "option",
-              "aria-selected": isSelected,
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "truncate pr-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "truncate", children: option.label }),
-                  option.description && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate", children: option.description })
-                ] }),
-                isSelected && /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 16, className: "text-indigo-600 dark:text-indigo-400 shrink-0" })
-              ]
-            },
-            option.value
-          );
-        })
-      }
-    )
-  ] });
-};
 const MONTH_NAMES = [
   { short: "Jan", full: "January" },
   { short: "Feb", full: "February" },
@@ -29824,42 +30841,45 @@ const AbstractTable = React.memo(({ title, data, unit: unit2, decimals }) => {
   const isCash = unit2 === "₹";
   const key = isCash ? "expenditure" : "consumed";
   const categories = ["balvatika", "primary", "middle"];
-  const thClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap";
-  const tdClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap";
+  const thClasses = "px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap";
+  const tdClasses = "px-3 py-2.5 text-xs text-slate-700 dark:text-slate-300 whitespace-nowrap tabular-nums";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "font-semibold text-indigo-600 dark:text-indigo-400 mb-2", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2", children: [
       title,
-      " (",
-      unit2,
-      ")"
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-indigo-600 dark:text-indigo-400", children: [
+        "(",
+        unit2,
+        ")"
+      ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[540px] w-full text-xs text-left border-collapse", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50 dark:bg-slate-900/50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[540px] w-full text-left border-collapse", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50/90 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Category" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Opening" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Received" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Total" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: isCash ? "Expend." : "Consumed" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Balance" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300`, children: "Balance" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: categories.map((cat) => {
+      /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-950", children: categories.map((cat) => {
         var _a2;
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} capitalize`, children: cat }),
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} capitalize font-medium text-slate-800 dark:text-slate-200`, children: cat }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: data[cat].opening.toFixed(decimals) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: data[cat].received.toFixed(decimals) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: data[cat].total.toFixed(decimals) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: (_a2 = data[cat][key]) == null ? void 0 : _a2.toFixed(decimals) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold`, children: data[cat].balance.toFixed(decimals) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300`, children: data[cat].balance.toFixed(decimals) })
         ] }, cat);
       }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "font-semibold bg-slate-100 dark:bg-slate-900", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: thClasses, children: "Total" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: total.opening.toFixed(decimals) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: total.received.toFixed(decimals) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: total.total.toFixed(decimals) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: total[key].toFixed(decimals) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: total.balance.toFixed(decimals) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200/80 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2.5 text-xs font-semibold text-slate-900 dark:text-white whitespace-nowrap", children: "Total" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: total.opening.toFixed(decimals) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: total.received.toFixed(decimals) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: total.total.toFixed(decimals) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: total[key].toFixed(decimals) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-bold bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300`, children: total.balance.toFixed(decimals) })
       ] }) })
     ] }) })
   ] });
@@ -29868,53 +30888,56 @@ AbstractTable.displayName = "AbstractTable";
 const CategoryAbstractTable = React.memo(({ title, data, unit: unit2, decimals }) => {
   const isCash = unit2 === "₹";
   const key = isCash ? "expenditure" : "consumed";
-  const thClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap text-left";
-  const tdClasses = "p-2 border border-slate-200 dark:border-slate-800 whitespace-nowrap text-right";
+  const thClasses = "px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap text-right";
+  const tdClasses = "px-3 py-2.5 text-xs text-slate-700 dark:text-slate-300 whitespace-nowrap text-right tabular-nums";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "font-semibold text-indigo-600 dark:text-indigo-400 mb-2", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2", children: [
       title,
-      " (",
-      unit2,
-      ")"
+      " ",
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-indigo-600 dark:text-indigo-400", children: [
+        "(",
+        unit2,
+        ")"
+      ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-left border-collapse", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50 dark:bg-slate-900/50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-left border-collapse", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50/90 dark:bg-slate-900/70 border-b border-slate-200/80 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Opening" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Received" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Total" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: isCash ? "Expend." : "Consumed" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Balance" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300`, children: "Balance" })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "bg-white dark:bg-slate-950", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: data.opening.toFixed(decimals) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: data.received.toFixed(decimals) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: data.total.toFixed(decimals) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: (data[key] || 0).toFixed(decimals) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} font-semibold text-indigo-600 dark:text-indigo-400`, children: data.balance.toFixed(decimals) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} font-semibold bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300`, children: data.balance.toFixed(decimals) })
       ] }) })
     ] }) })
   ] });
 });
 CategoryAbstractTable.displayName = "CategoryAbstractTable";
-const SimpleDailyEntriesTable = React.memo(({ entries }) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto max-h-72 rounded-xl border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-left", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400", children: "Date" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Present" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Rice (kg)" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Cost (₹)" })
+const SimpleDailyEntriesTable = React.memo(({ entries }) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto max-h-72 rounded-xl border border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-left border-collapse", children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50/95 dark:bg-slate-900/90 sticky top-0 z-10 border-b border-slate-200/80 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400", children: "Date" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right", children: "Present" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right", children: "Rice (kg)" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right", children: "Cost (₹)" })
   ] }) }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: entries.length > 0 ? [...entries].reverse().map((entry) => {
+  /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "divide-y divide-slate-100 dark:divide-slate-800/80", children: entries.length > 0 ? [...entries].reverse().map((entry) => {
     const date2 = /* @__PURE__ */ new Date(entry.date + "T00:00:00");
     const isNoMealDay = entry.present === 0;
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: `border-b border-slate-100 dark:border-slate-800/50 last:border-0 ${isNoMealDay ? "bg-red-50/50 dark:bg-red-900/10" : "bg-white dark:bg-slate-950"}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3", children: date2.toLocaleDateString("en-IN") }),
-      isNoMealDay ? /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 3, className: "p-3 text-center text-red-600 dark:text-red-400 text-xs italic", children: entry.reasonForNoMeal || "No Meal Served" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: entry.present }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: entry.rice.toFixed(3) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: entry.cost.toFixed(2) })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: isNoMealDay ? "bg-rose-50/50 dark:bg-rose-950/20" : "bg-white dark:bg-slate-950 hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2.5 text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap", children: date2.toLocaleDateString("en-IN") }),
+      isNoMealDay ? /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 3, className: "px-3 py-2.5 text-center text-rose-600 dark:text-rose-400 text-xs italic", children: entry.reasonForNoMeal || "No Meal Served" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: entry.present }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: entry.rice.toFixed(3) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2.5 text-right font-semibold text-slate-900 dark:text-slate-100 tabular-nums", children: entry.cost.toFixed(2) })
       ] })
     ] }, entry.id);
-  }) : /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "border-b border-slate-100 dark:border-slate-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 4, className: "p-4 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950", children: "No entries with meals served for this category in the selected month." }) }) })
+  }) : /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 4, className: "p-6 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950", children: "No entries with meals served for this category in the selected month." }) }) })
 ] }) }));
 SimpleDailyEntriesTable.displayName = "SimpleDailyEntriesTable";
 const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHistory, classRolls, enrollmentHistory }) => {
@@ -29958,32 +30981,32 @@ const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHis
     }, { present: 0, riceUsed: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, totalCost: 0 });
     return { dailyData: data, totals: totals2 };
   }, [entries, category, rates, rateHistory, classRolls, enrollmentHistory]);
-  const thClasses = "p-2 whitespace-nowrap";
-  const tdClasses = "p-2 whitespace-nowrap";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[768px] w-full text-xs text-left border-collapse", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400`, children: "S.No" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400`, children: "Date" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Roll" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Present" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Rice (kg)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Dal/Veg (₹)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Oil/Cond (₹)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Salt (₹)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Fuel (₹)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400 text-right`, children: "Total (₹)" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} font-medium text-slate-500 dark:text-slate-400`, children: "Reason" })
+  const thClasses = "px-2.5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap";
+  const tdClasses = "px-2.5 py-2 text-xs text-slate-700 dark:text-slate-300 whitespace-nowrap tabular-nums";
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[768px] w-full text-left border-collapse", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-slate-50/95 dark:bg-slate-900/90 sticky top-0 z-10 border-b border-slate-200/80 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "S.No" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Date" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Roll" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Present" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Rice (kg)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Dal/Veg (₹)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Oil/Cond (₹)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Salt (₹)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right`, children: "Fuel (₹)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: `${thClasses} text-right bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300`, children: "Total (₹)" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: thClasses, children: "Reason" })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: dailyData.map((day) => {
+    /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "divide-y divide-slate-100 dark:divide-slate-800/80", children: dailyData.map((day) => {
       const isNoMealDay = day.present === 0 || day.isSunday;
       const reasonText = day.isSunday ? "Sunday" : day.reason || "No Meal Served";
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: `border-b border-slate-100 dark:border-slate-800/50 last:border-0 ${isNoMealDay ? "bg-red-50/50 dark:bg-red-900/10" : "bg-white dark:bg-slate-950"}`, children: isNoMealDay ? /* @__PURE__ */ jsxRuntimeExports.jsxs("td", { colSpan: 11, className: `${tdClasses} text-center italic text-red-600 dark:text-red-400`, children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: isNoMealDay ? "bg-rose-50/50 dark:bg-rose-950/20" : "bg-white dark:bg-slate-950 hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors", children: isNoMealDay ? /* @__PURE__ */ jsxRuntimeExports.jsxs("td", { colSpan: 11, className: "px-2.5 py-2 text-xs text-center italic text-rose-600 dark:text-rose-400", children: [
         (/* @__PURE__ */ new Date(day.date + "T00:00:00")).toLocaleDateString("en-IN"),
-        " - ",
+        " — ",
         reasonText
       ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: day.sNo }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: (/* @__PURE__ */ new Date(day.date + "T00:00:00")).toLocaleDateString("en-IN") }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-slate-400 dark:text-slate-500`, children: day.sNo }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} font-medium text-slate-800 dark:text-slate-200`, children: (/* @__PURE__ */ new Date(day.date + "T00:00:00")).toLocaleDateString("en-IN") }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.onRoll }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.present }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.riceUsed.toFixed(3) }),
@@ -29991,20 +31014,20 @@ const DetailedConsumptionTable = React.memo(({ entries, category, rates, rateHis
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.oilCond.toFixed(2) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.salt.toFixed(2) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: day.fuel.toFixed(2) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold`, children: day.totalCost.toFixed(2) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: "-" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold bg-indigo-50/40 dark:bg-indigo-950/25 text-indigo-700 dark:text-indigo-300`, children: day.totalCost.toFixed(2) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-slate-400 dark:text-slate-600`, children: "—" })
       ] }) }, day.date);
     }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "font-semibold bg-slate-100 dark:bg-slate-900", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 3, className: `${tdClasses} text-right`, children: "Total" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.present }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.riceUsed.toFixed(3) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.dalVeg.toFixed(2) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.oilCond.toFixed(2) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.salt.toFixed(2) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.fuel.toFixed(2) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right`, children: totals.totalCost.toFixed(2) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: tdClasses, children: "-" })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200/80 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 3, className: "px-2.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-white text-right", children: "Total" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: totals.present }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: totals.riceUsed.toFixed(3) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: totals.dalVeg.toFixed(2) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: totals.oilCond.toFixed(2) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: totals.salt.toFixed(2) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-semibold text-slate-900 dark:text-white`, children: totals.fuel.toFixed(2) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-right font-bold bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300`, children: totals.totalCost.toFixed(2) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: `${tdClasses} text-slate-400 dark:text-slate-600`, children: "—" })
     ] }) })
   ] }) });
 });
@@ -30106,29 +31129,29 @@ const MonthlySummary = React.memo(() => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(CategoryAbstractTable, { title: "Rice Abstract", data: riceAbstracts[view], unit: "kg", decimals: 3 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(CategoryAbstractTable, { title: "Cash Abstract", data: cashAbstracts[view], unit: "₹", decimals: 2 })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Meal & Attendance Totals", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "Working Days" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-semibold text-indigo-600 dark:text-indigo-400", children: displayedTotals.workingDays })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Meal & Attendance Totals", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 text-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800/70", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Working Days" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5", children: displayedTotals.workingDays })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "Meal Days" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-semibold text-emerald-600 dark:text-emerald-400", children: displayedTotals.mealDays })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800/70", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Meal Days" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5", children: displayedTotals.mealDays })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "Total Students Fed" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-semibold text-indigo-600 dark:text-indigo-400", children: displayedTotals.present })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800/70", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Students Fed" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-bold text-slate-900 dark:text-white tabular-nums mt-0.5", children: displayedTotals.present })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "Total Expenditure" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-semibold text-indigo-600 dark:text-indigo-400", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800/70", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Expenditure" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-bold text-indigo-600 dark:text-indigo-400 tabular-nums mt-0.5", children: [
             "₹",
             displayedTotals.expenditure.toFixed(2)
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "Total Rice Used" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-semibold text-indigo-600 dark:text-indigo-400", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-800/70 col-span-2 sm:col-span-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Rice Used" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-bold text-indigo-600 dark:text-indigo-400 tabular-nums mt-0.5", children: [
             displayedTotals.rice.toFixed(3),
             " kg"
           ] })
@@ -30155,6 +31178,13 @@ const MonthlySummary = React.memo(() => {
   ] });
 });
 MonthlySummary.displayName = "MonthlySummary";
+const Input = ({ label, id: id2, containerClassName = "", className, ...props }) => {
+  const baseClasses = "w-full min-h-[42px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 block px-3 py-2 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-150 shadow-sm tabular-nums";
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: containerClassName, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: id2, className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5 ml-0.5", children: label }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("input", { id: id2, className: `${baseClasses} ${className || ""}`, ...props })
+  ] });
+};
 const Receipts = () => {
   const { addReceipt, deleteReceipt, data } = useData();
   const { showToast: showToast2 } = useToast();
@@ -30205,27 +31235,36 @@ const Receipts = () => {
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Modal, { isOpen: !!receiptToDelete, onClose: () => setReceiptToDelete(null), title: "Confirm Deletion", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300 mb-4", children: "Are you sure you want to delete this receipt? This action cannot be undone." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300 mb-5", children: "Are you sure you want to delete this receipt? This action cannot be undone." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => setReceiptToDelete(null), children: "Cancel" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", onClick: confirmDelete, children: "Delete" })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Add New Receipt", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 -mt-2", children: "Log all incoming rice and cash here. These receipts will be added to your stock and reflected in the monthly summary." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Date", id: "receipt-date", type: "date", value: date2, onChange: (e3) => setDate(e3.target.value), required: true, max: todayString }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("fieldset", { className: "border border-slate-200 dark:border-slate-800 rounded-xl p-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("legend", { className: "text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2", children: "Rice Received (kg)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Add New Receipt", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 -mt-2", children: "Log incoming rice and cash allotments. Receipts are added to your stock and reflected in the monthly summary." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          DatePicker,
+          {
+            id: "receipt-date",
+            label: "Date",
+            value: date2,
+            onChange: setDate,
+            max: todayString
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2.5 pt-1 border-t border-slate-100 dark:border-slate-800/80", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 pt-2", children: "Rice Received (kg)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2.5 sm:gap-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Balvatika", id: "rice-bal", type: "number", step: "0.01", placeholder: "0", value: rice.balvatika, onChange: (e3) => handleValueChange(setRice, "balvatika", e3.target.value), min: "0", max: "9999" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Primary", id: "rice-pri", type: "number", step: "0.01", placeholder: "0", value: rice.primary, onChange: (e3) => handleValueChange(setRice, "primary", e3.target.value), min: "0", max: "9999" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Middle", id: "rice-mid", type: "number", step: "0.01", placeholder: "0", value: rice.middle, onChange: (e3) => handleValueChange(setRice, "middle", e3.target.value), min: "0", max: "9999" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("fieldset", { className: "border border-slate-200 dark:border-slate-800 rounded-xl p-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("legend", { className: "text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2", children: "Cash Received (₹)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2.5 pt-1 border-t border-slate-100 dark:border-slate-800/80", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 pt-2", children: "Cash Received (₹)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2.5 sm:gap-3", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Balvatika", id: "cash-bal", type: "number", step: "0.01", placeholder: "0", value: cash.balvatika, onChange: (e3) => handleValueChange(setCash, "balvatika", e3.target.value), min: "0", max: "99999" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Primary", id: "cash-pri", type: "number", step: "0.01", placeholder: "0", value: cash.primary, onChange: (e3) => handleValueChange(setCash, "primary", e3.target.value), min: "0", max: "99999" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Middle", id: "cash-mid", type: "number", step: "0.01", placeholder: "0", value: cash.middle, onChange: (e3) => handleValueChange(setCash, "middle", e3.target.value), min: "0", max: "99999" })
@@ -30233,39 +31272,46 @@ const Receipts = () => {
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", className: "w-full", children: "Save Receipt" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-base font-semibold text-slate-800 dark:text-slate-100", children: "Recent Receipts" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto max-h-60 rounded-xl border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-left", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("thead", { className: "bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400", rowSpan: 2, children: "Date" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400 text-center border-b border-slate-200 dark:border-slate-800", colSpan: 3, children: "Rice (kg)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400 text-center border-b border-slate-200 dark:border-slate-800", colSpan: 3, children: "Cash (₹)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-3 font-medium text-slate-500 dark:text-slate-400 text-right", rowSpan: 2, children: "Actions" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Bal" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Pri" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Mid" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Bal" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Pri" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 font-medium text-slate-500 dark:text-slate-400 text-right", children: "Mid" })
-            ] })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Recent Receipts", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto max-h-72 rounded-xl border border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[540px] w-full text-xs text-left border-collapse", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("thead", { className: "bg-slate-50/95 dark:bg-slate-900/90 sticky top-0 z-10 border-b border-slate-200/80 dark:border-slate-800", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400", rowSpan: 2, children: "Date" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center border-b border-slate-200/70 dark:border-slate-800", colSpan: 3, children: "Rice (kg)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center border-b border-slate-200/70 dark:border-slate-800", colSpan: 3, children: "Cash (₹)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right", rowSpan: 2, children: "Action" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: data.receipts.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "border-b border-slate-100 dark:border-slate-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 8, className: "p-4 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950", children: "No receipts have been added yet." }) }) : [...data.receipts].reverse().map((receipt) => {
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "border-b border-slate-100 dark:border-slate-800/50 last:border-0 bg-white dark:bg-slate-950", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3", children: (/* @__PURE__ */ new Date(receipt.date + "T00:00:00")).toLocaleDateString("en-IN") }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: receipt.rice.balvatika.toFixed(2) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: receipt.rice.primary.toFixed(2) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: receipt.rice.middle.toFixed(2) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: receipt.cash.balvatika.toFixed(2) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: receipt.cash.primary.toFixed(2) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: receipt.cash.middle.toFixed(2) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-3 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", className: "px-3 py-1.5 text-xs", onClick: () => setReceiptToDelete(receipt.id), children: "Delete" }) })
-            ] }, receipt.id);
-          }) })
-        ] }) })
-      ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right", children: "Bal" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right", children: "Pri" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right", children: "Mid" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right", children: "Bal" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right", children: "Pri" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right", children: "Mid" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-950", children: data.receipts.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 8, className: "p-6 text-center text-slate-500 dark:text-slate-400", children: "No receipts have been added yet." }) }) : [...data.receipts].reverse().map((receipt) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2.5 font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap tabular-nums", children: (/* @__PURE__ */ new Date(receipt.date + "T00:00:00")).toLocaleDateString("en-IN") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: receipt.rice.balvatika.toFixed(2) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: receipt.rice.primary.toFixed(2) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: receipt.rice.middle.toFixed(2) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: receipt.cash.balvatika.toFixed(2) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: receipt.cash.primary.toFixed(2) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums", children: receipt.cash.middle.toFixed(2) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-3 py-2 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: () => setReceiptToDelete(receipt.id),
+              "aria-label": "Delete receipt",
+              className: "inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-3.5 h-3.5" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Delete" })
+              ]
+            }
+          ) })
+        ] }, receipt.id)) })
+      ] }) }) })
     ] })
   ] });
 };
@@ -30284,17 +31330,24 @@ const Accordion = ({ children, defaultOpenId = null }) => {
 const AccordionItem = ({ id: id2, title, children }) => {
   const { activeId, toggleItem } = reactExports.useContext(AccordionContext);
   const isOpen = activeId === id2;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden transition-colors shadow-[0_1px_2px_rgba(15,23,42,0.04)]", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
+        type: "button",
         onClick: () => toggleItem(id2),
-        className: "w-full flex justify-between items-center p-5 text-left font-semibold text-slate-800 dark:text-slate-100 text-base",
+        className: "w-full flex justify-between items-center px-5 py-4 text-left font-semibold text-slate-900 dark:text-slate-100 text-sm sm:text-base hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors",
         "aria-expanded": isOpen,
         "aria-controls": `content-${id2}`,
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1", children: title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", className: `h-5 w-5 text-slate-400 transition-transform transform ${isOpen ? "rotate-180" : ""}`, viewBox: "0 0 20 20", fill: "currentColor", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { fillRule: "evenodd", d: "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z", clipRule: "evenodd" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-1 tracking-tight", children: title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ChevronDown,
+            {
+              size: 18,
+              className: `text-slate-400 transition-transform duration-200 shrink-0 ml-2 ${isOpen ? "rotate-180 text-indigo-600 dark:text-indigo-400" : ""}`
+            }
+          )
         ]
       }
     ),
@@ -30302,8 +31355,8 @@ const AccordionItem = ({ id: id2, title, children }) => {
       "div",
       {
         id: `content-${id2}`,
-        className: `transition-all duration-500 ease-in-out overflow-hidden ${isOpen ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"}`,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-5 pt-2 border-t border-slate-100 dark:border-slate-800/50", children })
+        className: `transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"}`,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 sm:px-5 pb-5 pt-3 border-t border-slate-100 dark:border-slate-800/70", children })
       }
     )
   ] });
@@ -31071,7 +32124,7 @@ registerPlugin("SystemBars", {
   web: () => new SystemBarsPluginWeb()
 });
 const App$1 = registerPlugin("App", {
-  web: () => __vitePreload(() => import("./web-C6hEqLRJ.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.AppWeb())
+  web: () => __vitePreload(() => import("./web-BvbqpUVS.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.AppWeb())
 });
 const CURRENT_APP_VERSION = "2.1.0";
 const GITHUB_REPO = "ImranSir09/PM-POSHAN-PRO-V2";
@@ -31199,11 +32252,11 @@ var Encoding;
   Encoding2["UTF16"] = "utf16";
 })(Encoding || (Encoding = {}));
 const Filesystem = registerPlugin("Filesystem", {
-  web: () => __vitePreload(() => import("./web-BIOCJc19.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.FilesystemWeb())
+  web: () => __vitePreload(() => import("./web-D5Mi9ics.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.FilesystemWeb())
 });
 f();
 const Share = registerPlugin("Share", {
-  web: () => __vitePreload(() => import("./web-D-T8g7ul.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.ShareWeb())
+  web: () => __vitePreload(() => import("./web-CzDAs7Yw.js"), true ? [] : void 0, import.meta.url).then((m2) => new m2.ShareWeb())
 });
 function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
@@ -31463,8 +32516,8 @@ const DataManagement = () => {
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Modal, { isOpen: isResetModalOpen, onClose: () => setResetModalOpen(false), title: "Confirm Reset", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300 mb-4", children: "Are you sure you want to delete ALL data? This action cannot be undone. It is highly recommended to export your data first." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300 mb-5", children: "Are you sure you want to delete ALL data? This action cannot be undone. It is highly recommended to export your data first." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => setResetModalOpen(false), children: "Cancel" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", onClick: handleReset, children: "Yes, Reset Data" })
       ] })
@@ -31472,111 +32525,109 @@ const DataManagement = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Modal, { isOpen: !!importConfirmation, onClose: () => setImportConfirmation(null), title: "Confirm Data Import", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-slate-600 dark:text-slate-300", children: [
         "Please review the details from the file before importing.",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "block mt-1 text-yellow-600 dark:text-yellow-400", children: "Warning: This will overwrite all current application data." })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "block mt-1 text-amber-600 dark:text-amber-400", children: "Warning: This will overwrite all current application data." })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm space-y-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 p-4 rounded-xl", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "School Name:" }),
-          " ",
-          importConfirmation == null ? void 0 : importConfirmation.summary.schoolName
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm divide-y divide-slate-200/70 dark:divide-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-3.5 py-1 rounded-xl", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between py-2 text-xs sm:text-sm", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-slate-500 dark:text-slate-400", children: "School Name" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-slate-900 dark:text-white text-right", children: importConfirmation == null ? void 0 : importConfirmation.summary.schoolName })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "UDISE:" }),
-          " ",
-          importConfirmation == null ? void 0 : importConfirmation.summary.udise
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between py-2 text-xs sm:text-sm", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-slate-500 dark:text-slate-400", children: "UDISE" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-slate-900 dark:text-white tabular-nums", children: importConfirmation == null ? void 0 : importConfirmation.summary.udise })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Daily Entries Found:" }),
-          " ",
-          importConfirmation == null ? void 0 : importConfirmation.summary.entryCount
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between py-2 text-xs sm:text-sm", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-slate-500 dark:text-slate-400", children: "Daily Entries" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-slate-900 dark:text-white tabular-nums", children: importConfirmation == null ? void 0 : importConfirmation.summary.entryCount })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Receipts Found:" }),
-          " ",
-          importConfirmation == null ? void 0 : importConfirmation.summary.receiptCount
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between py-2 text-xs sm:text-sm", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-slate-500 dark:text-slate-400", children: "Receipts" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-slate-900 dark:text-white tabular-nums", children: importConfirmation == null ? void 0 : importConfirmation.summary.receiptCount })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => setImportConfirmation(null), children: "Cancel" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", onClick: handleConfirmImport, children: "Confirm & Overwrite" })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Data Backup & Restore", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "divide-y divide-slate-200/80 dark:divide-slate-800/80", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "pb-5 space-y-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium mb-1", children: "Export Data (Local File)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-2", children: "Save all app data to a file. Store it safely to prevent data loss." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleExport, className: "w-full", children: "Export to JSON" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-100", children: "Local Backup & Restore" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mt-0.5", children: "Export all records to a JSON file or restore from an existing backup." })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-2 border-t border-slate-100 dark:border-slate-800", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium mb-1", children: "Import Data (Local File)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-2", children: [
-            "Restore data from a backup file. ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-yellow-600 dark:text-yellow-400", children: "Warning: Replaces all current data." })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleImportClick, variant: "secondary", className: "w-full", children: "Select File to Import" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleExport, className: "w-full", children: "Export to JSON" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleImportClick, variant: "secondary", className: "w-full", children: "Import from JSON" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "file", ref: fileInputRef, onChange: handleFileChange, accept: ".json", className: "hidden" })
-        ] })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Cloud Sync (Supabase)" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setShowCloudInfo(!showCloudInfo), className: "text-slate-400 hover:text-sky-500 transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 18 }) })
-      ] }), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-        showCloudInfo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-sky-50 dark:bg-sky-900/30 border border-sky-100 dark:border-sky-800 p-3 rounded-lg text-xs text-sky-800 dark:text-sky-300 mb-2 animate-in fade-in slide-in-from-top-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-medium mb-1 flex items-center gap-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Cloud, { size: 14 }),
-            " How Cloud Sync works:"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-amber-700 dark:text-amber-400", children: "Note: Importing a backup replaces all current local data." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "py-5 space-y-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-100", children: "Cloud Sync (Supabase)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums", children: [
+              "Current UDISE: ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-slate-700 dark:text-slate-200", children: data.settings.schoolDetails.udise || "Not Set" })
+            ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside space-y-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => setShowCloudInfo(!showCloudInfo),
+              "aria-label": "How Cloud Sync works",
+              className: "p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { className: "w-4 h-4" })
+            }
+          )
+        ] }),
+        showCloudInfo && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800/50 p-3 rounded-xl text-xs text-indigo-900 dark:text-indigo-200 space-y-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-semibold flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Cloud, { className: "w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" }),
+            "How Cloud Sync works"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside space-y-0.5 text-indigo-800/90 dark:text-indigo-300/90", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              "Backup stores your data securely using your school's ",
+              "Backup stores your data using your school's ",
               /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "UDISE Code" }),
               "."
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              "Ensure your UDISE code is correctly set in ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Settings" }),
-              "."
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Use that UDISE code on any device to restore your data." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Restore overwrites your current local data." })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Ensure your UDISE code is set correctly under School Details." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Use that UDISE code on any device to restore (overwrites local data)." })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500", children: [
-              "Current UDISE: ",
-              data.settings.schoolDetails.udise || "Not Set"
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              Button,
-              {
-                onClick: handleCloudBackup,
-                disabled: isCloudSyncing || !data.settings.schoolDetails.udise,
-                variant: "secondary",
-                className: "w-full bg-sky-50 hover:bg-sky-100 dark:bg-sky-900/20 dark:hover:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-                children: [
-                  isCloudSyncing ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CloudUpload, { className: "w-4 h-4 mr-2" }),
-                  isCloudSyncing ? "Syncing..." : "Upload to Cloud"
-                ]
-              }
-            ),
-            lastSyncedUdise && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2 bg-green-50 dark:bg-green-900/30 border border-green-100 dark:border-green-800 rounded-lg text-center animate-in zoom-in-95", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px] text-green-800 dark:text-green-300", children: [
-              "Successfully synced UDISE: ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: lastSyncedUdise })
-            ] }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-500 dark:text-slate-400", children: "Restore from Cloud (Enter UDISE)" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            Button,
+            {
+              onClick: handleCloudBackup,
+              disabled: isCloudSyncing || !data.settings.schoolDetails.udise,
+              variant: "secondary",
+              className: "w-full",
+              children: [
+                isCloudSyncing ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CloudUpload, { className: "w-4 h-4 text-indigo-600 dark:text-indigo-400" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: isCloudSyncing ? "Syncing..." : "Upload Backup to Cloud" })
+              ]
+            }
+          ),
+          lastSyncedUdise && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/60 rounded-xl text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-emerald-700 dark:text-emerald-300 tabular-nums", children: [
+            "Synced for UDISE: ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: lastSyncedUdise })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-2 space-y-1.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "restore-udise-input", className: "block text-xs font-medium text-slate-600 dark:text-slate-300", children: "Restore from Cloud (Enter UDISE)" }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "input",
                 {
+                  id: "restore-udise-input",
                   type: "text",
-                  placeholder: "Enter UDISE Code",
+                  placeholder: "Enter 11-digit UDISE Code",
                   value: inputUdiseCode,
                   onChange: (e3) => setInputUdiseCode(e3.target.value),
-                  className: "flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-sky-500 dark:text-white"
+                  className: "flex-1 h-[42px] px-3 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl tabular-nums text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 }
               ),
               /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -31584,90 +32635,36 @@ const DataManagement = () => {
                 {
                   onClick: handleCloudRestore,
                   disabled: isCloudSyncing || inputUdiseCode.length < 5,
-                  className: "whitespace-nowrap px-4",
+                  className: "px-4",
                   children: [
-                    isCloudSyncing ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CloudDownload, { className: "w-4 h-4 mr-2" }),
-                    "Restore"
+                    isCloudSyncing ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CloudDownload, { className: "w-4 h-4" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Restore" })
                   ]
                 }
               )
             ] })
           ] })
         ] })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { title: "Reset Application", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-bold text-red-600 dark:text-red-400", children: "This action is irreversible." }),
-          " It will permanently delete all data. Ensure you have a backup if you wish to restore later."
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "py-5 space-y-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-100", children: "Reset Application" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-slate-500 dark:text-slate-400 mt-0.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-rose-600 dark:text-rose-400", children: "This action is irreversible." }),
+            " Permanently clears all local records and settings. Export a backup first."
+          ] })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => setResetModalOpen(true), variant: "danger", className: "w-full", children: "Reset All Data" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { title: "Support & Application Intelligence", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 text-sm text-slate-600 dark:text-slate-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "font-bold text-sky-700 dark:text-sky-400 flex items-center gap-2 mb-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 16 }),
-            " Operational Blueprint"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Record Management" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "space-y-1 text-xs", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-                  " ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Dashboard:" }),
-                  " Real-time meal logging."
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-                  " ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Receipts:" }),
-                  " Comprehensive resource tracking."
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-                  " ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Summary:" }),
-                  " Analytical monthly insights."
-                ] })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Compliance Tools" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "space-y-1 text-xs", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-                  " ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Reports:" }),
-                  " Automated PDF generation."
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-                  " ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Cloud Sync:" }),
-                  " Multi-device continuity."
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "flex gap-2", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "•" }),
-                  " ",
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Validation:" }),
-                  " Structural data integrity."
-                ] })
-              ] })
-            ] })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 px-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-bold text-slate-800 dark:text-white", children: "Technical Architecture" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs leading-relaxed", children: 'PM POSHAN Tracker (v2.1.0) is built on a "Local-First" architecture. All critical calculations for rice consumption, conversion factors, and financial tallies are performed on-device to ensure privacy and speed. Cloud features are optional and designed for seamless disaster recovery.' })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter", children: "App Version & Updates" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-semibold text-slate-900 dark:text-white text-xs", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "pt-5 space-y-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "App Version & Updates" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-semibold text-slate-900 dark:text-white tabular-nums mt-0.5", children: [
               "PM POSHAN PRO v",
               appVersion
-            ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mt-0.5", children: "Offline-first ledger — all calculations stay on your device." })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
             Button,
@@ -31675,25 +32672,41 @@ const DataManagement = () => {
               onClick: handleManualUpdateCheck,
               disabled: isCheckingUpdate,
               variant: "secondary",
-              className: "text-xs py-1.5 px-3 flex items-center gap-1.5",
+              size: "sm",
               children: [
                 isCheckingUpdate ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-3.5 h-3.5 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { className: "w-3.5 h-3.5" }),
-                isCheckingUpdate ? "Checking..." : "Check for Updates"
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: isCheckingUpdate ? "Checking..." : "Check for Updates" })
               ]
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter", children: "Developed & Maintained By" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-900 dark:text-white", children: "Imran Gani Mugloo" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Support & Developer" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-semibold text-slate-900 dark:text-white mt-0.5", children: "Imran Gani Mugloo" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "tel:+919149690096", className: "flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-sky-100 hover:text-sky-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 transition-all shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" }) }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "mailto:emraanmugloo123@gmail.com", className: "flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-sky-100 hover:text-sky-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 transition-all shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-5 h-5", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" }) }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "a",
+              {
+                href: "tel:+919149690096",
+                "aria-label": "Call support",
+                className: "flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400 transition-colors",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "w-4 h-4" })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "a",
+              {
+                href: "mailto:emraanmugloo123@gmail.com",
+                "aria-label": "Email support",
+                className: "flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400 transition-colors",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(Mail, { className: "w-4 h-4" })
+              }
+            )
           ] })
         ] })
-      ] }) })
+      ] })
     ] })
   ] });
 };
@@ -31713,15 +32726,15 @@ const calculateSectionTotals = (classes) => {
     total: { boys: 0, girls: 0, onRoll: 0 }
   });
 };
-const SectionTotalRow = ({ label, totals }) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "font-semibold bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-900 dark:text-indigo-100", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: label }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: totals.general.boys }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: totals.general.girls }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: totals.stsc.boys }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: totals.stsc.girls }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: totals.total.boys }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50", children: totals.total.girls }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-indigo-100 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300", children: totals.total.onRoll })
+const SectionTotalRow = ({ label, totals }) => /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "font-semibold bg-slate-50/90 dark:bg-slate-900/80 text-slate-800 dark:text-slate-100 border-t border-slate-200/80 dark:border-slate-800 tabular-nums", children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2 text-left", children: label }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2", children: totals.general.boys }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2", children: totals.general.girls }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2", children: totals.stsc.boys }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2", children: totals.stsc.girls }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2", children: totals.total.boys }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2", children: totals.total.girls }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold", children: totals.total.onRoll })
 ] });
 const cloneRates = (r2) => JSON.parse(JSON.stringify(r2));
 const cloneClassRolls = (rolls) => JSON.parse(JSON.stringify(rolls));
@@ -32135,79 +33148,76 @@ const SettingsPage = () => {
             ),
             !isUdiseValid ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-xs text-red-500 dark:text-red-400", children: "UDISE code must be 11 digits long." }) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-xs text-slate-500 dark:text-slate-400", children: "Unified District Information System for Education code." })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "schoolTypeMDCF", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "School Type" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { id: "schoolTypeMDCF", value: settings.schoolDetails.schoolTypeMDCF, onChange: (e3) => handleSchoolDetailsChange("schoolTypeMDCF", e3.target.value), className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm", required: true, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select Type" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Government", children: "Government" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Local Body", children: "Local Body" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "EGS/AIE Centers", children: "EGS/AIE Centers" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "NCLP", children: "NCLP" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Madras / Maqtab", children: "Madras / Maqtab" })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "schoolCategoryMDCF", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "School Category" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { id: "schoolCategoryMDCF", value: settings.schoolDetails.schoolCategoryMDCF, onChange: (e3) => handleSchoolDetailsChange("schoolCategoryMDCF", e3.target.value), className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm", required: true, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Primary", children: "Primary" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Upper Primary", children: "Upper Primary" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Primary with Upper Primary", children: "Primary with Upper Primary" })
-            ] })
-          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              id: "schoolTypeMDCF",
+              label: "School Type",
+              value: settings.schoolDetails.schoolTypeMDCF,
+              onChange: (v2) => handleSchoolDetailsChange("schoolTypeMDCF", v2),
+              placeholder: "Select Type",
+              options: [
+                { value: "Government", label: "Government" },
+                { value: "Local Body", label: "Local Body" },
+                { value: "EGS/AIE Centers", label: "EGS/AIE Centers" },
+                { value: "NCLP", label: "NCLP" },
+                { value: "Madras / Maqtab", label: "Madras / Maqtab" }
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              id: "schoolCategoryMDCF",
+              label: "School Category",
+              value: settings.schoolDetails.schoolCategoryMDCF,
+              onChange: (v2) => handleSchoolDetailsChange("schoolCategoryMDCF", v2),
+              options: [
+                { value: "Primary", label: "Primary" },
+                { value: "Upper Primary", label: "Upper Primary" },
+                { value: "Primary with Upper Primary", label: "Primary with Upper Primary" }
+              ]
+            }
+          ),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Kitchen Type", id: "kitchenType", value: settings.schoolDetails.kitchenType, onChange: (e3) => handleSchoolDetailsChange("kitchenType", e3.target.value) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "state", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "State" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "select",
-              {
-                id: "state",
-                value: settings.schoolDetails.state,
-                onChange: (e3) => handleSchoolDetailsChange("state", e3.target.value),
-                className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm",
-                required: true,
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select State" }),
-                  indianStates.map((state) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: state.name, children: state.name }, state.name))
-                ]
-              }
-            )
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "district", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "District" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "select",
-              {
-                id: "district",
-                value: settings.schoolDetails.district,
-                onChange: (e3) => handleSchoolDetailsChange("district", e3.target.value),
-                disabled: !settings.schoolDetails.state || availableDistricts.length === 0,
-                className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed",
-                required: true,
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select District" }),
-                  availableDistricts.map((district) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: district, children: district }, district))
-                ]
-              }
-            )
-          ] }),
-          settings.schoolDetails.state === "Jammu and Kashmir" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "block", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "Block/Educational Zone" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "select",
-              {
-                id: "block",
-                value: settings.schoolDetails.block,
-                onChange: (e3) => handleSchoolDetailsChange("block", e3.target.value),
-                disabled: !settings.schoolDetails.district || availableZones.length === 0,
-                className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed",
-                required: true,
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select Zone" }),
-                  availableZones.map((zone) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: zone, children: zone }, zone))
-                ]
-              }
-            )
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Block", id: "block", value: settings.schoolDetails.block, onChange: (e3) => handleSchoolDetailsChange("block", e3.target.value), required: true }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              id: "state",
+              label: "State",
+              value: settings.schoolDetails.state,
+              onChange: (v2) => handleSchoolDetailsChange("state", v2),
+              placeholder: "Select State",
+              searchable: true,
+              options: indianStates.map((state) => ({ value: state.name, label: state.name }))
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              id: "district",
+              label: "District",
+              value: settings.schoolDetails.district,
+              onChange: (v2) => handleSchoolDetailsChange("district", v2),
+              disabled: !settings.schoolDetails.state || availableDistricts.length === 0,
+              placeholder: "Select District",
+              searchable: true,
+              options: availableDistricts.map((district) => ({ value: district, label: district }))
+            }
+          ),
+          settings.schoolDetails.state === "Jammu and Kashmir" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              id: "block",
+              label: "Block/Educational Zone",
+              value: settings.schoolDetails.block,
+              onChange: (v2) => handleSchoolDetailsChange("block", v2),
+              disabled: !settings.schoolDetails.district || availableZones.length === 0,
+              placeholder: "Select Zone",
+              searchable: true,
+              options: availableZones.map((zone) => ({ value: zone, label: zone }))
+            }
+          ) : /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Block", id: "block", value: settings.schoolDetails.block, onChange: (e3) => handleSchoolDetailsChange("block", e3.target.value), required: true }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Village/Ward", id: "village", value: settings.schoolDetails.village, onChange: (e3) => handleSchoolDetailsChange("village", e3.target.value), required: true })
         ] })
       ] }),
@@ -32345,26 +33355,22 @@ const SettingsPage = () => {
       ] }),
       isEnrollmentEditable && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3.5 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-end gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "enrollment-effective-date", className: "block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1", children: "Effective From Date" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                id: "enrollment-effective-date",
-                type: "date",
-                value: enrollmentEffectiveDate,
-                onChange: (e3) => handleEnrollmentEffectiveDateChange(e3.target.value),
-                className: "w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-              }
-            )
-          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            DatePicker,
+            {
+              id: "enrollment-effective-date",
+              label: "Effective From Date",
+              value: enrollmentEffectiveDate,
+              onChange: handleEnrollmentEffectiveDateChange
+            }
+          ) }),
           hasEnrollmentSessionEdits && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Button,
               {
                 type: "button",
                 variant: "secondary",
-                className: "text-xs px-3 py-2",
+                size: "sm",
                 onClick: handleCommitAndAddAnotherEnrollmentDate,
                 children: "+ Add Another Date"
               }
@@ -32373,7 +33379,7 @@ const SettingsPage = () => {
               Button,
               {
                 type: "button",
-                className: "text-xs px-3 py-2",
+                size: "sm",
                 onClick: () => handleToggleEnrollmentEditable(false),
                 children: "Done"
               }
@@ -32382,60 +33388,60 @@ const SettingsPage = () => {
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-600 dark:text-slate-400", children: "Changes apply to entries and reports on or after this date. Earlier months and sessions retain their previous roll statement." })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full text-xs text-center border-collapse", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("thead", { className: "bg-slate-50 dark:bg-slate-900/50", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "min-w-[540px] w-full text-xs text-center border-collapse", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("thead", { className: "bg-slate-50/95 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Class" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "General" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "ST/SC" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Total" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "On Roll" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "px-2.5 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400", children: "Class" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-slate-800", children: "General" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-slate-800", children: "ST/SC" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { colSpan: 2, className: "px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-slate-800", children: "Total" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { rowSpan: 2, className: "px-2.5 py-2 text-[11px] font-semibold uppercase tracking-wider bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300", children: "On Roll" })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Boys" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400", children: "Girls" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Boys" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Girls" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Boys" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Girls" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Boys" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500", children: "Girls" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-950", children: [
           { title: "Middle (VI-VIII)", classes: middleClasses, totals: middleTotals },
           { title: "Primary (I-V)", classes: primaryClasses, totals: primaryTotals },
           { title: "Pre-Primary", classes: prePrimaryClasses, totals: prePrimaryTotals }
         ].map((section) => section.classes.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(React.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "bg-slate-50 dark:bg-slate-900/30", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 8, className: "p-2 font-semibold text-indigo-600 dark:text-indigo-400 text-left pl-3", children: section.title }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "bg-slate-50/80 dark:bg-slate-900/40", children: /* @__PURE__ */ jsxRuntimeExports.jsx("td", { colSpan: 8, className: "px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 text-left", children: section.title }) }),
           section.classes.map((cr) => {
             const totalBoys = cr.general.boys + cr.stsc.boys;
             const totalGirls = cr.general.girls + cr.stsc.girls;
             const onRoll = totalBoys + totalGirls;
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-700 dark:text-slate-300", children: cr.name }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.boys, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "general", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.girls, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "general", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.boys, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1 border border-slate-200 dark:border-slate-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.girls, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300", children: totalBoys }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300", children: totalGirls }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-2 border border-slate-200 dark:border-slate-800 font-semibold text-indigo-600 dark:text-indigo-400", children: onRoll })
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { className: "hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors tabular-nums", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2 text-left font-medium text-slate-700 dark:text-slate-300", children: cr.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.boys, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "general", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.general.girls, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "general", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.boys, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "boys", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "p-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "number", min: "0", value: cr.stsc.girls, disabled: !isEnrollmentEditable, onChange: (e3) => handleClassRollChange(cr.id, "stsc", "girls", e3.target.value), className: "w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2 font-medium text-slate-700 dark:text-slate-300", children: totalBoys }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2 py-2 font-medium text-slate-700 dark:text-slate-300", children: totalGirls }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-2.5 py-2 font-semibold bg-indigo-50/40 dark:bg-indigo-950/25 text-indigo-700 dark:text-indigo-300", children: onRoll })
             ] }, cr.id);
           }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: `${section.title.split(" ")[0]} Total`, totals: section.totals })
         ] }, section.title)) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { className: "font-semibold bg-slate-100 dark:bg-slate-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: "Grand Total", totals: grandTotal }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("tfoot", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SectionTotalRow, { label: "Grand Total", totals: grandTotal }) })
       ] }) }),
-      settings.enrollmentHistory && settings.enrollmentHistory.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-300 text-sm", children: "Enrollment Revision History" }),
+      settings.enrollmentHistory && settings.enrollmentHistory.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400", children: "Enrollment Revision History" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: [...settings.enrollmentHistory].sort((a2, b2) => b2.effectiveFrom.localeCompare(a2.effectiveFrom)).map((rev) => {
           const catTotals = getOnRollTotalsFromClassRolls(rev.classRolls);
           const totalRoll = catTotals.balvatika + catTotals.primary + catTotals.middle;
           const isBase = rev.effectiveFrom === "1970-01-01";
           const dateLabel = isBase ? "Base Enrollment (Prior Records)" : `Effective from ${(/* @__PURE__ */ new Date(rev.effectiveFrom + "T00:00:00")).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}`;
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800", children: [
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-200 text-xs", children: dateLabel }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums", children: [
                 "On Roll — Bal: ",
                 catTotals.balvatika,
                 " • Pri: ",
@@ -32452,7 +33458,7 @@ const SettingsPage = () => {
                 {
                   type: "button",
                   variant: "secondary",
-                  className: "px-2.5 py-1 text-xs",
+                  size: "sm",
                   onClick: () => handleEditEnrollmentRevision(rev.effectiveFrom),
                   children: "Edit"
                 }
@@ -32462,7 +33468,7 @@ const SettingsPage = () => {
                 {
                   type: "button",
                   variant: "danger",
-                  className: "px-2.5 py-1 text-xs",
+                  size: "sm",
                   onClick: () => handleDeleteEnrollmentRevision(rev.effectiveFrom),
                   children: "Remove"
                 }
@@ -32474,26 +33480,26 @@ const SettingsPage = () => {
     ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(AccordionItem, { id: "finance", title: "Financial, Stock & Rates", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2", children: "Initial Opening Balance" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-3", children: "Set this once during initial setup. It acts as the starting balance for your records. After the first month, balances will roll over automatically.y." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("fieldset", { className: "border border-slate-200 dark:border-slate-800 rounded-xl p-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("legend", { className: "text-sm font-medium text-indigo-600 dark:text-indigo-400 px-1", children: "Opening Rice Balance (kg)" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1", children: "Initial Opening Balance" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-4", children: "Set this once during initial setup. It acts as the starting balance for your records. After the first month, balances will roll over automatically." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400", children: "Opening Rice Balance (kg)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2.5", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Balvatika", id: "ob-rice-bal", type: "number", step: "0.001", value: ((_h = (_g = settings.initialOpeningBalance) == null ? void 0 : _g.rice) == null ? void 0 : _h.balvatika) || 0, onChange: (e3) => handleOpeningBalanceChange("rice", "balvatika", e3.target.value) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Primary", id: "ob-rice-pri", type: "number", step: "0.001", value: ((_j = (_i = settings.initialOpeningBalance) == null ? void 0 : _i.rice) == null ? void 0 : _j.primary) || 0, onChange: (e3) => handleOpeningBalanceChange("rice", "primary", e3.target.value) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Middle", id: "ob-rice-mid", type: "number", step: "0.001", value: ((_l = (_k = settings.initialOpeningBalance) == null ? void 0 : _k.rice) == null ? void 0 : _l.middle) || 0, onChange: (e3) => handleOpeningBalanceChange("rice", "middle", e3.target.value) })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("fieldset", { className: "border border-slate-200 dark:border-slate-800 rounded-xl p-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("legend", { className: "text-sm font-medium text-indigo-600 dark:text-indigo-400 px-1", children: "Opening Cash Balance (₹)" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800/80", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400", children: "Opening Cash Balance (₹)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2.5", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Balvatika", id: "ob-cash-bal", type: "number", step: "0.01", value: ((_n = (_m = settings.initialOpeningBalance) == null ? void 0 : _m.cash) == null ? void 0 : _n.balvatika) || 0, onChange: (e3) => handleOpeningBalanceChange("cash", "balvatika", e3.target.value) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Primary", id: "ob-cash-pri", type: "number", step: "0.01", value: ((_p = (_o = settings.initialOpeningBalance) == null ? void 0 : _o.cash) == null ? void 0 : _p.primary) || 0, onChange: (e3) => handleOpeningBalanceChange("cash", "primary", e3.target.value) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Middle", id: "ob-cash-mid", type: "number", step: "0.01", value: ((_r = (_q = settings.initialOpeningBalance) == null ? void 0 : _q.cash) == null ? void 0 : _r.middle) || 0, onChange: (e3) => handleOpeningBalanceChange("cash", "middle", e3.target.value) })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-3 border-t border-slate-100 dark:border-slate-800/80", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               Input,
               {
@@ -32510,9 +33516,9 @@ const SettingsPage = () => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2", children: "Food Rate Configuration" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 mb-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-200/80 dark:border-slate-800", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2", children: "Food Rate Configuration" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 mb-4 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "edit-rates", className: "font-medium text-slate-700 dark:text-slate-300", children: "Edit Food Rates" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Enable to adjust per-student rates from a specific date." })
@@ -32524,26 +33530,22 @@ const SettingsPage = () => {
         ] }),
         isRatesEditable && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3.5 mb-4 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-end gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "rate-effective-date", className: "block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1", children: "Effective From Date" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "input",
-                {
-                  id: "rate-effective-date",
-                  type: "date",
-                  value: rateEffectiveDate,
-                  onChange: (e3) => handleEffectiveDateChange(e3.target.value),
-                  className: "w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                }
-              )
-            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              DatePicker,
+              {
+                id: "rate-effective-date",
+                label: "Effective From Date",
+                value: rateEffectiveDate,
+                onChange: handleEffectiveDateChange
+              }
+            ) }),
             hasRateSessionEdits && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Button,
                 {
                   type: "button",
                   variant: "secondary",
-                  className: "text-xs px-3 py-2",
+                  size: "sm",
                   onClick: handleCommitAndAddAnotherDate,
                   children: "+ Add Another Date"
                 }
@@ -32552,7 +33554,7 @@ const SettingsPage = () => {
                 Button,
                 {
                   type: "button",
-                  className: "text-xs px-3 py-2",
+                  size: "sm",
                   onClick: () => handleToggleRatesEditable(false),
                   children: "Done"
                 }
@@ -32578,26 +33580,26 @@ const SettingsPage = () => {
               ] })
             ] }, rateKey);
           }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200 dark:border-slate-800", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-300 mb-2 capitalize text-sm", children: "Total Per Student Cost (₹)" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Balvatika" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-semibold text-slate-800 dark:text-white", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5", children: "Total Per Student Cost (₹)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-2.5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50/80 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Balvatika" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-slate-900 dark:text-white tabular-nums mt-0.5", children: [
                   "₹",
                   foodRateTotals.balvatika.toFixed(2)
                 ] })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Primary" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-semibold text-slate-800 dark:text-white", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50/80 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Primary" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-slate-900 dark:text-white tabular-nums mt-0.5", children: [
                   "₹",
                   foodRateTotals.primary.toFixed(2)
                 ] })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: "Middle" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-semibold text-slate-800 dark:text-white", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-slate-50/80 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400", children: "Middle" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-bold text-slate-900 dark:text-white tabular-nums mt-0.5", children: [
                   "₹",
                   foodRateTotals.middle.toFixed(2)
                 ] })
@@ -32605,8 +33607,8 @@ const SettingsPage = () => {
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-xs text-slate-500 dark:text-slate-400", children: "Auto-calculated sum of Dal/Veg, Oil/Cond, Salt, and Fuel rates." })
           ] }),
-          settings.rateHistory && settings.rateHistory.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-300 text-sm", children: "Rate Revision History" }),
+          settings.rateHistory && settings.rateHistory.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400", children: "Rate Revision History" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2", children: [...settings.rateHistory].sort((a2, b2) => b2.effectiveFrom.localeCompare(a2.effectiveFrom)).map((rev) => {
               var _a3, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2, _m2, _n2;
               const balCost = (((_a3 = rev.rates.dalVeg) == null ? void 0 : _a3.balvatika) || 0) + (((_b2 = rev.rates.oilCond) == null ? void 0 : _b2.balvatika) || 0) + (((_c2 = rev.rates.salt) == null ? void 0 : _c2.balvatika) || 0) + (((_d2 = rev.rates.fuel) == null ? void 0 : _d2.balvatika) || 0);
@@ -32614,10 +33616,10 @@ const SettingsPage = () => {
               const midCost = (((_i2 = rev.rates.dalVeg) == null ? void 0 : _i2.middle) || 0) + (((_j2 = rev.rates.oilCond) == null ? void 0 : _j2.middle) || 0) + (((_k2 = rev.rates.salt) == null ? void 0 : _k2.middle) || 0) + (((_l2 = rev.rates.fuel) == null ? void 0 : _l2.middle) || 0);
               const isBase = rev.effectiveFrom === "1970-01-01";
               const dateLabel = isBase ? "Base Rate (Prior Records)" : `Effective from ${(/* @__PURE__ */ new Date(rev.effectiveFrom + "T00:00:00")).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}`;
-              return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800", children: [
+              return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-200 text-xs", children: dateLabel }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums", children: [
                     "Cost/Student — Bal: ₹",
                     balCost.toFixed(2),
                     " • Pri: ₹",
@@ -32637,7 +33639,7 @@ const SettingsPage = () => {
                     {
                       type: "button",
                       variant: "secondary",
-                      className: "px-2.5 py-1 text-xs",
+                      size: "sm",
                       onClick: () => handleEditHistoryRevision(rev.effectiveFrom),
                       children: "Edit"
                     }
@@ -32647,7 +33649,7 @@ const SettingsPage = () => {
                     {
                       type: "button",
                       variant: "danger",
-                      className: "px-2.5 py-1 text-xs",
+                      size: "sm",
                       onClick: () => handleDeleteHistoryRevision(rev.effectiveFrom),
                       children: "Remove"
                     }
@@ -32663,88 +33665,103 @@ const SettingsPage = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1", children: "Cook-Cum-Helper Details" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-2", children: "This information is used for the official MDCF report." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: settings.cooks.map((cook, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 bg-slate-50/50 dark:bg-slate-900/20", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: settings.cooks.map((cook, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 border border-slate-200/80 dark:border-slate-800 rounded-xl space-y-3 bg-slate-50/60 dark:bg-slate-900/30", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm font-semibold text-indigo-600 dark:text-indigo-400", children: [
               "Cook #",
               index + 1
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", className: "px-2 py-1 text-xs", onClick: () => removeCook(cook.id), children: "Remove" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", size: "sm", onClick: () => removeCook(cook.id), children: "Remove" })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Name", id: `cook-name-${cook.id}`, value: cook.name, onChange: (e3) => handleCookChange(cook.id, "name", e3.target.value), required: true }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "Gender" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { value: cook.gender, onChange: (e3) => handleCookChange(cook.id, "gender", e3.target.value), className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Male", children: "Male" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Female", children: "Female" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Other", children: "Other" })
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "Category" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { value: cook.category, onChange: (e3) => handleCookChange(cook.id, "category", e3.target.value), className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "GEN", children: "GEN" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "OBC", children: "OBC" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "SC", children: "SC" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "ST", children: "ST" })
-              ] })
-            ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Select,
+              {
+                id: `cook-gender-${cook.id}`,
+                label: "Gender",
+                value: cook.gender,
+                onChange: (v2) => handleCookChange(cook.id, "gender", v2),
+                options: [
+                  { value: "Male", label: "Male" },
+                  { value: "Female", label: "Female" },
+                  { value: "Other", label: "Other" }
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Select,
+              {
+                id: `cook-category-${cook.id}`,
+                label: "Category",
+                value: cook.category,
+                onChange: (v2) => handleCookChange(cook.id, "category", v2),
+                options: [
+                  { value: "GEN", label: "GEN" },
+                  { value: "OBC", label: "OBC" },
+                  { value: "SC", label: "SC" },
+                  { value: "ST", label: "ST" }
+                ]
+              }
+            )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "Payment Mode" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { value: cook.paymentMode, onChange: (e3) => handleCookChange(cook.id, "paymentMode", e3.target.value), className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Bank", children: "Bank" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Cash", children: "Cash" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Cheque", children: "Cheque" })
-              ] })
-            ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Select,
+              {
+                id: `cook-payment-${cook.id}`,
+                label: "Payment Mode",
+                value: cook.paymentMode,
+                onChange: (v2) => handleCookChange(cook.id, "paymentMode", v2),
+                options: [
+                  { value: "Bank", label: "Bank" },
+                  { value: "Cash", label: "Cash" },
+                  { value: "Cheque", label: "Cheque" }
+                ]
+              }
+            ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Amount Paid (₹)", id: `cook-amount-${cook.id}`, type: "number", min: "0", value: cook.amountPaid, onChange: (e3) => handleCookChange(cook.id, "amountPaid", parseFloat(e3.target.value) || 0) })
           ] })
         ] }, cook.id)) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: addCook, variant: "secondary", className: "w-full mt-4", children: "Add Cook" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1", children: "Health Status" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-2", children: "Data for the monthly MDCF report." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-200/80 dark:border-slate-800", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1", children: "Health Status" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-3", children: "Data for the monthly MDCF report." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "IFA Tablets (Boys)", id: "ifa-boys", type: "number", min: "0", value: settings.healthStatus.ifaBoys, onChange: (e3) => handleHealthChange("ifaBoys", e3.target.value) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "IFA Tablets (Girls)", id: "ifa-girls", type: "number", min: "0", value: settings.healthStatus.ifaGirls, onChange: (e3) => handleHealthChange("ifaGirls", e3.target.value) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Screened by RBSK Team", id: "screened-rbsk", type: "number", min: "0", value: settings.healthStatus.screenedByRBSK, onChange: (e3) => handleHealthChange("screenedByRBSK", e3.target.value) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Referred by RBSK Team", id: "referred-rbsk", type: "number", min: "0", value: settings.healthStatus.referredByRBSK, onChange: (e3) => handleHealthChange("referredByRBSK", e3.target.value) })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1", children: "Inspection Report" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-2", children: "Data for the monthly MDCF report." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-slate-200/80 dark:border-slate-800", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1", children: "Inspection Report" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 mb-3", children: "Data for the monthly MDCF report." }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-4 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "inspected", className: "font-medium text-slate-700 dark:text-slate-300", children: "Was an inspection done this month?" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "relative inline-flex items-center cursor-pointer", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", id: "inspected", className: "sr-only peer", checked: settings.inspectionReport.inspected, onChange: (e3) => handleInspectionChange("inspected", e3.target.checked) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-indigo-500/20 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600" })
             ] })
           ] }),
-          settings.inspectionReport.inspected && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/20", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "inspected-by", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1", children: "Inspected by:" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              "select",
-              {
-                id: "inspected-by",
-                value: settings.inspectionReport.inspectedBy,
-                onChange: (e3) => handleInspectionChange("inspectedBy", e3.target.value),
-                className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm",
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "", children: "Select Inspector" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Task Force", children: "Members of Task Force" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "District Officials", children: "District Officials" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "Block Officials", children: "Block/Taluka Level Officials" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "SMC Members", children: "SMC Members" })
-                ]
-              }
-            )
-          ] }),
+          settings.inspectionReport.inspected && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            Select,
+            {
+              id: "inspected-by",
+              label: "Inspected by",
+              value: settings.inspectionReport.inspectedBy,
+              onChange: (v2) => handleInspectionChange("inspectedBy", v2),
+              placeholder: "Select Inspector",
+              options: [
+                { value: "Task Force", label: "Members of Task Force" },
+                { value: "District Officials", label: "District Officials" },
+                { value: "Block Officials", label: "Block/Taluka Level Officials" },
+                { value: "SMC Members", label: "SMC Members" }
+              ]
+            }
+          ),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { label: "Number of untoward incidents", id: "incidents", type: "number", min: "0", value: settings.inspectionReport.incidentsCount, onChange: (e3) => handleInspectionChange("incidentsCount", e3.target.value) })
         ] })
       ] })
@@ -62613,7 +63630,7 @@ const Reports = () => {
           generationData: overrideData
         });
         if (!isPreviewOpen) setIsPreviewOpen(true);
-        showToast2("Pixel-perfect PDF generated!", "success");
+        showToast2("PDF report generated!", "success");
       } catch (error) {
         console.error("PDF generation failed:", error);
         showToast2(error.message || "Failed to generate PDF report.", "error");
@@ -62667,8 +63684,8 @@ const Reports = () => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-semibold", children: "Creating Pixel-Perfect Document..." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-300", children: "Applying layout, headers & page numbers." })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-base font-semibold", children: "Generating PDF Report..." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-300 mt-1", children: "Applying layout, headers & page numbers." })
         ] })
       }
     ),
@@ -62685,12 +63702,9 @@ const Reports = () => {
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Modal, { isOpen: isConfirmModalOpen, onClose: () => setIsConfirmModalOpen(false), title: "Confirm Report Export", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-slate-600 dark:text-slate-300", children: "Please review the report summary below before generating." }),
-      reportSummary && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm space-y-2 bg-indigo-50/60 dark:bg-slate-900/60 p-3.5 rounded-xl border border-indigo-100 dark:border-slate-800", children: Object.entries(reportSummary).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center text-xs sm:text-sm", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { className: "text-slate-700 dark:text-slate-300 pr-2", children: [
-          key,
-          ":"
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-indigo-600 dark:text-indigo-400 font-semibold text-right", children: value })
+      reportSummary && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm divide-y divide-slate-200/70 dark:divide-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60 px-3.5 py-1 rounded-xl border border-slate-200/80 dark:border-slate-800", children: Object.entries(reportSummary).map(([key, value]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center gap-3 py-2 text-xs sm:text-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-slate-600 dark:text-slate-400", children: key }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-slate-900 dark:text-white font-semibold text-right tabular-nums", children: value })
       ] }, key)) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", onClick: () => setIsConfirmModalOpen(false), children: "Cancel" }),
@@ -62907,13 +63921,13 @@ const Reports = () => {
             }))
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { size: 14, className: "text-indigo-500" }),
-            " PDF Style & Customization Options"
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3.5 sm:p-4 bg-slate-50/80 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-800/80 space-y-3", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SlidersHorizontal, { className: "w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" }),
+            "PDF Style & Customization"
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               Select,
               {
                 id: "theme-color",
@@ -62927,37 +63941,35 @@ const Reports = () => {
                   { value: "classic", label: "Classic Grayscale" }
                 ]
               }
-            ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "watermark-text", className: "block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 ml-0.5", children: "Watermark (Optional)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "input",
-                {
-                  id: "watermark-text",
-                  type: "text",
-                  placeholder: "e.g. OFFICIAL COPY, DUPLICATE",
-                  value: watermarkText,
-                  onChange: (e3) => setWatermarkText(e3.target.value),
-                  className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm placeholder-slate-400 dark:placeholder-slate-500"
-                }
-              )
-            ] })
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Input,
+              {
+                id: "watermark-text",
+                label: "Watermark (Optional)",
+                type: "text",
+                placeholder: "e.g. OFFICIAL COPY, DUPLICATE",
+                value: watermarkText,
+                onChange: (e3) => setWatermarkText(e3.target.value)
+              }
+            )
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: initiateReportGeneration, className: "w-full", disabled: isGenerating, children: "Generate & Preview Pixel-Perfect PDF" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: initiateReportGeneration, className: "w-full", disabled: isGenerating, children: "Generate & Preview PDF" }),
         pdfPreviewData && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "secondary", onClick: () => setIsPreviewOpen(true), className: "w-full", children: [
           "Re-Open Last Generated Report (",
           pdfPreviewData.filename,
           ")"
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-3 text-xs text-slate-600 dark:text-slate-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldCheck, { className: "w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold text-slate-800 dark:text-slate-100", children: "Official Compliance & Audit Verification" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "leading-relaxed", children: "Generated PDF reports include official page headers, UDISE metadata, signature lines for MDM Incharge & Head of Institution, and automated Page X of Y numbering as per PM POSHAN guidelines." })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70 text-xs text-slate-600 dark:text-slate-400", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ShieldCheck, { className: "w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "leading-relaxed", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold text-slate-700 dark:text-slate-200", children: "PM POSHAN Compliance:" }),
+          " ",
+          "Generated PDFs include school & UDISE headers, signature blocks for MDM Incharge & Head of Institution, and automatic Page X of Y numbering."
         ] })
-      ] }) })
+      ] })
     ] })
   ] });
 };
@@ -63012,82 +64024,49 @@ const NotificationPanel = ({ notifications, onDismiss, onDismissAll, onAction, o
     notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2 border-t border-slate-100 dark:border-slate-800/60 flex-shrink-0 bg-slate-50/50 dark:bg-slate-900/50", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleDismissAll, className: "w-full text-center text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-2 rounded-md hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors", children: "Dismiss All" }) })
   ] });
 };
-const SystemIcon = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "2", y: "3", width: "20", height: "14", rx: "2", ry: "2" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "8", y1: "21", x2: "16", y2: "21" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "12", y1: "17", x2: "12", y2: "21" })
-] });
-const SunIcon = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "5" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "12", y1: "1", x2: "12", y2: "3" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "12", y1: "21", x2: "12", y2: "23" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "4.22", y1: "4.22", x2: "5.64", y2: "5.64" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "18.36", y1: "18.36", x2: "19.78", y2: "19.78" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "1", y1: "12", x2: "3", y2: "12" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "21", y1: "12", x2: "23", y2: "12" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "4.22", y1: "19.78", x2: "5.64", y2: "18.36" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "18.36", y1: "5.64", x2: "19.78", y2: "4.22" })
-] });
-const MoonIcon = () => /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" }) });
-const BellIcon = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M13.73 21a2 2 0 0 1-3.46 0" })
-] });
-const LogoutIcon = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "16 17 21 12 16 7" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "21", y1: "12", x2: "9", y2: "12" })
-] });
 const Header = () => {
   const { data } = useData();
   const { theme, setTheme } = useTheme();
   const { logout } = useAuth();
   const { notifications, dismissNotification, dismissAllNotifications, handleNotificationAction } = useNotifications();
   const [isPanelOpen, setIsPanelOpen] = reactExports.useState(false);
-  const [currentTime, setCurrentTime] = reactExports.useState(/* @__PURE__ */ new Date());
-  reactExports.useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(/* @__PURE__ */ new Date()), 1e3);
-    return () => clearInterval(timer);
-  }, []);
   const toggleTheme = () => {
     if (theme === "light") setTheme("dark");
     else if (theme === "dark") setTheme("system");
     else setTheme("light");
   };
-  const ThemeIcon = () => {
-    if (theme === "light") return /* @__PURE__ */ jsxRuntimeExports.jsx(SunIcon, {});
-    if (theme === "dark") return /* @__PURE__ */ jsxRuntimeExports.jsx(MoonIcon, {});
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SystemIcon, {});
+  const renderThemeIcon = () => {
+    if (theme === "light") return /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { size: 18 });
+    if (theme === "dark") return /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { size: 18 });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { size: 18 });
   };
   const themeLabel = `Switch to ${theme === "light" ? "dark" : theme === "dark" ? "system" : "light"} mode`;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     isPanelOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
-        className: "fixed inset-0 bg-black/60 backdrop-blur-sm z-30",
+        className: "fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-30",
         onClick: () => setIsPanelOpen(false),
         "aria-hidden": "true"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "relative z-40 flex items-center justify-between p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center space-x-2 sm:space-x-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "overflow-hidden", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate", children: data.settings.schoolDetails.name }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400 truncate", children: "PM Poshan Pro" })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-1 sm:space-x-2 flex-shrink-0", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "fixed top-0 left-0 right-0 z-40 h-14 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "container mx-auto max-w-3xl h-full px-3 sm:px-5 flex items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-w-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-sm font-semibold tracking-tight text-slate-900 dark:text-white truncate leading-tight", children: data.settings.schoolDetails.name || "PM Poshan Pro" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 truncate leading-tight mt-0.5", children: "PM Poshan Pro" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 shrink-0", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "button",
             {
+              type: "button",
               onClick: () => setIsPanelOpen((prev) => !prev),
-              className: "p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors",
+              className: "h-10 w-10 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors relative",
               "aria-label": "Toggle notifications",
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(BellIcon, {}),
-                notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "absolute top-1 right-1 flex h-4 w-4", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "relative inline-flex rounded-full h-4 w-4 bg-red-500 text-white text-xs items-center justify-center", children: notifications.length })
-                ] })
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Bell, { size: 18 }),
+                notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-600 text-white text-[10px] font-semibold tabular-nums flex items-center justify-center", children: notifications.length })
               ]
             }
           ),
@@ -63105,72 +64084,60 @@ const Header = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
+            type: "button",
             onClick: toggleTheme,
-            className: "p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors",
+            className: "h-10 w-10 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors",
             "aria-label": themeLabel,
             title: themeLabel,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(ThemeIcon, {})
+            children: renderThemeIcon()
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
+            type: "button",
             onClick: logout,
-            className: "p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors",
+            className: "h-10 w-10 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors",
             "aria-label": "Logout",
             title: "Logout",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogoutIcon, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(LogOut, { size: 18 })
           }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-right hidden sm:block", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-slate-700 dark:text-slate-200", children: currentTime.toLocaleDateString("en-IN", { weekday: "long" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 dark:text-slate-400", children: currentTime.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) })
-        ] })
+        )
       ] })
-    ] })
+    ] }) })
   ] });
 };
 const NavButton = ({ icon, label, isActive, onClick }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "button",
     {
+      type: "button",
       onClick,
-      className: `relative flex flex-col items-center justify-center w-full h-16 text-xs font-medium transition-all duration-300 ${isActive ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"}`,
+      className: `relative flex flex-col items-center justify-center w-full h-16 text-[11px] font-medium transition-colors ${isActive ? "text-indigo-600 dark:text-indigo-400 font-semibold" : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"}`,
+      "aria-current": isActive ? "page" : void 0,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `absolute inset-0 transition-opacity duration-300 rounded-xl ${isActive ? "bg-slate-100 dark:bg-slate-800" : "opacity-0"}` }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative z-10 flex flex-col items-center", children: [
-          icon,
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mt-1", children: label })
-        ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "span",
+          {
+            "aria-hidden": "true",
+            className: `absolute top-0 h-0.5 w-8 rounded-b-full transition-all duration-200 ${isActive ? "bg-indigo-600 dark:bg-indigo-400 opacity-100" : "opacity-0"}`
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `transition-transform duration-150 ${isActive ? "scale-105" : ""}`, children: icon }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mt-1 whitespace-nowrap tracking-tight", children: label })
       ]
     }
   );
 };
 const Navigation = ({ currentPage, setCurrentPage }) => {
   const navItems = [
-    { id: "dashboard", label: "Dashboard", icon: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "9 22 9 12 15 12 15 22" })
-    ] }) },
-    { id: "summary", label: "Summary", icon: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "3", y: "3", width: "18", height: "18", rx: "2", ry: "2" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "3", y1: "9", x2: "21", y2: "9" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "3", y1: "15", x2: "21", y2: "15" })
-    ] }) },
-    { id: "receipts", label: "Receipts", icon: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M22 12h-4l-3 9L9 3l-3 9H2" }) }) },
-    { id: "reports", label: "Reports", icon: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "14 2 14 8 20 8" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "16", y1: "13", x2: "8", y2: "13" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "16", y1: "17", x2: "8", y2: "17" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "10 9 9 9 8 9" })
-    ] }) },
-    { id: "settings", label: "Settings", icon: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { xmlns: "http://www.w3.org/2000/svg", width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "3" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" })
-    ] }) }
+    { id: "dashboard", label: "Home", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(House, { size: 20, strokeWidth: currentPage === "dashboard" ? 2.25 : 1.85 }) },
+    { id: "summary", label: "Summary", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(ChartColumn, { size: 20, strokeWidth: currentPage === "summary" ? 2.25 : 1.85 }) },
+    { id: "receipts", label: "Receipts", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowDownToLine, { size: 20, strokeWidth: currentPage === "receipts" ? 2.25 : 1.85 }) },
+    { id: "reports", label: "Reports", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { size: 20, strokeWidth: currentPage === "reports" ? 2.25 : 1.85 }) },
+    { id: "settings", label: "Settings", icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { size: 20, strokeWidth: currentPage === "settings" ? 2.25 : 1.85 }) }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "fixed bottom-0 left-0 right-0 z-40 p-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-md mx-auto flex items-center justify-around bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-800/50 rounded-2xl shadow-sm", children: navItems.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-slate-800/80", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-3xl mx-auto grid grid-cols-5 items-center", children: navItems.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
     NavButton,
     {
       icon: item.icon,
@@ -71668,13 +72635,13 @@ const SetupPage = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-slate-500 dark:text-slate-400 mb-1 italic", children: "Used to reset your password if forgotten." }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "select",
+              Select,
               {
                 id: "security-question",
+                label: "Security Question",
                 value: securityQuestion,
-                onChange: (e3) => setSecurityQuestion(e3.target.value),
-                className: "w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm",
-                children: SECURITY_QUESTIONS.map((q2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: q2, children: q2 }, q2))
+                onChange: setSecurityQuestion,
+                options: SECURITY_QUESTIONS.map((q2) => ({ value: q2, label: q2 }))
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -71827,10 +72794,9 @@ const AuthenticatedApp = () => {
         updateInfo
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen text-slate-800 dark:text-slate-200 font-sans", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 z-0 bg-slate-50 dark:bg-slate-950", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-slate-50 to-slate-50 dark:from-indigo-900/20 dark:via-slate-950 dark:to-slate-950" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed top-0 left-0 right-0 z-20", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "container mx-auto max-w-2xl p-2 sm:p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Header, {}) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "container mx-auto p-2 pb-28 max-w-2xl relative z-10 pt-28", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "page-transition-wrapper", children: renderPage() }, currentPage) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen text-slate-800 dark:text-slate-200 font-sans bg-slate-50 dark:bg-slate-950", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Header, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "container mx-auto px-3 sm:px-5 pb-24 max-w-3xl relative z-10 pt-[70px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "page-transition-wrapper", children: renderPage() }, currentPage) }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Navigation, { currentPage, setCurrentPage })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(ToastContainer, {})

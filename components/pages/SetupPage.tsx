@@ -8,6 +8,7 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 import TermsModal from '../ui/TermsModal';
 import PasswordInput from '../ui/PasswordInput';
+import Select from '../ui/Select';
 import PaymentReminder from '../ui/PaymentReminder';
 
 const SECURITY_QUESTIONS = [
@@ -359,14 +360,13 @@ const SetupPage: React.FC = () => {
                                     <legend className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 px-2 uppercase tracking-wider">Account Recovery</legend>
                                     <div className="space-y-4">
                                         <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 italic">Used to reset your password if forgotten.</div>
-                                        <select
+                                        <Select
                                             id="security-question"
+                                            label="Security Question"
                                             value={securityQuestion}
-                                            onChange={e => setSecurityQuestion(e.target.value)}
-                                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                                        >
-                                            {SECURITY_QUESTIONS.map(q => <option key={q} value={q}>{q}</option>)}
-                                        </select>
+                                            onChange={setSecurityQuestion}
+                                            options={SECURITY_QUESTIONS.map(q => ({ value: q, label: q }))}
+                                        />
                                         <Input
                                             label="Security Answer"
                                             id="security-answer"

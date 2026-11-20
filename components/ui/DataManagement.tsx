@@ -1,6 +1,4 @@
-
 import React, { useRef, useState, useEffect } from 'react';
-import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
 import { useToast } from '../../hooks/useToast';
@@ -11,7 +9,7 @@ import { validateImportData } from '../../services/dataValidator';
 import { uploadBackup, downloadBackup } from '../../services/supabaseService';
 import { checkForAppUpdates, getCurrentAppVersion, UpdateInfo } from '../../services/updateService';
 import { saveOrDownloadFile } from '../../services/fileDownloadService';
-import { Cloud, CloudDownload, CloudUpload, Info, Loader2, RefreshCw } from 'lucide-react';
+import { Cloud, CloudDownload, CloudUpload, Info, Loader2, Mail, Phone, RefreshCw } from 'lucide-react';
 
 const DataManagement: React.FC = () => {
     const { data, importData, resetData, updateLastBackupDate } = useData();
@@ -180,8 +178,8 @@ const DataManagement: React.FC = () => {
             />
 
             <Modal isOpen={isResetModalOpen} onClose={() => setResetModalOpen(false)} title="Confirm Reset">
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">Are you sure you want to delete ALL data? This action cannot be undone. It is highly recommended to export your data first.</p>
-                <div className="flex justify-end space-x-2">
+                <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">Are you sure you want to delete ALL data? This action cannot be undone. It is highly recommended to export your data first.</p>
+                <div className="flex justify-end gap-2">
                     <Button variant="secondary" onClick={() => setResetModalOpen(false)}>Cancel</Button>
                     <Button variant="danger" onClick={handleReset}>Yes, Reset Data</Button>
                 </div>
@@ -191,196 +189,201 @@ const DataManagement: React.FC = () => {
                 <div className="space-y-4">
                     <p className="text-sm text-slate-600 dark:text-slate-300">
                         Please review the details from the file before importing.
-                        <strong className="block mt-1 text-yellow-600 dark:text-yellow-400">Warning: This will overwrite all current application data.</strong>
+                        <strong className="block mt-1 text-amber-600 dark:text-amber-400">Warning: This will overwrite all current application data.</strong>
                     </p>
-                    <div className="text-sm space-y-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 p-4 rounded-xl">
-                        <p><strong>School Name:</strong> {importConfirmation?.summary.schoolName}</p>
-                        <p><strong>UDISE:</strong> {importConfirmation?.summary.udise}</p>
-                        <p><strong>Daily Entries Found:</strong> {importConfirmation?.summary.entryCount}</p>
-                        <p><strong>Receipts Found:</strong> {importConfirmation?.summary.receiptCount}</p>
+                    <div className="text-sm divide-y divide-slate-200/70 dark:divide-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-3.5 py-1 rounded-xl">
+                        <div className="flex justify-between py-2 text-xs sm:text-sm">
+                            <span className="text-slate-500 dark:text-slate-400">School Name</span>
+                            <span className="font-semibold text-slate-900 dark:text-white text-right">{importConfirmation?.summary.schoolName}</span>
+                        </div>
+                        <div className="flex justify-between py-2 text-xs sm:text-sm">
+                            <span className="text-slate-500 dark:text-slate-400">UDISE</span>
+                            <span className="font-semibold text-slate-900 dark:text-white tabular-nums">{importConfirmation?.summary.udise}</span>
+                        </div>
+                        <div className="flex justify-between py-2 text-xs sm:text-sm">
+                            <span className="text-slate-500 dark:text-slate-400">Daily Entries</span>
+                            <span className="font-semibold text-slate-900 dark:text-white tabular-nums">{importConfirmation?.summary.entryCount}</span>
+                        </div>
+                        <div className="flex justify-between py-2 text-xs sm:text-sm">
+                            <span className="text-slate-500 dark:text-slate-400">Receipts</span>
+                            <span className="font-semibold text-slate-900 dark:text-white tabular-nums">{importConfirmation?.summary.receiptCount}</span>
+                        </div>
                     </div>
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end gap-2">
                         <Button variant="secondary" onClick={() => setImportConfirmation(null)}>Cancel</Button>
                         <Button variant="danger" onClick={handleConfirmImport}>Confirm & Overwrite</Button>
                     </div>
                 </div>
             </Modal>
 
-            <div className="space-y-4">
-                <Card title="Data Backup & Restore">
-                    {/* ... existing local backup ... */}
-                    <div className="space-y-3">
-                        <div>
-                            <p className="text-sm font-medium mb-1">Export Data (Local File)</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                                Save all app data to a file. Store it safely to prevent data loss.
-                            </p>
-                            <Button onClick={handleExport} className="w-full">Export to JSON</Button>
-                        </div>
-                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-                            <p className="text-sm font-medium mb-1">Import Data (Local File)</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                                Restore data from a backup file. <span className="font-bold text-yellow-600 dark:text-yellow-400">Warning: Replaces all current data.</span>
-                            </p>
-                            <Button onClick={handleImportClick} variant="secondary" className="w-full">Select File to Import</Button>
-                            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
-                        </div>
+            <div className="divide-y divide-slate-200/80 dark:divide-slate-800/80">
+                {/* Local Backup & Restore */}
+                <section className="pb-5 space-y-4">
+                    <div>
+                        <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Local Backup & Restore</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            Export all records to a JSON file or restore from an existing backup.
+                        </p>
                     </div>
-                </Card>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <Button onClick={handleExport} className="w-full">Export to JSON</Button>
+                        <Button onClick={handleImportClick} variant="secondary" className="w-full">Import from JSON</Button>
+                        <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
+                    </div>
+                    <p className="text-[11px] text-amber-700 dark:text-amber-400">
+                        Note: Importing a backup replaces all current local data.
+                    </p>
+                </section>
 
-                <Card title={
-                    <div className="flex items-center justify-between">
-                        <span>Cloud Sync (Supabase)</span>
-                        <button onClick={() => setShowCloudInfo(!showCloudInfo)} className="text-slate-400 hover:text-sky-500 transition-colors">
-                            <Info size={18} />
+                {/* Cloud Sync */}
+                <section className="py-5 space-y-4">
+                    <div className="flex items-start justify-between gap-2">
+                        <div>
+                            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Cloud Sync (Supabase)</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums">
+                                Current UDISE: <span className="font-semibold text-slate-700 dark:text-slate-200">{data.settings.schoolDetails.udise || 'Not Set'}</span>
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setShowCloudInfo(!showCloudInfo)}
+                            aria-label="How Cloud Sync works"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        >
+                            <Info className="w-4 h-4" />
                         </button>
                     </div>
-                }>
-                    <div className="space-y-4">
-                        {showCloudInfo && (
-                            <div className="bg-sky-50 dark:bg-sky-900/30 border border-sky-100 dark:border-sky-800 p-3 rounded-lg text-xs text-sky-800 dark:text-sky-300 mb-2 animate-in fade-in slide-in-from-top-1">
-                                <p className="font-medium mb-1 flex items-center gap-1">
-                                    <Cloud size={14} /> How Cloud Sync works:
+
+                    {showCloudInfo && (
+                        <div className="bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800/50 p-3 rounded-xl text-xs text-indigo-900 dark:text-indigo-200 space-y-1">
+                            <p className="font-semibold flex items-center gap-1.5">
+                                <Cloud className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                                How Cloud Sync works
+                            </p>
+                            <ul className="list-disc list-inside space-y-0.5 text-indigo-800/90 dark:text-indigo-300/90">
+                                <li>Backup stores your data using your school's <b>UDISE Code</b>.</li>
+                                <li>Ensure your UDISE code is set correctly under School Details.</li>
+                                <li>Use that UDISE code on any device to restore (overwrites local data).</li>
+                            </ul>
+                        </div>
+                    )}
+
+                    <div className="space-y-3">
+                        <Button 
+                            onClick={handleCloudBackup} 
+                            disabled={isCloudSyncing || !data.settings.schoolDetails.udise}
+                            variant="secondary"
+                            className="w-full"
+                        >
+                            {isCloudSyncing ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                <CloudUpload className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            )}
+                            <span>{isCloudSyncing ? 'Syncing...' : 'Upload Backup to Cloud'}</span>
+                        </Button>
+
+                        {lastSyncedUdise && (
+                            <div className="px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/60 rounded-xl text-center">
+                                <p className="text-xs text-emerald-700 dark:text-emerald-300 tabular-nums">
+                                    Synced for UDISE: <b>{lastSyncedUdise}</b>
                                 </p>
-                                <ul className="list-disc list-inside space-y-1">
-                                    <li>Backup stores your data securely using your school's <b>UDISE Code</b>.</li>
-                                    <li>Ensure your UDISE code is correctly set in <b>Settings</b>.</li>
-                                    <li>Use that UDISE code on any device to restore your data.</li>
-                                    <li>Restore overwrites your current local data.</li>
-                                </ul>
                             </div>
                         )}
 
-                        <div className="space-y-2">
-                            <div className="flex flex-col gap-2">
-                                <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">Current UDISE: {data.settings.schoolDetails.udise || 'Not Set'}</p>
+                        <div className="pt-2 space-y-1.5">
+                            <label htmlFor="restore-udise-input" className="block text-xs font-medium text-slate-600 dark:text-slate-300">
+                                Restore from Cloud (Enter UDISE)
+                            </label>
+                            <div className="flex gap-2">
+                                <input 
+                                    id="restore-udise-input"
+                                    type="text" 
+                                    placeholder="Enter 11-digit UDISE Code"
+                                    value={inputUdiseCode}
+                                    onChange={(e) => setInputUdiseCode(e.target.value)}
+                                    className="flex-1 h-[42px] px-3 text-sm bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl tabular-nums text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                                />
                                 <Button 
-                                    onClick={handleCloudBackup} 
-                                    disabled={isCloudSyncing || !data.settings.schoolDetails.udise}
-                                    variant="secondary"
-                                    className="w-full bg-sky-50 hover:bg-sky-100 dark:bg-sky-900/20 dark:hover:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800"
+                                    onClick={handleCloudRestore} 
+                                    disabled={isCloudSyncing || inputUdiseCode.length < 5}
+                                    className="px-4"
                                 >
                                     {isCloudSyncing ? (
-                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        <Loader2 className="w-4 h-4 animate-spin" />
                                     ) : (
-                                        <CloudUpload className="w-4 h-4 mr-2" />
+                                        <CloudDownload className="w-4 h-4" />
                                     )}
-                                    {isCloudSyncing ? 'Syncing...' : 'Upload to Cloud'}
+                                    <span>Restore</span>
                                 </Button>
-
-                                {lastSyncedUdise && (
-                                    <div className="p-2 bg-green-50 dark:bg-green-900/30 border border-green-100 dark:border-green-800 rounded-lg text-center animate-in zoom-in-95">
-                                        <p className="text-[10px] text-green-800 dark:text-green-300">Successfully synced UDISE: <b>{lastSyncedUdise}</b></p>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Restore from Cloud (Enter UDISE)</p>
-                                <div className="flex gap-2">
-                                    <input 
-                                        type="text" 
-                                        placeholder="Enter UDISE Code"
-                                        value={inputUdiseCode}
-                                        onChange={(e) => setInputUdiseCode(e.target.value)}
-                                        className="flex-1 px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-sky-500 dark:text-white"
-                                    />
-                                    <Button 
-                                        onClick={handleCloudRestore} 
-                                        disabled={isCloudSyncing || inputUdiseCode.length < 5}
-                                        className="whitespace-nowrap px-4"
-                                    >
-                                        {isCloudSyncing ? (
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                        ) : (
-                                            <CloudDownload className="w-4 h-4 mr-2" />
-                                        )}
-                                        Restore
-                                    </Button>
-                                </div>
                             </div>
                         </div>
                     </div>
-                </Card>
+                </section>
 
-                <Card title="Reset Application">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                        <span className="font-bold text-red-600 dark:text-red-400">This action is irreversible.</span> It will permanently delete all data. Ensure you have a backup if you wish to restore later.
-                    </p>
-                    <Button onClick={() => setResetModalOpen(true)} variant="danger" className="w-full">Reset All Data</Button>
-                </Card>
+                {/* Reset Application */}
+                <section className="py-5 space-y-3">
+                    <div>
+                        <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Reset Application</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            <span className="font-semibold text-rose-600 dark:text-rose-400">This action is irreversible.</span> Permanently clears all local records and settings. Export a backup first.
+                        </p>
+                    </div>
+                    <Button onClick={() => setResetModalOpen(true)} variant="danger" className="w-full">
+                        Reset All Data
+                    </Button>
+                </section>
 
-                <Card title="Support & Application Intelligence">
-                    <div className="space-y-6 text-sm text-slate-600 dark:text-slate-300">
-                         <div className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                            <h3 className="font-bold text-sky-700 dark:text-sky-400 flex items-center gap-2 mb-3">
-                                <Info size={16} /> Operational Blueprint
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Record Management</h4>
-                                    <ul className="space-y-1 text-xs">
-                                        <li className="flex gap-2"><span>•</span> <b>Dashboard:</b> Real-time meal logging.</li>
-                                        <li className="flex gap-2"><span>•</span> <b>Receipts:</b> Comprehensive resource tracking.</li>
-                                        <li className="flex gap-2"><span>•</span> <b>Summary:</b> Analytical monthly insights.</li>
-                                    </ul>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Compliance Tools</h4>
-                                    <ul className="space-y-1 text-xs">
-                                        <li className="flex gap-2"><span>•</span> <b>Reports:</b> Automated PDF generation.</li>
-                                        <li className="flex gap-2"><span>•</span> <b>Cloud Sync:</b> Multi-device continuity.</li>
-                                        <li className="flex gap-2"><span>•</span> <b>Validation:</b> Structural data integrity.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-3 px-1">
-                            <h3 className="font-bold text-slate-800 dark:text-white">Technical Architecture</h3>
-                            <p className="text-xs leading-relaxed">
-                                PM POSHAN Tracker (v2.1.0) is built on a "Local-First" architecture. All critical calculations for rice consumption, conversion factors, and financial tallies are performed on-device to ensure privacy and speed. Cloud features are optional and designed for seamless disaster recovery.
+                {/* App Version & Support */}
+                <section className="pt-5 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">App Version & Updates</p>
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white tabular-nums mt-0.5">
+                                PM POSHAN PRO v{appVersion}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                Offline-first ledger — all calculations stay on your device.
                             </p>
                         </div>
+                        <Button 
+                            onClick={handleManualUpdateCheck} 
+                            disabled={isCheckingUpdate} 
+                            variant="secondary" 
+                            size="sm"
+                        >
+                            {isCheckingUpdate ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                                <RefreshCw className="w-3.5 h-3.5" />
+                            )}
+                            <span>{isCheckingUpdate ? 'Checking...' : 'Check for Updates'}</span>
+                        </Button>
+                    </div>
 
-                        <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="space-y-1">
-                                <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">App Version & Updates</p>
-                                <p className="font-semibold text-slate-900 dark:text-white text-xs">
-                                    PM POSHAN PRO v{appVersion}
-                                </p>
-                            </div>
-                            <Button 
-                                onClick={handleManualUpdateCheck} 
-                                disabled={isCheckingUpdate} 
-                                variant="secondary" 
-                                className="text-xs py-1.5 px-3 flex items-center gap-1.5"
-                            >
-                                {isCheckingUpdate ? (
-                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                ) : (
-                                    <RefreshCw className="w-3.5 h-3.5" />
-                                )}
-                                {isCheckingUpdate ? 'Checking...' : 'Check for Updates'}
-                            </Button>
+                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3">
+                        <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Support & Developer</p>
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white mt-0.5">Imran Gani Mugloo</p>
                         </div>
-
-                        <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="space-y-1">
-                                <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">Developed & Maintained By</p>
-                                <p className="font-semibold text-slate-900 dark:text-white">Imran Gani Mugloo</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <a href="tel:+919149690096" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-sky-100 hover:text-sky-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 transition-all shadow-sm">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                                </a>
-                                <a href="mailto:emraanmugloo123@gmail.com" className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-sky-100 hover:text-sky-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 transition-all shadow-sm">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                </a>
-                            </div>
+                        <div className="flex items-center gap-2">
+                            <a
+                                href="tel:+919149690096"
+                                aria-label="Call support"
+                                className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400 transition-colors"
+                            >
+                                <Phone className="w-4 h-4" />
+                            </a>
+                            <a
+                                href="mailto:emraanmugloo123@gmail.com"
+                                aria-label="Email support"
+                                className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/50 dark:hover:text-indigo-400 transition-colors"
+                            >
+                                <Mail className="w-4 h-4" />
+                            </a>
                         </div>
                     </div>
-                </Card>
+                </section>
             </div>
         </>
     );

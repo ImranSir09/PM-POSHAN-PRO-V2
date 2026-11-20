@@ -1,6 +1,4 @@
-
-import React from 'react';
-import Card from './Card';
+import React, { useMemo } from 'react';
 
 interface IllustrationCardProps {
     inchargeName?: string;
@@ -8,73 +6,43 @@ interface IllustrationCardProps {
 }
 
 const IllustrationCard: React.FC<IllustrationCardProps> = React.memo(({ inchargeName, inchargeContact }) => {
-    const showInchargeDetails = inchargeName && inchargeName.trim() !== '';
+    const showInchargeDetails = Boolean(inchargeName && inchargeName.trim() !== '');
+
+    const { greeting, dateSubtitle } = useMemo(() => {
+        const now = new Date();
+        const hour = now.getHours();
+        const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+        const formatted = now.toLocaleDateString('en-IN', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+        });
+        return { greeting: greet, dateSubtitle: formatted };
+    }, []);
 
     return (
-        <Card className="!p-0 overflow-hidden relative bg-gradient-to-br from-indigo-500 to-purple-600 dark:from-slate-900 dark:to-indigo-950 shadow-md">
-            <div className="p-5 relative z-10">
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h2 className="text-xl font-bold text-white tracking-tight">Welcome!</h2>
-                        <p className="text-sm text-indigo-100 dark:text-slate-300 max-w-xs mt-1 font-medium">
-                            Nourishing the Future, One Meal at a Time.
-                        </p>
-                    </div>
-                     {showInchargeDetails && (
-                        <div className="text-right text-xs flex-shrink-0 ml-4 bg-white/10 dark:bg-slate-900/50 backdrop-blur-sm p-2 rounded-lg border border-white/20 dark:border-slate-700/50">
-                            <p className="font-semibold text-white truncate">{inchargeName}</p>
-                            <p className="text-indigo-200 dark:text-slate-400">MDM Incharge</p>
-                            {inchargeContact && <p className="text-indigo-200 dark:text-slate-400">{inchargeContact}</p>}
-                        </div>
+        <div className="flex items-center justify-between gap-3 px-1 pt-0.5 pb-1">
+            <div className="min-w-0">
+                <h2 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white truncate">
+                    {showInchargeDetails ? `${greeting}, ${inchargeName}` : `${greeting}`}
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {dateSubtitle}
+                    {showInchargeDetails && (
+                        <>
+                            <span aria-hidden="true" className="mx-1.5">·</span>
+                            <span>MDM Incharge</span>
+                        </>
                     )}
+                </p>
+            </div>
+            {showInchargeDetails && inchargeContact && (
+                <div className="text-right text-xs text-slate-500 dark:text-slate-400 shrink-0 hidden sm:block tabular-nums">
+                    {inchargeContact}
                 </div>
-            </div>
-            <div className="absolute inset-0 z-0 opacity-20 dark:opacity-30">
-                <svg width="100%" height="100%" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style={{ stopColor: '#818cf8', stopOpacity: 1 }} />
-                            <stop offset="100%" style={{ stopColor: '#c084fc', stopOpacity: 0.2 }} />
-                        </linearGradient>
-                         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    
-                    {/* Sun / Abstract background shape */}
-                    <circle cx="250" cy="50" r="70" fill="url(#skyGradient)" filter="url(#glow)" />
-                    
-                    {/* Abstract ground */}
-                    <path d="M -10 120 Q 150 90, 310 120" fill="#0f172a" opacity="0.5" />
-
-                    {/* School building */}
-                    <g transform="translate(40, 60)" fill="#e0f2fe" opacity="0.8">
-                        <path d="M 0 60 L 0 20 L 25 0 L 50 20 L 50 60 Z" />
-                        <rect x="15" y="35" width="20" height="25" fill="#0ea5e9" />
-                    </g>
-                    
-                    {/* Abstract child figures */}
-                    <g transform="translate(130, 75)" fill="#67e8f9" opacity="0.9">
-                       <circle cx="10" cy="10" r="6" />
-                       <path d="M 10 16 A 10 10 0 0 1 10 35 A 10 10 0 0 1 10 16 Z" />
-                    </g>
-                     <g transform="translate(160, 80)" fill="#e0f2fe" opacity="0.8">
-                       <circle cx="10" cy="10" r="5" />
-                       <path d="M 10 15 A 8 8 0 0 1 10 30 A 8 8 0 0 1 10 15 Z" />
-                    </g>
-
-                     {/* Book Icon */}
-                    <g transform="translate(200, 85) scale(0.3)" fill="#f0f9ff">
-                        <path d="M2,2 L2,28 L15,24 L28,28 L28,2 L15,6 L2,2 Z M15,6 L15,24" stroke="#93c5fd" strokeWidth="3"/>
-                    </g>
-
-                </svg>
-            </div>
-        </Card>
+            )}
+        </div>
     );
 });
 

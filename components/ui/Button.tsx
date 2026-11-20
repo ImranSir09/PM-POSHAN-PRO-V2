@@ -1,25 +1,30 @@
-
 import React, { ReactNode } from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: ReactNode;
     variant?: 'primary' | 'secondary' | 'danger';
+    size?: 'sm' | 'md';
     className?: string;
     isLoading?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', className = '', isLoading = false, ...props }) => {
-    const baseClasses = 'inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none';
+const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', size = 'md', className = '', isLoading = false, ...props }) => {
+    const baseClasses = 'inline-flex items-center justify-center gap-1.5 font-medium rounded-xl whitespace-nowrap transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950';
+
+    const sizeClasses = {
+        sm: 'px-3 py-1.5 text-xs',
+        md: 'px-4 py-2.5 text-sm',
+    };
 
     const variantClasses = {
-        primary: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900',
-        secondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-300 dark:border-slate-800 shadow-sm focus:ring-2 focus:ring-slate-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900',
-        danger: 'bg-rose-500 hover:bg-rose-600 text-white shadow-sm focus:ring-2 focus:ring-rose-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900',
+        primary: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm focus-visible:ring-indigo-500/60',
+        secondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-200 dark:border-slate-700/80 shadow-sm focus-visible:ring-slate-400/60',
+        danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus-visible:ring-rose-500/60',
     };
 
     return (
         <button 
-            className={`${baseClasses} ${variantClasses[variant]} ${className}`} 
+            className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`} 
             disabled={isLoading || props.disabled}
             {...props}
         >

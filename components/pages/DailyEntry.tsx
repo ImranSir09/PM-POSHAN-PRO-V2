@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { CalendarDays } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { useData } from '../../hooks/useData';
@@ -7,7 +7,8 @@ import { DailyEntry } from '../../types';
 import { useToast } from '../../hooks/useToast';
 import Modal from '../ui/Modal';
 import NumberInput from '../ui/NumberInput';
-import Input from '../ui/Input';
+import DatePicker from '../ui/DatePicker';
+import Select from '../ui/Select';
 import { getRatesForDate, getClassRollsForDate, getOnRollTotalsFromClassRolls } from '../../services/summaryCalculator';
 
 const NO_MEAL_REASONS_STRUCTURED = {
@@ -81,7 +82,6 @@ const DailyEntryPage: React.FC = React.memo(() => {
         if (dateToOpen) {
             sessionStorage.removeItem('openEntryForDate');
             setSelectedDate(dateToOpen);
-            // Timeout ensures state update propagates before modal opens
             setTimeout(() => setEntryModalOpen(true), 100);
         }
     }, []);
@@ -207,7 +207,6 @@ const DailyEntryPage: React.FC = React.memo(() => {
             consumption: { rice: 0, dalVeg: 0, oilCond: 0, salt: 0, fuel: 0, total: 0 },
             reasonForNoMeal: 'Sunday',
         };
-        // Overwrite to make it a one-click action
         initiateSaveProcess(sundayEntry, true);
     };
 
@@ -217,144 +216,164 @@ const DailyEntryPage: React.FC = React.memo(() => {
         }
         setOverwriteModalOpen(false);
         setPendingEntry(null);
-    }
+    };
 
     const currentSubReasons = mainReason ? NO_MEAL_REASONS_STRUCTURED[mainReason] : [];
 
     return (
         <>
-             <Modal isOpen={isEntryModalOpen} onClose={() => setEntryModalOpen(false)} title={`Entry for ${new Date(selectedDate+'T00:00:00').toLocaleDateString('en-IN')}`} zIndex="z-40">
+            <Modal isOpen={isEntryModalOpen} onClose={() => setEntryModalOpen(false)} title={`Entry for ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-IN')}`} zIndex="z-40">
                 <div className="space-y-4">
-                     <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-                        <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Students Present</legend>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-2.5">Students Present</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <NumberInput label={`Balvatika (${onRoll.balvatika})`} id="balvatika" value={present.balvatika} onChange={val => handlePresentChange('balvatika', val)} min={0} max={onRoll.balvatika} />
                             <NumberInput label={`Primary (${onRoll.primary})`} id="primary" value={present.primary} onChange={val => handlePresentChange('primary', val)} min={0} max={onRoll.primary} />
                             <NumberInput label={`Middle (${onRoll.middle})`} id="middle" value={present.middle} onChange={val => handlePresentChange('middle', val)} min={0} max={onRoll.middle} />
                         </div>
-                    </fieldset>
+                    </div>
 
-                     <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-                        <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Auto-calculated Consumption</legend>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                        <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2.5">Auto-calculated Consumption</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-sm">
                             {Object.entries(consumption).map(([key, value]) => (
-                                <div key={key} className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 capitalize mb-1">{key === 'dalVeg' ? 'Dal & Veg' : key === 'oilCond' ? 'Oil & Cond.' : key}</p>
-                                    <p className="font-semibold text-slate-900 dark:text-white">{key === 'rice' ? `${value} kg` : `₹${value}`}</p>
+                                <div
+                                    key={key}
+                                    className={`p-2.5 rounded-xl border ${
+                                        key === 'total'
+                                            ? 'bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-200/70 dark:border-indigo-800/60'
+                                            : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200/70 dark:border-slate-800'
+                                    }`}
+                                >
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
+                                        {key === 'dalVeg' ? 'Dal & Veg' : key === 'oilCond' ? 'Oil & Cond.' : key}
+                                    </p>
+                                    <p className={`font-semibold tabular-nums mt-0.5 ${key === 'total' ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-900 dark:text-white'}`}>
+                                        {key === 'rice' ? `${value} kg` : `₹${value}`}
+                                    </p>
                                 </div>
                             ))}
                         </div>
-                    </fieldset>
+                    </div>
                     
                     <Button onClick={handleSave} className="w-full">
                         {entryExists ? 'Update Entry' : 'Save Entry'}
                     </Button>
                 </div>
             </Modal>
+
             <Modal isOpen={isOverwriteModalOpen} onClose={() => setOverwriteModalOpen(false)} title="Confirm Overwrite" zIndex="z-50">
                 <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">An entry for this date already exists. Do you want to overwrite it?</p>
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-end gap-2">
                     <Button variant="secondary" onClick={() => setOverwriteModalOpen(false)}>Cancel</Button>
                     <Button variant="danger" onClick={confirmOverwrite}>Overwrite</Button>
                 </div>
             </Modal>
-             <Modal isOpen={isReasonModalOpen} onClose={() => setReasonModalOpen(false)} title="Reason for No Meal" zIndex="z-50">
+
+            <Modal isOpen={isReasonModalOpen} onClose={() => setReasonModalOpen(false)} title="Reason for No Meal" zIndex="z-50">
                 <div className="space-y-4">
-                    <p className="text-sm text-slate-600 dark:text-slate-300">Please provide a reason for not serving the meal today.</p>
-                    <div>
-                        <label htmlFor="main-reason-select" className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5">Main Reason</label>
-                        <select
-                            id="main-reason-select"
-                            value={mainReason}
-                            onChange={(e) => {
-                                setMainReason(e.target.value as MainReason);
-                                setSubReason(''); // Reset sub-reason when main reason changes
-                            }}
-                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 shadow-sm transition-all outline-none"
-                        >
-                            <option value="">Select a reason...</option>
-                            {MAIN_REASONS.map(reason => <option key={reason} value={reason}>{reason}</option>)}
-                        </select>
-                    </div>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Select a reason for not serving the meal on this date.</p>
+                    <Select
+                        id="main-reason-select"
+                        label="Main Reason"
+                        value={mainReason}
+                        onChange={val => {
+                            setMainReason(val as MainReason);
+                            setSubReason('');
+                        }}
+                        placeholder="Select a reason..."
+                        options={MAIN_REASONS.map(reason => ({ value: reason, label: reason }))}
+                    />
 
                     {currentSubReasons.length > 0 && (
-                        <div>
-                            <label htmlFor="sub-reason-select" className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 ml-0.5">Sub-Reason</label>
-                            <select
-                                id="sub-reason-select"
-                                value={subReason}
-                                onChange={(e) => setSubReason(e.target.value)}
-                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 block p-2.5 shadow-sm transition-all outline-none"
-                            >
-                                <option value="">Select a sub-reason...</option>
-                                {currentSubReasons.map(reason => <option key={reason} value={reason}>{reason}</option>)}
-                            </select>
-                        </div>
+                        <Select
+                            id="sub-reason-select"
+                            label="Sub-Reason"
+                            value={subReason}
+                            onChange={setSubReason}
+                            placeholder="Select a sub-reason..."
+                            options={currentSubReasons.map(reason => ({ value: reason, label: reason }))}
+                        />
                     )}
 
-                    <div className="flex justify-end space-x-2">
+                    <div className="flex justify-end gap-2 pt-2">
                         <Button variant="secondary" onClick={() => setReasonModalOpen(false)}>Cancel</Button>
                         <Button onClick={handleSaveZeroEntry}>Save Entry</Button>
                     </div>
                 </div>
             </Modal>
-            <Card title="Daily Meal Entry" className="relative overflow-hidden">
-                <div aria-hidden="true" className="absolute -bottom-4 -right-4 text-indigo-500/10 dark:text-indigo-500/5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M2 12.2c0-3.3 2.9-6.2 6.5-6.2h7c3.6 0 6.5 2.9 6.5 6.2c0 1.9-1.2 3.6-2.7 4.5l-1.5 1c-1.1.7-2.3 1.3-3.3 1.3H9.5c-1 0-2.2-.6-3.3-1.3l-1.5-1C3.2 15.8 2 14.1 2 12.2Z"/>
-                        <path d="M6 6s.5 2.2 2.2 2.2"/>
-                        <path d="M15.8 6s.5 2.2 2.2 2.2"/>
-                        <path d="M10.9 6s.5 2.2 2.2 2.2"/>
-                    </svg>
-                </div>
-                 <div className="relative">
-                    {showDatePicker ? (
-                        <div className="space-y-3">
-                            <Input label="Select Date" id="entry-date" type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} max={today} />
-                            {isSunday && (
-                                <div className="text-center p-2 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-600 dark:text-red-400 text-xs border border-red-100 dark:border-red-900/50">
-                                    Entries are disabled for Sundays.
-                                </div>
-                            )}
-                            <div className="flex space-x-2">
-                                <Button onClick={() => setEntryModalOpen(true)} className="w-full" disabled={isSunday}>
-                                    Load & Edit Entry
-                                </Button>
-                                <Button variant="secondary" onClick={() => { setShowDatePicker(false); setSelectedDate(today); }} className="w-full">
-                                    Cancel
-                                </Button>
+
+            <Card className="border-indigo-200/70 dark:border-indigo-900/60">
+                {showDatePicker ? (
+                    <div className="space-y-3.5">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Edit Another Date</h2>
+                        </div>
+                        <DatePicker
+                            id="entry-date"
+                            label="Select Date"
+                            value={selectedDate}
+                            onChange={setSelectedDate}
+                            max={today}
+                        />
+                        {isSunday && (
+                            <div className="text-center p-2.5 bg-rose-50 dark:bg-rose-950/30 rounded-xl text-rose-600 dark:text-rose-400 text-xs border border-rose-200/70 dark:border-rose-900/50">
+                                Entries are disabled for Sundays.
+                            </div>
+                        )}
+                        <div className="flex gap-2">
+                            <Button onClick={() => setEntryModalOpen(true)} className="flex-1" disabled={isSunday}>
+                                Load & Edit Entry
+                            </Button>
+                            <Button variant="secondary" onClick={() => { setShowDatePicker(false); setSelectedDate(today); }} className="flex-1">
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <div className="flex items-center justify-between gap-3">
+                            <div>
+                                <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-0.5">
+                                    Daily Meal Entry
+                                </p>
+                                <p className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
+                                    {new Date(today + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+                                </p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                    {entryExists && selectedDate === today ? 'Entry recorded for today' : 'No entry recorded yet'}
+                                </p>
+                            </div>
+                            <div className="shrink-0">
+                                {isSunday && selectedDate === today ? (
+                                    <Button onClick={handleMarkAsSunday} variant="secondary">
+                                        Mark Sunday
+                                    </Button>
+                                ) : (
+                                    <Button onClick={() => { setSelectedDate(today); setEntryModalOpen(true); }} disabled={isSunday}>
+                                        {entryExists && selectedDate === today ? 'Edit Today' : 'Add Entry'}
+                                    </Button>
+                                )}
                             </div>
                         </div>
-                    ) : (
-                        <div>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="font-semibold text-slate-900 dark:text-slate-100">{new Date(today + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'long' })}</p>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">{new Date(today + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}</p>
-                                </div>
-                                <div className="text-right">
-                                    {isSunday && selectedDate === today ? (
-                                        <Button onClick={handleMarkAsSunday} variant="secondary">
-                                            Mark as Sunday
-                                        </Button>
-                                    ) : (
-                                        <Button onClick={() => { setSelectedDate(today); setEntryModalOpen(true); }} disabled={isSunday}>
-                                            Add / Edit
-                                        </Button>
-                                    )}
-                                    <button onClick={() => setShowDatePicker(true)} className="block w-full text-center text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs pt-2 font-medium transition-colors">
-                                        Edit another...
-                                    </button>
-                                </div>
-                            </div>
+
+                        <div className="mt-3.5 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                            <button
+                                type="button"
+                                onClick={() => setShowDatePicker(true)}
+                                className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+                            >
+                                <CalendarDays size={14} />
+                                Edit another date
+                            </button>
                             {isSunday && selectedDate === today && (
-                                <div className={`text-center mt-4 p-3 rounded-xl text-xs font-medium ${entryExists ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 text-green-700 dark:text-green-400' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 text-red-700 dark:text-red-400'}`}>
-                                    {entryExists ? 'Today has been marked as a non-meal day.' : 'Entries are disabled for today (Sunday).'}
-                                </div>
+                                <span className={`text-xs font-medium ${entryExists ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                                    {entryExists ? 'Marked non-meal day' : 'Sunday'}
+                                </span>
                             )}
                         </div>
-                    )}
-                 </div>
+                    </div>
+                )}
             </Card>
         </>
     );

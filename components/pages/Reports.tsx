@@ -12,7 +12,8 @@ import { Accordion, AccordionItem } from '../ui/Accordion';
 import NumberInput from '../ui/NumberInput';
 import Select from '../ui/Select';
 import MonthPicker from '../ui/MonthPicker';
-import { FileText, Sparkles, ShieldCheck } from 'lucide-react';
+import Input from '../ui/Input';
+import { SlidersHorizontal, ShieldCheck } from 'lucide-react';
 
 const reportDescriptions: Record<string, string> = {
     mdcf: "Generates the official Monthly Data Collection Format (MDCF) required for government reporting.",
@@ -200,7 +201,7 @@ const Reports: React.FC = () => {
                 });
 
                 if (!isPreviewOpen) setIsPreviewOpen(true);
-                showToast('Pixel-perfect PDF generated!', 'success');
+                showToast('PDF report generated!', 'success');
             } catch (error: any) {
                 console.error('PDF generation failed:', error);
                 showToast(error.message || 'Failed to generate PDF report.', 'error');
@@ -255,8 +256,8 @@ const Reports: React.FC = () => {
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                             ></path>
                         </svg>
-                        <p className="text-lg font-semibold">Creating Pixel-Perfect Document...</p>
-                        <p className="text-sm text-gray-300">Applying layout, headers & page numbers.</p>
+                        <p className="text-base font-semibold">Generating PDF Report...</p>
+                        <p className="text-xs text-slate-300 mt-1">Applying layout, headers & page numbers.</p>
                     </div>
                 </div>
             )}
@@ -276,11 +277,11 @@ const Reports: React.FC = () => {
                         Please review the report summary below before generating.
                     </p>
                     {reportSummary && (
-                        <div className="text-sm space-y-2 bg-indigo-50/60 dark:bg-slate-900/60 p-3.5 rounded-xl border border-indigo-100 dark:border-slate-800">
+                        <div className="text-sm divide-y divide-slate-200/70 dark:divide-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60 px-3.5 py-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
                             {Object.entries(reportSummary).map(([key, value]) => (
-                                <div key={key} className="flex justify-between items-center text-xs sm:text-sm">
-                                    <strong className="text-slate-700 dark:text-slate-300 pr-2">{key}:</strong>
-                                    <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-right">{value}</span>
+                                <div key={key} className="flex justify-between items-center gap-3 py-2 text-xs sm:text-sm">
+                                    <span className="font-medium text-slate-600 dark:text-slate-400">{key}</span>
+                                    <span className="text-slate-900 dark:text-white font-semibold text-right tabular-nums">{value}</span>
                                 </div>
                             ))}
                         </div>
@@ -496,43 +497,37 @@ const Reports: React.FC = () => {
                         )}
 
                         {/* PDF Options */}
-                        <div className="p-4 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3">
-                            <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                                <Sparkles size={14} className="text-indigo-500" /> PDF Style & Customization Options
+                        <div className="p-3.5 sm:p-4 bg-slate-50/80 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                                PDF Style & Customization
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <Select
-                                        id="theme-color"
-                                        label="Header Theme Accent"
-                                        value={themeColor}
-                                        onChange={v => setThemeColor(v as any)}
-                                        options={[
-                                            { value: 'navy', label: 'Government Official Navy' },
-                                            { value: 'indigo', label: 'Executive Indigo' },
-                                            { value: 'slate', label: 'Minimalist Slate' },
-                                            { value: 'classic', label: 'Classic Grayscale' },
-                                        ]}
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="watermark-text" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1 ml-0.5">
-                                        Watermark (Optional)
-                                    </label>
-                                    <input
-                                        id="watermark-text"
-                                        type="text"
-                                        placeholder="e.g. OFFICIAL COPY, DUPLICATE"
-                                        value={watermarkText}
-                                        onChange={e => setWatermarkText(e.target.value)}
-                                        className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm placeholder-slate-400 dark:placeholder-slate-500"
-                                    />
-                                </div>
+                                <Select
+                                    id="theme-color"
+                                    label="Header Theme Accent"
+                                    value={themeColor}
+                                    onChange={v => setThemeColor(v as any)}
+                                    options={[
+                                        { value: 'navy', label: 'Government Official Navy' },
+                                        { value: 'indigo', label: 'Executive Indigo' },
+                                        { value: 'slate', label: 'Minimalist Slate' },
+                                        { value: 'classic', label: 'Classic Grayscale' },
+                                    ]}
+                                />
+                                <Input
+                                    id="watermark-text"
+                                    label="Watermark (Optional)"
+                                    type="text"
+                                    placeholder="e.g. OFFICIAL COPY, DUPLICATE"
+                                    value={watermarkText}
+                                    onChange={e => setWatermarkText(e.target.value)}
+                                />
                             </div>
                         </div>
 
                         <Button onClick={initiateReportGeneration} className="w-full" disabled={isGenerating}>
-                            Generate & Preview Pixel-Perfect PDF
+                            Generate & Preview PDF
                         </Button>
 
                         {pdfPreviewData && (
@@ -543,18 +538,14 @@ const Reports: React.FC = () => {
                     </div>
                 </Card>
 
-                {/* Audit Standards Card */}
-                <Card>
-                    <div className="flex items-start gap-3 text-xs text-slate-600 dark:text-slate-300">
-                        <ShieldCheck className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
-                        <div className="space-y-1">
-                            <p className="font-semibold text-slate-800 dark:text-slate-100">Official Compliance & Audit Verification</p>
-                            <p className="leading-relaxed">
-                                Generated PDF reports include official page headers, UDISE metadata, signature lines for MDM Incharge & Head of Institution, and automated Page X of Y numbering as per PM POSHAN guidelines.
-                            </p>
-                        </div>
-                    </div>
-                </Card>
+                {/* Quiet inline compliance note */}
+                <div className="flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70 text-xs text-slate-600 dark:text-slate-400">
+                    <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <p className="leading-relaxed">
+                        <span className="font-semibold text-slate-700 dark:text-slate-200">PM POSHAN Compliance:</span>{' '}
+                        Generated PDFs include school & UDISE headers, signature blocks for MDM Incharge & Head of Institution, and automatic Page X of Y numbering.
+                    </p>
+                </div>
             </div>
         </>
     );

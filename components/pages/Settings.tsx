@@ -8,6 +8,8 @@ import { Settings, SchoolDetails, Rates, RateRevision, EnrollmentRevision, Categ
 import { CLASS_STRUCTURE } from '../../constants';
 import { indianStates, jkDistrictsWithZones } from '../../data/locations';
 import NumberInput from '../ui/NumberInput';
+import Select from '../ui/Select';
+import DatePicker from '../ui/DatePicker';
 import DataManagement from '../ui/DataManagement';
 import { getRatesForDate, getClassRollsForDate, getOnRollTotalsFromClassRolls } from '../../services/summaryCalculator';
 import { useToast } from '../../hooks/useToast';
@@ -31,15 +33,15 @@ const calculateSectionTotals = (classes: ClassRoll[]) => {
 };
 
 const SectionTotalRow: React.FC<{ label: string, totals: ReturnType<typeof calculateSectionTotals> }> = ({ label, totals }) => (
-    <tr className="font-semibold bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-900 dark:text-indigo-100">
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{label}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{totals.general.boys}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{totals.general.girls}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{totals.stsc.boys}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{totals.stsc.girls}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{totals.total.boys}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50">{totals.total.girls}</td>
-        <td className="p-2 border border-indigo-100 dark:border-indigo-800/50 text-indigo-700 dark:text-indigo-300">{totals.total.onRoll}</td>
+    <tr className="font-semibold bg-slate-50/90 dark:bg-slate-900/80 text-slate-800 dark:text-slate-100 border-t border-slate-200/80 dark:border-slate-800 tabular-nums">
+        <td className="px-2.5 py-2 text-left">{label}</td>
+        <td className="px-2 py-2">{totals.general.boys}</td>
+        <td className="px-2 py-2">{totals.general.girls}</td>
+        <td className="px-2 py-2">{totals.stsc.boys}</td>
+        <td className="px-2 py-2">{totals.stsc.girls}</td>
+        <td className="px-2 py-2">{totals.total.boys}</td>
+        <td className="px-2 py-2">{totals.total.girls}</td>
+        <td className="px-2.5 py-2 bg-indigo-50/60 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">{totals.total.onRoll}</td>
     </tr>
 );
 
@@ -540,75 +542,66 @@ const SettingsPage: React.FC = () => {
                                         )}
                                     </div>
                                     
-                                    <div>
-                                        <label htmlFor="schoolTypeMDCF" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">School Type</label>
-                                        <select id="schoolTypeMDCF" value={settings.schoolDetails.schoolTypeMDCF} onChange={e => handleSchoolDetailsChange('schoolTypeMDCF', e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm" required>
-                                            <option value="">Select Type</option>
-                                            <option value="Government">Government</option>
-                                            <option value="Local Body">Local Body</option>
-                                            <option value="EGS/AIE Centers">EGS/AIE Centers</option>
-                                            <option value="NCLP">NCLP</option>
-                                            <option value="Madras / Maqtab">Madras / Maqtab</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="schoolCategoryMDCF" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">School Category</label>
-                                        <select id="schoolCategoryMDCF" value={settings.schoolDetails.schoolCategoryMDCF} onChange={e => handleSchoolDetailsChange('schoolCategoryMDCF', e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm" required>
-                                            <option value="Primary">Primary</option>
-                                            <option value="Upper Primary">Upper Primary</option>
-                                            <option value="Primary with Upper Primary">Primary with Upper Primary</option>
-                                        </select>
-                                    </div>
+                                    <Select
+                                        id="schoolTypeMDCF"
+                                        label="School Type"
+                                        value={settings.schoolDetails.schoolTypeMDCF}
+                                        onChange={v => handleSchoolDetailsChange('schoolTypeMDCF', v)}
+                                        placeholder="Select Type"
+                                        options={[
+                                            { value: 'Government', label: 'Government' },
+                                            { value: 'Local Body', label: 'Local Body' },
+                                            { value: 'EGS/AIE Centers', label: 'EGS/AIE Centers' },
+                                            { value: 'NCLP', label: 'NCLP' },
+                                            { value: 'Madras / Maqtab', label: 'Madras / Maqtab' },
+                                        ]}
+                                    />
+                                    <Select
+                                        id="schoolCategoryMDCF"
+                                        label="School Category"
+                                        value={settings.schoolDetails.schoolCategoryMDCF}
+                                        onChange={v => handleSchoolDetailsChange('schoolCategoryMDCF', v)}
+                                        options={[
+                                            { value: 'Primary', label: 'Primary' },
+                                            { value: 'Upper Primary', label: 'Upper Primary' },
+                                            { value: 'Primary with Upper Primary', label: 'Primary with Upper Primary' },
+                                        ]}
+                                    />
 
                                     <Input label="Kitchen Type" id="kitchenType" value={settings.schoolDetails.kitchenType} onChange={e => handleSchoolDetailsChange('kitchenType', e.target.value)} />
-                                    <div>
-                                        <label htmlFor="state" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">State</label>
-                                        <select
-                                            id="state"
-                                            value={settings.schoolDetails.state}
-                                            onChange={e => handleSchoolDetailsChange('state', e.target.value)}
-                                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                                            required
-                                        >
-                                            <option value="">Select State</option>
-                                            {indianStates.map(state => (
-                                                <option key={state.name} value={state.name}>{state.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label htmlFor="district" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">District</label>
-                                        <select
-                                            id="district"
-                                            value={settings.schoolDetails.district}
-                                            onChange={e => handleSchoolDetailsChange('district', e.target.value)}
-                                            disabled={!settings.schoolDetails.state || availableDistricts.length === 0}
-                                            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                                            required
-                                        >
-                                            <option value="">Select District</option>
-                                            {availableDistricts.map(district => (
-                                                <option key={district} value={district}>{district}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                     {settings.schoolDetails.state === 'Jammu and Kashmir' ? (
-                                        <div>
-                                            <label htmlFor="block" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Block/Educational Zone</label>
-                                            <select
-                                                id="block"
-                                                value={settings.schoolDetails.block}
-                                                onChange={e => handleSchoolDetailsChange('block', e.target.value)}
-                                                disabled={!settings.schoolDetails.district || availableZones.length === 0}
-                                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                                                required
-                                            >
-                                                <option value="">Select Zone</option>
-                                                {availableZones.map(zone => (
-                                                    <option key={zone} value={zone}>{zone}</option>
-                                                ))}
-                                            </select>
-                                        </div>
+
+                                    <Select
+                                        id="state"
+                                        label="State"
+                                        value={settings.schoolDetails.state}
+                                        onChange={v => handleSchoolDetailsChange('state', v)}
+                                        placeholder="Select State"
+                                        searchable
+                                        options={indianStates.map(state => ({ value: state.name, label: state.name }))}
+                                    />
+
+                                    <Select
+                                        id="district"
+                                        label="District"
+                                        value={settings.schoolDetails.district}
+                                        onChange={v => handleSchoolDetailsChange('district', v)}
+                                        disabled={!settings.schoolDetails.state || availableDistricts.length === 0}
+                                        placeholder="Select District"
+                                        searchable
+                                        options={availableDistricts.map(district => ({ value: district, label: district }))}
+                                    />
+
+                                    {settings.schoolDetails.state === 'Jammu and Kashmir' ? (
+                                        <Select
+                                            id="block"
+                                            label="Block/Educational Zone"
+                                            value={settings.schoolDetails.block}
+                                            onChange={v => handleSchoolDetailsChange('block', v)}
+                                            disabled={!settings.schoolDetails.district || availableZones.length === 0}
+                                            placeholder="Select Zone"
+                                            searchable
+                                            options={availableZones.map(zone => ({ value: zone, label: zone }))}
+                                        />
                                     ) : (
                                         <Input label="Block" id="block" value={settings.schoolDetails.block} onChange={e => handleSchoolDetailsChange('block', e.target.value)} required />
                                     )}
@@ -736,15 +729,11 @@ const SettingsPage: React.FC = () => {
                                 <div className="p-3.5 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5">
                                     <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                                         <div className="flex-1">
-                                            <label htmlFor="enrollment-effective-date" className="block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1">
-                                                Effective From Date
-                                            </label>
-                                            <input
+                                            <DatePicker
                                                 id="enrollment-effective-date"
-                                                type="date"
+                                                label="Effective From Date"
                                                 value={enrollmentEffectiveDate}
-                                                onChange={e => handleEnrollmentEffectiveDateChange(e.target.value)}
-                                                className="w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
+                                                onChange={handleEnrollmentEffectiveDateChange}
                                             />
                                         </div>
                                         {hasEnrollmentSessionEdits && (
@@ -752,14 +741,14 @@ const SettingsPage: React.FC = () => {
                                                 <Button
                                                     type="button"
                                                     variant="secondary"
-                                                    className="text-xs px-3 py-2"
+                                                    size="sm"
                                                     onClick={handleCommitAndAddAnotherEnrollmentDate}
                                                 >
                                                     + Add Another Date
                                                 </Button>
                                                 <Button
                                                     type="button"
-                                                    className="text-xs px-3 py-2"
+                                                    size="sm"
                                                     onClick={() => handleToggleEnrollmentEditable(false)}
                                                 >
                                                     Done
@@ -773,49 +762,49 @@ const SettingsPage: React.FC = () => {
                                 </div>
                             )}
 
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-xs text-center border-collapse">
-                                    <thead className="bg-slate-50 dark:bg-slate-900/50">
+                            <div className="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+                                <table className="min-w-[540px] w-full text-xs text-center border-collapse">
+                                    <thead className="bg-slate-50/95 dark:bg-slate-900/90 border-b border-slate-200/80 dark:border-slate-800">
                                         <tr>
-                                            <th rowSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Class</th>
-                                            <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">General</th>
-                                            <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">ST/SC</th>
-                                            <th colSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Total</th>
-                                            <th rowSpan={2} className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">On Roll</th>
+                                            <th rowSpan={2} className="px-2.5 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Class</th>
+                                            <th colSpan={2} className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-slate-800">General</th>
+                                            <th colSpan={2} className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-slate-800">ST/SC</th>
+                                            <th colSpan={2} className="px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-slate-800">Total</th>
+                                            <th rowSpan={2} className="px-2.5 py-2 text-[11px] font-semibold uppercase tracking-wider bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300">On Roll</th>
                                         </tr>
                                         <tr>
-                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
-                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
-                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
-                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
-                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Boys</th>
-                                            <th className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-500 dark:text-slate-400">Girls</th>
+                                            <th className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Boys</th>
+                                            <th className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Girls</th>
+                                            <th className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Boys</th>
+                                            <th className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Girls</th>
+                                            <th className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Boys</th>
+                                            <th className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Girls</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-950">
                                         {[
                                             { title: 'Middle (VI-VIII)', classes: middleClasses, totals: middleTotals },
                                             { title: 'Primary (I-V)', classes: primaryClasses, totals: primaryTotals },
                                             { title: 'Pre-Primary', classes: prePrimaryClasses, totals: prePrimaryTotals }
                                         ].map(section => section.classes.length > 0 && (
                                             <React.Fragment key={section.title}>
-                                                <tr className="bg-slate-50 dark:bg-slate-900/30">
-                                                    <td colSpan={8} className="p-2 font-semibold text-indigo-600 dark:text-indigo-400 text-left pl-3">{section.title}</td>
+                                                <tr className="bg-slate-50/80 dark:bg-slate-900/40">
+                                                    <td colSpan={8} className="px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 text-left">{section.title}</td>
                                                 </tr>
                                                 {section.classes.map(cr => {
                                                     const totalBoys = cr.general.boys + cr.stsc.boys;
                                                     const totalGirls = cr.general.girls + cr.stsc.girls;
                                                     const onRoll = totalBoys + totalGirls;
                                                     return (
-                                                        <tr key={cr.id} className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
-                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-medium text-slate-700 dark:text-slate-300">{cr.name}</td>
-                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.general.boys} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'general', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
-                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.general.girls} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'general', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
-                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.stsc.boys} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'stsc', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
-                                                            <td className="p-1 border border-slate-200 dark:border-slate-800"><input type="number" min="0" value={cr.stsc.girls} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'stsc', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded p-1 text-center focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
-                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">{totalBoys}</td>
-                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-slate-700 dark:text-slate-300">{totalGirls}</td>
-                                                            <td className="p-2 border border-slate-200 dark:border-slate-800 font-semibold text-indigo-600 dark:text-indigo-400">{onRoll}</td>
+                                                        <tr key={cr.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors tabular-nums">
+                                                            <td className="px-2.5 py-2 text-left font-medium text-slate-700 dark:text-slate-300">{cr.name}</td>
+                                                            <td className="p-1"><input type="number" min="0" value={cr.general.boys} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'general', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-1"><input type="number" min="0" value={cr.general.girls} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'general', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-1"><input type="number" min="0" value={cr.stsc.boys} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'stsc', 'boys', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="p-1"><input type="number" min="0" value={cr.stsc.girls} disabled={!isEnrollmentEditable} onChange={e => handleClassRollChange(cr.id, 'stsc', 'girls', e.target.value)} className="w-12 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-1 text-center tabular-nums focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"/></td>
+                                                            <td className="px-2 py-2 font-medium text-slate-700 dark:text-slate-300">{totalBoys}</td>
+                                                            <td className="px-2 py-2 font-medium text-slate-700 dark:text-slate-300">{totalGirls}</td>
+                                                            <td className="px-2.5 py-2 font-semibold bg-indigo-50/40 dark:bg-indigo-950/25 text-indigo-700 dark:text-indigo-300">{onRoll}</td>
                                                         </tr>
                                                     );
                                                 })}
@@ -823,15 +812,15 @@ const SettingsPage: React.FC = () => {
                                             </React.Fragment>
                                         ))}
                                     </tbody>
-                                    <tfoot className="font-semibold bg-slate-100 dark:bg-slate-900">
-                                    <SectionTotalRow label="Grand Total" totals={grandTotal} />
+                                    <tfoot>
+                                        <SectionTotalRow label="Grand Total" totals={grandTotal} />
                                     </tfoot>
                                 </table>
                             </div>
 
                             {settings.enrollmentHistory && settings.enrollmentHistory.length > 0 && (
-                                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-                                    <p className="font-semibold text-slate-800 dark:text-slate-300 text-sm">
+                                <div className="pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                         Enrollment Revision History
                                     </p>
                                     <div className="space-y-2">
@@ -845,10 +834,10 @@ const SettingsPage: React.FC = () => {
                                                     ? 'Base Enrollment (Prior Records)'
                                                     : `Effective from ${new Date(rev.effectiveFrom + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
                                                 return (
-                                                    <div key={rev.effectiveFrom} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                                    <div key={rev.effectiveFrom} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800">
                                                         <div>
                                                             <p className="font-semibold text-slate-800 dark:text-slate-200 text-xs">{dateLabel}</p>
-                                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums">
                                                                 On Roll — Bal: {catTotals.balvatika} • Pri: {catTotals.primary} • Mid: {catTotals.middle} | Total: {totalRoll}
                                                             </p>
                                                         </div>
@@ -856,7 +845,7 @@ const SettingsPage: React.FC = () => {
                                                             <Button
                                                                 type="button"
                                                                 variant="secondary"
-                                                                className="px-2.5 py-1 text-xs"
+                                                                size="sm"
                                                                 onClick={() => handleEditEnrollmentRevision(rev.effectiveFrom)}
                                                             >
                                                                 Edit
@@ -865,7 +854,7 @@ const SettingsPage: React.FC = () => {
                                                                 <Button
                                                                     type="button"
                                                                     variant="danger"
-                                                                    className="px-2.5 py-1 text-xs"
+                                                                    size="sm"
                                                                     onClick={() => handleDeleteEnrollmentRevision(rev.effectiveFrom)}
                                                                 >
                                                                     Remove
@@ -884,28 +873,28 @@ const SettingsPage: React.FC = () => {
                     <AccordionItem id="finance" title="Financial, Stock & Rates">
                         <div className="space-y-4">
                             <div>
-                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Initial Opening Balance</h3>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                                    Set this once during initial setup. It acts as the starting balance for your records. After the first month, balances will roll over automatically.y.
+                                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Initial Opening Balance</h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                                    Set this once during initial setup. It acts as the starting balance for your records. After the first month, balances will roll over automatically.
                                 </p>
-                                <div className="space-y-3">
-                                    <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-                                        <legend className="text-sm font-medium text-indigo-600 dark:text-indigo-400 px-1">Opening Rice Balance (kg)</legend>
-                                        <div className="grid grid-cols-3 gap-2">
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Opening Rice Balance (kg)</p>
+                                        <div className="grid grid-cols-3 gap-2.5">
                                             <Input label="Balvatika" id="ob-rice-bal" type="number" step="0.001" value={settings.initialOpeningBalance?.rice?.balvatika || 0} onChange={e => handleOpeningBalanceChange('rice', 'balvatika', e.target.value)} />
                                             <Input label="Primary" id="ob-rice-pri" type="number" step="0.001" value={settings.initialOpeningBalance?.rice?.primary || 0} onChange={e => handleOpeningBalanceChange('rice', 'primary', e.target.value)} />
                                             <Input label="Middle" id="ob-rice-mid" type="number" step="0.001" value={settings.initialOpeningBalance?.rice?.middle || 0} onChange={e => handleOpeningBalanceChange('rice', 'middle', e.target.value)} />
                                         </div>
-                                    </fieldset>
-                                    <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-                                        <legend className="text-sm font-medium text-indigo-600 dark:text-indigo-400 px-1">Opening Cash Balance (₹)</legend>
-                                        <div className="grid grid-cols-3 gap-2">
+                                    </div>
+                                    <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Opening Cash Balance (₹)</p>
+                                        <div className="grid grid-cols-3 gap-2.5">
                                             <Input label="Balvatika" id="ob-cash-bal" type="number" step="0.01" value={settings.initialOpeningBalance?.cash?.balvatika || 0} onChange={e => handleOpeningBalanceChange('cash', 'balvatika', e.target.value)} />
                                             <Input label="Primary" id="ob-cash-pri" type="number" step="0.01" value={settings.initialOpeningBalance?.cash?.primary || 0} onChange={e => handleOpeningBalanceChange('cash', 'primary', e.target.value)} />
                                             <Input label="Middle" id="ob-cash-mid" type="number" step="0.01" value={settings.initialOpeningBalance?.cash?.middle || 0} onChange={e => handleOpeningBalanceChange('cash', 'middle', e.target.value)} />
                                         </div>
-                                    </fieldset>
-                                    <div>
+                                    </div>
+                                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80">
                                         <Input 
                                             label="MME Expenditure for this month (₹)" 
                                             id="mme-expenditure" 
@@ -919,9 +908,9 @@ const SettingsPage: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Food Rate Configuration</h3>
-                                <div className="flex items-center justify-between p-4 mb-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800">
+                                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-2">Food Rate Configuration</h3>
+                                <div className="flex items-center justify-between p-4 mb-4 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800">
                                     <div>
                                         <label htmlFor="edit-rates" className="font-medium text-slate-700 dark:text-slate-300">Edit Food Rates</label>
                                         <p className="text-xs text-slate-500 dark:text-slate-400">Enable to adjust per-student rates from a specific date.</p>
@@ -936,15 +925,11 @@ const SettingsPage: React.FC = () => {
                                     <div className="p-3.5 mb-4 bg-indigo-50/60 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/80 dark:border-indigo-800/50 space-y-2.5">
                                         <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                                             <div className="flex-1">
-                                                <label htmlFor="rate-effective-date" className="block text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-1">
-                                                    Effective From Date
-                                                </label>
-                                                <input
+                                                <DatePicker
                                                     id="rate-effective-date"
-                                                    type="date"
+                                                    label="Effective From Date"
                                                     value={rateEffectiveDate}
-                                                    onChange={e => handleEffectiveDateChange(e.target.value)}
-                                                    className="w-full bg-white dark:bg-slate-950 border border-indigo-200 dark:border-indigo-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
+                                                    onChange={handleEffectiveDateChange}
                                                 />
                                             </div>
                                             {hasRateSessionEdits && (
@@ -952,14 +937,14 @@ const SettingsPage: React.FC = () => {
                                                     <Button
                                                         type="button"
                                                         variant="secondary"
-                                                        className="text-xs px-3 py-2"
+                                                        size="sm"
                                                         onClick={handleCommitAndAddAnotherDate}
                                                     >
                                                         + Add Another Date
                                                     </Button>
                                                     <Button
                                                         type="button"
-                                                        className="text-xs px-3 py-2"
+                                                        size="sm"
                                                         onClick={() => handleToggleRatesEditable(false)}
                                                     >
                                                         Done
@@ -992,30 +977,30 @@ const SettingsPage: React.FC = () => {
                                         </div>
                                         )
                                     })}
-                                     <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
-                                        <p className="font-semibold text-slate-800 dark:text-slate-300 mb-2 capitalize text-sm">
+                                    <div className="pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800">
+                                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
                                             Total Per Student Cost (₹)
                                         </p>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400">Balvatika</p>
-                                                <p className="font-semibold text-slate-800 dark:text-white">₹{foodRateTotals.balvatika.toFixed(2)}</p>
+                                        <div className="grid grid-cols-3 gap-2.5">
+                                            <div className="bg-slate-50/80 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center">
+                                                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Balvatika</p>
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">₹{foodRateTotals.balvatika.toFixed(2)}</p>
                                             </div>
-                                            <div className="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400">Primary</p>
-                                                <p className="font-semibold text-slate-800 dark:text-white">₹{foodRateTotals.primary.toFixed(2)}</p>
+                                            <div className="bg-slate-50/80 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center">
+                                                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Primary</p>
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">₹{foodRateTotals.primary.toFixed(2)}</p>
                                             </div>
-                                            <div className="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
-                                                <p className="text-xs text-slate-500 dark:text-slate-400">Middle</p>
-                                                <p className="font-semibold text-slate-800 dark:text-white">₹{foodRateTotals.middle.toFixed(2)}</p>
+                                            <div className="bg-slate-50/80 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-center">
+                                                <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Middle</p>
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white tabular-nums mt-0.5">₹{foodRateTotals.middle.toFixed(2)}</p>
                                             </div>
                                         </div>
                                         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Auto-calculated sum of Dal/Veg, Oil/Cond, Salt, and Fuel rates.</p>
                                     </div>
 
                                     {settings.rateHistory && settings.rateHistory.length > 0 && (
-                                        <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-                                            <p className="font-semibold text-slate-800 dark:text-slate-300 text-sm">
+                                        <div className="pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
+                                            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                                 Rate Revision History
                                             </p>
                                             <div className="space-y-2">
@@ -1030,10 +1015,10 @@ const SettingsPage: React.FC = () => {
                                                             ? 'Base Rate (Prior Records)'
                                                             : `Effective from ${new Date(rev.effectiveFrom + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`;
                                                         return (
-                                                            <div key={rev.effectiveFrom} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                                            <div key={rev.effectiveFrom} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800">
                                                                 <div>
                                                                     <p className="font-semibold text-slate-800 dark:text-slate-200 text-xs">{dateLabel}</p>
-                                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums">
                                                                         Cost/Student — Bal: ₹{balCost.toFixed(2)} • Pri: ₹{priCost.toFixed(2)} • Mid: ₹{midCost.toFixed(2)} | Rice: {rev.rates.rice?.primary || 0}g/{rev.rates.rice?.middle || 0}g
                                                                     </p>
                                                                 </div>
@@ -1041,7 +1026,7 @@ const SettingsPage: React.FC = () => {
                                                                     <Button
                                                                         type="button"
                                                                         variant="secondary"
-                                                                        className="px-2.5 py-1 text-xs"
+                                                                        size="sm"
                                                                         onClick={() => handleEditHistoryRevision(rev.effectiveFrom)}
                                                                     >
                                                                         Edit
@@ -1050,7 +1035,7 @@ const SettingsPage: React.FC = () => {
                                                                         <Button
                                                                             type="button"
                                                                             variant="danger"
-                                                                            className="px-2.5 py-1 text-xs"
+                                                                            size="sm"
                                                                             onClick={() => handleDeleteHistoryRevision(rev.effectiveFrom)}
                                                                         >
                                                                             Remove
@@ -1075,40 +1060,49 @@ const SettingsPage: React.FC = () => {
                                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">This information is used for the official MDCF report.</p>
                                 <div className="space-y-3">
                                     {settings.cooks.map((cook, index) => (
-                                        <div key={cook.id} className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 bg-slate-50/50 dark:bg-slate-900/20">
+                                        <div key={cook.id} className="p-4 border border-slate-200/80 dark:border-slate-800 rounded-xl space-y-3 bg-slate-50/60 dark:bg-slate-900/30">
                                             <div className="flex justify-between items-center">
                                                 <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Cook #{index + 1}</p>
-                                                <Button variant="danger" className="px-2 py-1 text-xs" onClick={() => removeCook(cook.id)}>Remove</Button>
+                                                <Button variant="danger" size="sm" onClick={() => removeCook(cook.id)}>Remove</Button>
                                             </div>
                                             <Input label="Name" id={`cook-name-${cook.id}`} value={cook.name} onChange={e => handleCookChange(cook.id, 'name', e.target.value)} required />
-                                            <div className="grid grid-cols-2 gap-2">
-                                                <div>
-                                                    <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Gender</label>
-                                                    <select value={cook.gender} onChange={e => handleCookChange(cook.id, 'gender', e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm">
-                                                        <option value="Male">Male</option>
-                                                        <option value="Female">Female</option>
-                                                        <option value="Other">Other</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Category</label>
-                                                    <select value={cook.category} onChange={e => handleCookChange(cook.id, 'category', e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm">
-                                                        <option value="GEN">GEN</option>
-                                                        <option value="OBC">OBC</option>
-                                                        <option value="SC">SC</option>
-                                                        <option value="ST">ST</option>
-                                                    </select>
-                                                </div>
+                                            <div className="grid grid-cols-2 gap-2.5">
+                                                <Select
+                                                    id={`cook-gender-${cook.id}`}
+                                                    label="Gender"
+                                                    value={cook.gender}
+                                                    onChange={v => handleCookChange(cook.id, 'gender', v)}
+                                                    options={[
+                                                        { value: 'Male', label: 'Male' },
+                                                        { value: 'Female', label: 'Female' },
+                                                        { value: 'Other', label: 'Other' },
+                                                    ]}
+                                                />
+                                                <Select
+                                                    id={`cook-category-${cook.id}`}
+                                                    label="Category"
+                                                    value={cook.category}
+                                                    onChange={v => handleCookChange(cook.id, 'category', v)}
+                                                    options={[
+                                                        { value: 'GEN', label: 'GEN' },
+                                                        { value: 'OBC', label: 'OBC' },
+                                                        { value: 'SC', label: 'SC' },
+                                                        { value: 'ST', label: 'ST' },
+                                                    ]}
+                                                />
                                             </div>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                 <div>
-                                                    <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Payment Mode</label>
-                                                    <select value={cook.paymentMode} onChange={e => handleCookChange(cook.id, 'paymentMode', e.target.value)} className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm">
-                                                        <option value="Bank">Bank</option>
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="Cheque">Cheque</option>
-                                                    </select>
-                                                </div>
+                                            <div className="grid grid-cols-2 gap-2.5">
+                                                <Select
+                                                    id={`cook-payment-${cook.id}`}
+                                                    label="Payment Mode"
+                                                    value={cook.paymentMode}
+                                                    onChange={v => handleCookChange(cook.id, 'paymentMode', v)}
+                                                    options={[
+                                                        { value: 'Bank', label: 'Bank' },
+                                                        { value: 'Cash', label: 'Cash' },
+                                                        { value: 'Cheque', label: 'Cheque' },
+                                                    ]}
+                                                />
                                                 <Input label="Amount Paid (₹)" id={`cook-amount-${cook.id}`} type="number" min="0" value={cook.amountPaid} onChange={e => handleCookChange(cook.id, 'amountPaid', parseFloat(e.target.value) || 0)} />
                                             </div>
                                         </div>
@@ -1117,10 +1111,10 @@ const SettingsPage: React.FC = () => {
                                 <Button onClick={addCook} variant="secondary" className="w-full mt-4">Add Cook</Button>
                             </div>
 
-                            <div>
-                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Health Status</h3>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Data for the monthly MDCF report.</p>
-                                <div className="grid grid-cols-2 gap-4">
+                            <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800">
+                                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Health Status</h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Data for the monthly MDCF report.</p>
+                                <div className="grid grid-cols-2 gap-3">
                                     <Input label="IFA Tablets (Boys)" id="ifa-boys" type="number" min="0" value={settings.healthStatus.ifaBoys} onChange={e => handleHealthChange('ifaBoys', e.target.value)} />
                                     <Input label="IFA Tablets (Girls)" id="ifa-girls" type="number" min="0" value={settings.healthStatus.ifaGirls} onChange={e => handleHealthChange('ifaGirls', e.target.value)} />
                                     <Input label="Screened by RBSK Team" id="screened-rbsk" type="number" min="0" value={settings.healthStatus.screenedByRBSK} onChange={e => handleHealthChange('screenedByRBSK', e.target.value)} />
@@ -1128,11 +1122,11 @@ const SettingsPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div>
-                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Inspection Report</h3>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Data for the monthly MDCF report.</p>
+                            <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800">
+                                <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-1">Inspection Report</h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Data for the monthly MDCF report.</p>
                                 <div className="space-y-4">
-                                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                                    <div className="flex items-center justify-between p-4 bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200/80 dark:border-slate-800">
                                         <div>
                                             <label htmlFor="inspected" className="font-medium text-slate-700 dark:text-slate-300">Was an inspection done this month?</label>
                                         </div>
@@ -1142,21 +1136,19 @@ const SettingsPage: React.FC = () => {
                                         </label>
                                     </div>
                                     {settings.inspectionReport.inspected && (
-                                        <div className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/20">
-                                            <label htmlFor="inspected-by" className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Inspected by:</label>
-                                            <select
-                                                id="inspected-by"
-                                                value={settings.inspectionReport.inspectedBy}
-                                                onChange={e => handleInspectionChange('inspectedBy', e.target.value as InspectionAuthority)}
-                                                className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all shadow-sm"
-                                            >
-                                                <option value="">Select Inspector</option>
-                                                <option value="Task Force">Members of Task Force</option>
-                                                <option value="District Officials">District Officials</option>
-                                                <option value="Block Officials">Block/Taluka Level Officials</option>
-                                                <option value="SMC Members">SMC Members</option>
-                                            </select>
-                                        </div>
+                                        <Select
+                                            id="inspected-by"
+                                            label="Inspected by"
+                                            value={settings.inspectionReport.inspectedBy}
+                                            onChange={v => handleInspectionChange('inspectedBy', v as InspectionAuthority)}
+                                            placeholder="Select Inspector"
+                                            options={[
+                                                { value: 'Task Force', label: 'Members of Task Force' },
+                                                { value: 'District Officials', label: 'District Officials' },
+                                                { value: 'Block Officials', label: 'Block/Taluka Level Officials' },
+                                                { value: 'SMC Members', label: 'SMC Members' },
+                                            ]}
+                                        />
                                     )}
                                     <Input label="Number of untoward incidents" id="incidents" type="number" min="0" value={settings.inspectionReport.incidentsCount} onChange={e => handleInspectionChange('incidentsCount', e.target.value)} />
                                 </div>

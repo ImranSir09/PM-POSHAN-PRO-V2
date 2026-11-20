@@ -3,9 +3,11 @@ import Card from '../ui/Card';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
+import DatePicker from '../ui/DatePicker';
 import { useData } from '../../hooks/useData';
 import { useToast } from '../../hooks/useToast';
 import { CategoryBalance, Category } from '../../types';
+import { Trash2 } from 'lucide-react';
 
 const Receipts: React.FC = () => {
     const { addReceipt, deleteReceipt, data } = useData();
@@ -74,87 +76,104 @@ const Receipts: React.FC = () => {
     return (
         <>
             <Modal isOpen={!!receiptToDelete} onClose={() => setReceiptToDelete(null)} title="Confirm Deletion">
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">Are you sure you want to delete this receipt? This action cannot be undone.</p>
-                <div className="flex justify-end space-x-2">
+                <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">Are you sure you want to delete this receipt? This action cannot be undone.</p>
+                <div className="flex justify-end gap-2">
                     <Button variant="secondary" onClick={() => setReceiptToDelete(null)}>Cancel</Button>
                     <Button variant="danger" onClick={confirmDelete}>Delete</Button>
                 </div>
             </Modal>
             <div className="space-y-4">
                 <Card title="Add New Receipt">
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <p className="text-xs text-slate-500 dark:text-slate-400 -mt-2">
-                            Log all incoming rice and cash here. These receipts will be added to your stock and reflected in the monthly summary.
+                            Log incoming rice and cash allotments. Receipts are added to your stock and reflected in the monthly summary.
                         </p>
-                        <Input label="Date" id="receipt-date" type="date" value={date} onChange={e => setDate(e.target.value)} required max={todayString} />
 
-                        <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-                            <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Rice Received (kg)</legend>
-                            <div className="grid grid-cols-3 gap-3">
+                        <DatePicker
+                            id="receipt-date"
+                            label="Date"
+                            value={date}
+                            onChange={setDate}
+                            max={todayString}
+                        />
+
+                        <div className="space-y-2.5 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 pt-2">
+                                Rice Received (kg)
+                            </p>
+                            <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
                                 <Input label="Balvatika" id="rice-bal" type="number" step="0.01" placeholder="0" value={rice.balvatika} onChange={e => handleValueChange(setRice, 'balvatika', e.target.value)} min="0" max="9999" />
                                 <Input label="Primary" id="rice-pri" type="number" step="0.01" placeholder="0" value={rice.primary} onChange={e => handleValueChange(setRice, 'primary', e.target.value)} min="0" max="9999" />
                                 <Input label="Middle" id="rice-mid" type="number" step="0.01" placeholder="0" value={rice.middle} onChange={e => handleValueChange(setRice, 'middle', e.target.value)} min="0" max="9999" />
                             </div>
-                        </fieldset>
+                        </div>
 
-                        <fieldset className="border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-                            <legend className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 px-2">Cash Received (₹)</legend>
-                            <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-2.5 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 pt-2">
+                                Cash Received (₹)
+                            </p>
+                            <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
                                 <Input label="Balvatika" id="cash-bal" type="number" step="0.01" placeholder="0" value={cash.balvatika} onChange={e => handleValueChange(setCash, 'balvatika', e.target.value)} min="0" max="99999" />
                                 <Input label="Primary" id="cash-pri" type="number" step="0.01" placeholder="0" value={cash.primary} onChange={e => handleValueChange(setCash, 'primary', e.target.value)} min="0" max="99999" />
                                 <Input label="Middle" id="cash-mid" type="number" step="0.01" placeholder="0" value={cash.middle} onChange={e => handleValueChange(setCash, 'middle', e.target.value)} min="0" max="99999" />
                             </div>
-                        </fieldset>
+                        </div>
 
                         <Button type="submit" className="w-full">Save Receipt</Button>
                     </form>
                 </Card>
-                <Card>
-                    <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-base font-semibold text-slate-800 dark:text-slate-100">Recent Receipts</h3>
-                    </div>
-                    <div className="overflow-x-auto max-h-60 rounded-xl border border-slate-200 dark:border-slate-800">
-                        <table className="w-full text-xs text-left">
-                            <thead className="bg-slate-50 dark:bg-slate-900/50 sticky top-0 z-10 shadow-sm">
+
+                <Card title="Recent Receipts">
+                    <div className="overflow-x-auto max-h-72 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+                        <table className="min-w-[540px] w-full text-xs text-left border-collapse">
+                            <thead className="bg-slate-50/95 dark:bg-slate-900/90 sticky top-0 z-10 border-b border-slate-200/80 dark:border-slate-800">
                                 <tr>
-                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400" rowSpan={2}>Date</th>
-                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-center border-b border-slate-200 dark:border-slate-800" colSpan={3}>Rice (kg)</th>
-                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-center border-b border-slate-200 dark:border-slate-800" colSpan={3}>Cash (₹)</th>
-                                    <th className="p-3 font-medium text-slate-500 dark:text-slate-400 text-right" rowSpan={2}>Actions</th>
+                                    <th className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" rowSpan={2}>Date</th>
+                                    <th className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center border-b border-slate-200/70 dark:border-slate-800" colSpan={3}>Rice (kg)</th>
+                                    <th className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center border-b border-slate-200/70 dark:border-slate-800" colSpan={3}>Cash (₹)</th>
+                                    <th className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right" rowSpan={2}>Action</th>
                                 </tr>
                                 <tr>
-                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Bal</th>
-                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Pri</th>
-                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Mid</th>
-                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Bal</th>
-                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Pri</th>
-                                    <th className="p-2 font-medium text-slate-500 dark:text-slate-400 text-right">Mid</th>
+                                    <th className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Bal</th>
+                                    <th className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Pri</th>
+                                    <th className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Mid</th>
+                                    <th className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Bal</th>
+                                    <th className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Pri</th>
+                                    <th className="px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-right">Mid</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-slate-950">
                                 {data.receipts.length === 0 ? (
-                                    <tr className="border-b border-slate-100 dark:border-slate-800/50">
-                                        <td colSpan={8} className="p-4 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-950">
+                                    <tr>
+                                        <td colSpan={8} className="p-6 text-center text-slate-500 dark:text-slate-400">
                                             No receipts have been added yet.
                                         </td>
                                     </tr>
                                 ) : (
-                                    [...data.receipts].reverse().map(receipt => {
-                                        return (
-                                            <tr key={receipt.id} className="border-b border-slate-100 dark:border-slate-800/50 last:border-0 bg-white dark:bg-slate-950">
-                                                <td className="p-3">{new Date(receipt.date + 'T00:00:00').toLocaleDateString('en-IN')}</td>
-                                                <td className="p-3 text-right">{receipt.rice.balvatika.toFixed(2)}</td>
-                                                <td className="p-3 text-right">{receipt.rice.primary.toFixed(2)}</td>
-                                                <td className="p-3 text-right">{receipt.rice.middle.toFixed(2)}</td>
-                                                <td className="p-3 text-right">{receipt.cash.balvatika.toFixed(2)}</td>
-                                                <td className="p-3 text-right">{receipt.cash.primary.toFixed(2)}</td>
-                                                <td className="p-3 text-right">{receipt.cash.middle.toFixed(2)}</td>
-                                                <td className="p-3 text-right">
-                                                    <Button variant="danger" className="px-3 py-1.5 text-xs" onClick={() => setReceiptToDelete(receipt.id)}>Delete</Button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
+                                    [...data.receipts].reverse().map(receipt => (
+                                        <tr key={receipt.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors">
+                                            <td className="px-3 py-2.5 font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap tabular-nums">
+                                                {new Date(receipt.date + 'T00:00:00').toLocaleDateString('en-IN')}
+                                            </td>
+                                            <td className="px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">{receipt.rice.balvatika.toFixed(2)}</td>
+                                            <td className="px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">{receipt.rice.primary.toFixed(2)}</td>
+                                            <td className="px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">{receipt.rice.middle.toFixed(2)}</td>
+                                            <td className="px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">{receipt.cash.balvatika.toFixed(2)}</td>
+                                            <td className="px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">{receipt.cash.primary.toFixed(2)}</td>
+                                            <td className="px-2.5 py-2.5 text-right text-slate-700 dark:text-slate-300 tabular-nums">{receipt.cash.middle.toFixed(2)}</td>
+                                            <td className="px-3 py-2 text-right">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setReceiptToDelete(receipt.id)}
+                                                    aria-label="Delete receipt"
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                                                >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                    <span>Delete</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
                                 )}
                             </tbody>
                         </table>

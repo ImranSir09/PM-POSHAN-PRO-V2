@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Bell, LogOut, Monitor, Moon, Sun } from 'lucide-react';
 import { useData } from '../../hooks/useData';
 import { useTheme } from '../../hooks/useTheme';
 import { useNotifications } from '../../hooks/useNotifications';
 import NotificationPanel from '../ui/NotificationPanel';
 import { useAuth } from '../../hooks/useAuth';
-
-const SystemIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>;
-const SunIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>;
-const MoonIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>;
-const BellIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>;
-const LogoutIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>;
 
 const Header: React.FC = () => {
     const { data } = useData();
@@ -17,12 +12,6 @@ const Header: React.FC = () => {
     const { logout } = useAuth();
     const { notifications, dismissNotification, dismissAllNotifications, handleNotificationAction } = useNotifications();
     const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [currentTime, setCurrentTime] = useState(new Date());
-
-    useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
 
     const toggleTheme = () => {
         if (theme === 'light') setTheme('dark');
@@ -30,76 +19,79 @@ const Header: React.FC = () => {
         else setTheme('light');
     };
 
-    const ThemeIcon = () => {
-        if (theme === 'light') return <SunIcon />;
-        if (theme === 'dark') return <MoonIcon />;
-        return <SystemIcon />;
+    const renderThemeIcon = () => {
+        if (theme === 'light') return <Sun size={18} />;
+        if (theme === 'dark') return <Moon size={18} />;
+        return <Monitor size={18} />;
     };
-    
+
     const themeLabel = `Switch to ${theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'} mode`;
 
     return (
         <>
             {isPanelOpen && (
-                <div 
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30" 
+                <div
+                    className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-30"
                     onClick={() => setIsPanelOpen(false)}
                     aria-hidden="true"
                 />
             )}
-            <header className="relative z-40 flex items-center justify-between p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-                <div className="flex items-center space-x-2 sm:space-x-3">
-                    <div className="overflow-hidden">
-                        <h1 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">{data.settings.schoolDetails.name}</h1>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">PM Poshan Pro</p>
+            <header className="fixed top-0 left-0 right-0 z-40 h-14 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80">
+                <div className="container mx-auto max-w-3xl h-full px-3 sm:px-5 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                        <h1 className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white truncate leading-tight">
+                            {data.settings.schoolDetails.name || 'PM Poshan Pro'}
+                        </h1>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate leading-tight mt-0.5">
+                            PM Poshan Pro
+                        </p>
                     </div>
-                </div>
-                <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
-                    <div className="relative">
-                        <button
-                            onClick={() => setIsPanelOpen(prev => !prev)}
-                            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                            aria-label="Toggle notifications"
-                        >
-                            <BellIcon />
-                            {notifications.length > 0 && (
-                                <span className="absolute top-1 right-1 flex h-4 w-4">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-white text-xs items-center justify-center">
+
+                    <div className="flex items-center gap-1 shrink-0">
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setIsPanelOpen(prev => !prev)}
+                                className="h-10 w-10 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors relative"
+                                aria-label="Toggle notifications"
+                            >
+                                <Bell size={18} />
+                                {notifications.length > 0 && (
+                                    <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-600 text-white text-[10px] font-semibold tabular-nums flex items-center justify-center">
                                         {notifications.length}
                                     </span>
-                                </span>
+                                )}
+                            </button>
+                            {isPanelOpen && (
+                                <NotificationPanel
+                                    notifications={notifications}
+                                    onDismiss={dismissNotification}
+                                    onDismissAll={dismissAllNotifications}
+                                    onAction={handleNotificationAction}
+                                    onClose={() => setIsPanelOpen(false)}
+                                />
                             )}
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={toggleTheme}
+                            className="h-10 w-10 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+                            aria-label={themeLabel}
+                            title={themeLabel}
+                        >
+                            {renderThemeIcon()}
                         </button>
-                        {isPanelOpen && (
-                            <NotificationPanel
-                                notifications={notifications}
-                                onDismiss={dismissNotification}
-                                onDismissAll={dismissAllNotifications}
-                                onAction={handleNotificationAction}
-                                onClose={() => setIsPanelOpen(false)}
-                            />
-                        )}
-                    </div>
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                        aria-label={themeLabel}
-                        title={themeLabel}
-                    >
-                        <ThemeIcon />
-                    </button>
-                    <button
-                        onClick={logout}
-                        className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                        aria-label="Logout"
-                        title="Logout"
-                    >
-                        <LogoutIcon />
-                    </button>
-                    <div className="text-right hidden sm:block">
-                        <p className="text-xs font-medium text-slate-700 dark:text-slate-200">{currentTime.toLocaleDateString('en-IN', { weekday: 'long' })}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{currentTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</p>
+
+                        <button
+                            type="button"
+                            onClick={logout}
+                            className="h-10 w-10 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors"
+                            aria-label="Logout"
+                            title="Logout"
+                        >
+                            <LogOut size={18} />
+                        </button>
                     </div>
                 </div>
             </header>
